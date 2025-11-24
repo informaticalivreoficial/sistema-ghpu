@@ -11,9 +11,9 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UserSeeder::class,
             ConfigTableSeeder::class,
-            TemplateTableSeeder::class,
-            PropertyTableSeeder::class,
-            PropertyGbTableSeeder::class,
+            CompanySeeder::class,
+            OcorrenciaSeeder::class,
+            TemplateTableSeeder::class,            
             CatPostSeeder::class
         ]);
     }

@@ -2,16 +2,17 @@
 
 namespace Database\Seeders;
 
+use App\Models\Ocorrencia;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class CommentSeeder extends Seeder
+class OcorrenciaSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        //
+        Ocorrencia::factory()->count(50)->create();
     }
 }

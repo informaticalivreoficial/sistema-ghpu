@@ -24,7 +24,6 @@ class CreatePostsTable extends Migration
             $table->bigInteger('views')->default(0);
             $table->unsignedInteger('category');
             $table->integer('cat_pai')->nullable();
-            $table->integer('comments')->nullable();
             $table->integer('status')->nullable();
             $table->integer('highlight')->nullable()->default(0);
             $table->integer('menu')->nullable();

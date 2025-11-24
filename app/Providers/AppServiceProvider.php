@@ -25,32 +25,32 @@ class AppServiceProvider extends ServiceProvider
     {
         //URL::forceScheme('https');
 
-        Schema::defaultStringLength(191);
-        Blade::aliasComponent('admin.components.message', 'message');
+        // Schema::defaultStringLength(191);
+        // Blade::aliasComponent('admin.components.message', 'message');
 
-        //Menu
-        $Links = \App\Models\Menu::whereNull('id_pai')->orderby('created_at', 'DESC')
-                        ->available()
-                        ->get();        
-        View()->share('Links', $Links);
+        // //Menu
+        // $Links = \App\Models\Menu::whereNull('id_pai')->orderby('created_at', 'DESC')
+        //                 ->available()
+        //                 ->get();        
+        // View()->share('Links', $Links);
 
-        $configuracoes = \App\Models\Config::first(); 
-        View()->share('configuracoes', $configuracoes);
+        // $configuracoes = \App\Models\Config::first(); 
+        // View()->share('configuracoes', $configuracoes);
 
-        $postsfooter = \App\Models\Post::orderBy('created_at', 'DESC')
-                            ->where('type', 'artigo')
-                            ->orWhere('type', 'noticia')
-                            ->postson()
-                            ->limit(3)
-                            ->get();
-        View()->share('postsfooter', $postsfooter);
+        // $postsfooter = \App\Models\Post::orderBy('created_at', 'DESC')
+        //                     ->where('type', 'artigo')
+        //                     ->orWhere('type', 'noticia')
+        //                     ->postson()
+        //                     ->limit(3)
+        //                     ->get();
+        // View()->share('postsfooter', $postsfooter);
 
-        $lancamentos = \App\Models\Property::where('highlight', 1)
-                        ->available()
-                        ->get();
-        View()->share('lancamentoMenu', $lancamentos);
+        // $lancamentos = \App\Models\Property::where('highlight', 1)
+        //                 ->available()
+        //                 ->get();
+        // View()->share('lancamentoMenu', $lancamentos);
 
-        Paginator::useBootstrap();
+        // Paginator::useBootstrap();
         
     }
 }

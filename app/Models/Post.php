@@ -24,7 +24,6 @@ class Post extends Model
         'tags',
         'views',
         'category',
-        'comments',
         'highlight',
         'cat_pai',        
         'status',
@@ -146,22 +145,7 @@ class Post extends Model
     public function countimages()
     {
         return $this->hasMany(PostGb::class, 'post', 'id')->count();
-    }
-
-    public function comments()
-    {
-        return $this->hasMany(Comment::class);
-    }
-
-    public function commentsCount()
-    {
-        return $this->hasMany(Comment::class, 'post', 'id')->count(); // 'post' é a FK em comments
-    }
-
-    public function approvedComments()
-    {
-        return $this->hasMany(Comment::class)->where('approved', true);
-    }
+    }    
 
     /**
      * Accerssors and Mutators
@@ -198,7 +182,7 @@ class Post extends Model
             return asset('theme/images/image.jpg');
         }
         
-        return Storage::disk()->url($cover['path']);
+        return Storage::url($cover['path']);
     }
         
     // public function cover()
