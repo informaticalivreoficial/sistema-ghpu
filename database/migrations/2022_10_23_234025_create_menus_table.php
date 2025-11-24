@@ -14,18 +14,17 @@ class CreateMenusTable extends Migration
     public function up()
     {
         Schema::create('menu', function (Blueprint $table) {
-            $table->increments('id');
-            $table->unsignedInteger('post')->nullable();
+            $table->id();
+            $table->foreignId('post_id')->constrained()->cascadeOnDelete();
             $table->integer('id_pai')->unsigned()->nullable();
             $table->string('title');
             $table->string('type');
             $table->text('link')->nullable();
             $table->integer('target')->nullable();
             $table->string('url')->nullable();
-            $table->integer('status')->nullable();
+            $table->unsignedTinyInteger('status')->default(0);
             
             $table->timestamps();
-            $table->foreign('post')->references('id')->on('posts');
         });
     }
 

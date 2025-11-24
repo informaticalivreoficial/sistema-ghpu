@@ -16,8 +16,17 @@ class CatPostFactory extends Factory
             'slug'        => $this->faker->slug(),
             'content'     => $this->faker->sentence(),
             'status'      => $this->faker->boolean(),
-            'tipo'        => $this->faker->randomElement(['artigo', 'noticia', 'pagina']),
-            'id_pai'      => null, // raiz por padrão
+            'type'        => $this->faker->randomElement(['artigo', 'noticia', 'pagina']),
+            'id_pai'      => null,
         ];
+    }
+
+    public function child()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'id_pai' => CatPost::factory(), // cria categoria pai automaticamente
+            ];
+        });
     }
 }

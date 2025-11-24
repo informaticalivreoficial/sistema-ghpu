@@ -16,7 +16,7 @@ class Post extends Model
     protected $table = 'posts'; 
 
     protected $fillable = [
-        'autor',
+        'user_id',
         'type',
         'title',
         'content',
@@ -116,10 +116,9 @@ class Post extends Model
     /**
      * Relacionamentos
     */
-
     public function user()
     {
-        return $this->belongsTo(User::class, 'autor', 'id');
+        return $this->belongsTo(User::class);
     }
     
     public function category()

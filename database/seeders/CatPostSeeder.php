@@ -16,7 +16,7 @@ class CatPostSeeder extends Seeder
             // Cada categoria terá 2-4 subcategorias
             CatPost::factory(rand(2, 4))->create([
                 'id_pai' => $category->id,
-                'tipo'   => $category->tipo, // herda o tipo do pai
+                'type'   => $category->type, // herda o tipo do pai
             ]);
         }
     }

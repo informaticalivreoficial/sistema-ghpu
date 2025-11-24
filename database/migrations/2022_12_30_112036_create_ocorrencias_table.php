@@ -15,7 +15,7 @@ class CreateOcorrenciasTable extends Migration
     {
         Schema::create('ocorrencias', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();            
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();          
             $table->foreignId('company_id')->constrained()->cascadeOnDelete();
             $table->string('title');
             $table->longText('content')->nullable();

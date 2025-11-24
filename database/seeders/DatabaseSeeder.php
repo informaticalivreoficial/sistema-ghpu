@@ -11,10 +11,10 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UserSeeder::class,
             ConfigTableSeeder::class,
+            CatPostSeeder::class,
             CompanySeeder::class,
             OcorrenciaSeeder::class,
-            TemplateTableSeeder::class,            
-            CatPostSeeder::class
+            TemplateTableSeeder::class,   
         ]);
     }
 }

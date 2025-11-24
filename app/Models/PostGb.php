@@ -14,7 +14,7 @@ class PostGb extends Model
     protected $table = 'post_gb'; 
 
     protected $fillable = [
-        'post',
+        'post_id',
         'path',
         'cover'
     ];
