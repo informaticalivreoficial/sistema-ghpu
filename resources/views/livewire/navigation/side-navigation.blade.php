@@ -62,11 +62,11 @@
                     </ul>
                 </li>
                 <li class="nav-item">
-                    <a href="{{--route('properties.index')--}}" class="nav-link {{-- Route::is('properties.*') ? 'active' : '' --}}">
-                        <i class="nav-icon fas fa-home"></i>
+                    <a href="{{ route('ocorrencias.index') }}" class="nav-link {{ Route::is('ocorrencias.*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-file"></i>
                         <p>
-                            Imóveis
-                            <span class="badge badge-info right">{{--$propertyCount--}}</span>
+                            Ocorrências
+                            <span class="badge badge-info right">{{ $ocorrenciaCount }}</span>
                         </p>
                     </a>
                 </li>     

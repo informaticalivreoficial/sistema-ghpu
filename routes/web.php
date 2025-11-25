@@ -25,6 +25,7 @@ use App\Http\Controllers\Web\{
     FeedController,
     Webcontroller
 };
+use App\Livewire\Dashboard\Ocorrencias\OcorrenciaForm;
 use App\Livewire\Dashboard\Ocorrencias\Ocorrencias;
 use App\Livewire\Dashboard\Posts\CatPosts;
 use App\Livewire\Dashboard\Posts\PostForm;
@@ -138,6 +139,8 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], functi
     Route::get('/permissoes', PermissionIndex::class)->name('admin.permissions');
 
     Route::get('ocorrencias', Ocorrencias::class)->name('ocorrencias.index');
+    Route::get('ocorrencias/{ocorrenciaId}/editar', OcorrenciaForm::class)->name('ocorrencia.edit');
+    Route::get('ocorrencias/cadastrar', OcorrenciaForm::class)->name('ocorrencia.create');
 
     Route::get('usuarios/clientes', Users::class)->name('users.index');
     Route::get('usuarios/time', Time::class)->name('users.time');

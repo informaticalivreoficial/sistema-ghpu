@@ -3,8 +3,8 @@
 namespace App\Livewire\Navigation;
 
 use App\Models\Config;
+use App\Models\Ocorrencia;
 use App\Models\Post;
-use App\Models\Property;
 use App\Models\User;
 use Livewire\Component;
 
@@ -19,7 +19,7 @@ class SideNavigation extends Component
                 ->orWhere('superadmin', 1);
         })->count();
         $postsCount = Post::count();
-        //$propertyCount = Property::count();
+        $ocorrenciaCount = Ocorrencia::count();
         // Manifest count
         //$manifestCount = Manifest::where(function($query) {
         //    $query->where('section', 'conferencia')
@@ -37,7 +37,7 @@ class SideNavigation extends Component
             'clientCount' => $clientCount,
             'timeCount' => $timeCount,   
             'postsCount' => $postsCount, 
-            //'propertyCount' => $propertyCount,
+            'ocorrenciaCount' => $ocorrenciaCount,
             'config' => $config,
         ]);
     }
