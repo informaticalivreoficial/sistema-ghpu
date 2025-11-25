@@ -66,7 +66,7 @@ class Config extends Model
     public function getmetaimg()
     {
         if(empty($this->metaimg) || !Storage::disk()->exists($this->metaimg)) {
-            return url(asset('theme/images/image.jpg'));
+            return asset('theme/images/image.jpg');
         } 
         return Storage::url($this->metaimg);
     }
@@ -74,23 +74,24 @@ class Config extends Model
     public function getlogo()
     {
         if(empty($this->logo) || !Storage::disk()->exists($this->logo)) {
-            return url(asset('theme/images/image.jpg'));
+            return asset('theme/images/image.jpg');
         } 
         return Storage::url($this->logo);
     }
     
     public function getlogoadmin()
     {
-        if(empty($this->logo_admin) || !Storage::disk()->exists($this->logo_admin)) {
-            return url(asset('theme/images/image.jpg'));
-        } 
+        if (empty($this->logo_admin) || !Storage::disk()->exists($this->logo_admin)) {
+            return asset('theme/images/image.jpg');
+        }
+
         return Storage::url($this->logo_admin);
     }
     
     public function getfaveicon()
     {
         if(empty($this->favicon) || !Storage::disk()->exists($this->favicon)) {
-            return url(asset('theme/images/image.jpg'));
+            return asset('theme/images/image.jpg');
         } 
         return Storage::url($this->favicon);
     }
@@ -98,7 +99,7 @@ class Config extends Model
     public function getwatermark()
     {
         if(empty($this->watermark) || !Storage::disk()->exists($this->watermark)) {
-            return url(asset('theme/images/image.jpg'));
+            return asset('theme/images/image.jpg');
         } 
         return Storage::url($this->watermark);
     }
@@ -106,7 +107,7 @@ class Config extends Model
     public function getheadersite()
     {
         if(empty($this->imgheader) || !Storage::disk()->exists($this->imgheader)) {
-            return url(asset('theme/images/image.jpg'));
+            return asset('theme/images/image.jpg');
         } 
         return Storage::url($this->imgheader);
     }

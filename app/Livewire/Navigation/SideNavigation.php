@@ -19,7 +19,7 @@ class SideNavigation extends Component
                 ->orWhere('superadmin', 1);
         })->count();
         $postsCount = Post::count();
-        $propertyCount = Property::count();
+        //$propertyCount = Property::count();
         // Manifest count
         //$manifestCount = Manifest::where(function($query) {
         //    $query->where('section', 'conferencia')
@@ -37,7 +37,7 @@ class SideNavigation extends Component
             'clientCount' => $clientCount,
             'timeCount' => $timeCount,   
             'postsCount' => $postsCount, 
-            'propertyCount' => $propertyCount,
+            //'propertyCount' => $propertyCount,
             'config' => $config,
         ]);
     }

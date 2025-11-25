@@ -1,7 +1,7 @@
 <aside class="main-sidebar sidebar-light-teal elevation-4">
     <!-- Brand Logo -->
-    <a href="#" class="">
-        <img src="{{$config->getlogoadmin()}}" alt="{{$config->app_name}}"
+    <a href="#" class="pt-3 d-flex justify-content-center">
+        <img src="{{ $config->getlogoadmin() }}" alt="{{ $config->app_name }}"
             class="brand-image elevation-3">        
     </a>
 
@@ -62,11 +62,11 @@
                     </ul>
                 </li>
                 <li class="nav-item">
-                    <a href="{{route('properties.index')}}" class="nav-link {{ Route::is('properties.*') ? 'active' : '' }}">
+                    <a href="{{--route('properties.index')--}}" class="nav-link {{-- Route::is('properties.*') ? 'active' : '' --}}">
                         <i class="nav-icon fas fa-home"></i>
                         <p>
                             Imóveis
-                            <span class="badge badge-info right">{{$propertyCount}}</span>
+                            <span class="badge badge-info right">{{--$propertyCount--}}</span>
                         </p>
                     </a>
                 </li>     

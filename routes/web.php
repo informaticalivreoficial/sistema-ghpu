@@ -25,12 +25,10 @@ use App\Http\Controllers\Web\{
     FeedController,
     Webcontroller
 };
-
+use App\Livewire\Dashboard\Ocorrencias\Ocorrencias;
 use App\Livewire\Dashboard\Posts\CatPosts;
 use App\Livewire\Dashboard\Posts\PostForm;
 use App\Livewire\Dashboard\Posts\Posts;
-use App\Livewire\Dashboard\Properties\Properties;
-use App\Livewire\Dashboard\Properties\PropertyForm;
 use App\Livewire\Dashboard\Slides\SlideForm;
 use App\Livewire\Dashboard\Slides\Slides;
 
@@ -119,11 +117,7 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], functi
     Route::post('templates/store', [TemplateController::class, 'store'])->name('templates.store');
     Route::get('templates', [TemplateController::class, 'index'])->name('templates.index');
 
-    /** Imóveis */
-    Route::get('imoveis/{property}/editar', PropertyForm::class)->name('property.edit');
-    Route::get('imoveis/cadastrar', PropertyForm::class)->name('properties.create');
-    Route::get('imoveis', Properties::class)->name('properties.index');
-
+   
     //*********************** Slides ********************************************/
     Route::get('slides/{slide}/editar', SlideForm::class)->name('slides.edit');
     Route::get('slides/cadastrar', SlideForm::class)->name('slides.create');
@@ -142,6 +136,8 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], functi
     //*********************** Usuários *******************************************/
     Route::get('/cargos', RoleIndex::class)->name('admin.roles');
     Route::get('/permissoes', PermissionIndex::class)->name('admin.permissions');
+
+    Route::get('ocorrencias', Ocorrencias::class)->name('ocorrencias.index');
 
     Route::get('usuarios/clientes', Users::class)->name('users.index');
     Route::get('usuarios/time', Time::class)->name('users.time');
