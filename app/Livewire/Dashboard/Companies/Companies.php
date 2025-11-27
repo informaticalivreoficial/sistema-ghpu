@@ -3,8 +3,10 @@
 namespace App\Livewire\Dashboard\Companies;
 
 use App\Models\Company;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Livewire\Attributes\On;
 
 class Companies extends Component
 {
@@ -18,9 +20,16 @@ class Companies extends Component
 
     public string $sortDirection = 'asc';
 
-    public bool $active;
+    public ?int $delete_id = null;
 
-    public $delete_id;
+    public $showCompanyModal = false;
+    public $companySelected;
+
+    public function viewCompany($id)
+    {
+        $this->companySelected = Company::with(['users', 'ocorrencias'])->find($id);
+        $this->showCompanyModal = true;
+    }
 
     #{Url}
     public function updatingSearch(): void
@@ -54,9 +63,43 @@ class Companies extends Component
 
     public function toggleStatus($id)
     {              
-        $company = Company::find($id);
-        $company->status = !$this->active;        
+        $company = Company::findOrFail($id);
+        $company->status = !$company->status;        
         $company->save();
-        $this->active = $company->status;
+    }
+
+    public function setDeleteId($id)
+    {
+        $this->delete_id = $id;
+        $this->dispatch('delete-prompt');        
+    }
+
+    #[On('goOn-Delete')]
+    public function delete(): void
+    {
+        try {
+            $company = Company::findOrFail($this->delete_id);
+
+            $logoPath = $company->logo;
+            if ($logoPath && Storage::disk('public')->exists($logoPath)) {
+                Storage::disk('public')->delete($logoPath);
+            }
+
+            $company->delete();
+
+            $this->delete_id = null;
+
+            $this->dispatch('swal', [
+                'title' => 'Sucesso!',
+                'icon'  => 'success',
+                'text'  => 'Empresa removida!',
+            ]);
+        } catch (\Exception $e) {
+            $this->dispatch('swal', [
+                'title' => 'Erro!',
+                'icon'  => 'error',
+                'text'  => 'Não foi possível excluir a empresa.',
+            ]);
+        }
     }
 }

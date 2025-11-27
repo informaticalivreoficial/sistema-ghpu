@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Company extends Model
 {
@@ -17,6 +18,7 @@ class Company extends Model
         'document_company',
         'document_company_secondary',
         'information',
+        'logo',
         'status',
         'zipcode',
         'address',
@@ -36,4 +38,24 @@ class Company extends Model
     /**
      * Relacionamentos
     */
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
+
+    public function ocorrencias()
+    {
+        return $this->hasMany(Ocorrencia::class);
+    }
+
+    /**
+     * Accerssors and Mutators
+    */ 
+    public function getlogo()
+    {
+        if(empty($this->logo) || !Storage::disk()->exists($this->logo)) {
+            return asset('theme/images/image.jpg');
+        } 
+        return Storage::url($this->logo);
+    }
 }

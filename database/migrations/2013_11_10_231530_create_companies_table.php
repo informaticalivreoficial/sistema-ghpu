@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('document_company')->nullable();
             $table->string('document_company_secondary')->nullable();
             $table->text('information')->nullable();
+            $table->string('logo')->nullable();
             $table->unsignedTinyInteger('status')->default(0);
 
             /** address */

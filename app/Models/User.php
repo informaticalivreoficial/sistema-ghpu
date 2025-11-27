@@ -2,19 +2,20 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
+    use HasRoles;
     use HasApiTokens, HasFactory, Notifiable;
 
     protected $fillable = [
-        'name', 'password', 'remember_token', 'code',
+        'name', 'company_id', 'password', 'remember_token', 'code',
         'gender',
         'cpf',
         'rg',
@@ -29,11 +30,24 @@ class User extends Authenticatable
         'phone', 'cell_phone', 'whatsapp', 'skype', 'telegram', 'email', 'additional_email',
         //Social
         'facebook', 'twitter', 'instagram', 'youtube', 'fliccr', 'linkedin',
-        //Function
-        'admin', 'client', 'editor', 'superadmin',
         'status',
         'information'
     ];
+
+    public function isSuperAdmin(): bool
+    {
+        return $this->hasRole('superadmin');
+    }
+
+    public function isManager()
+    {
+        return $this->hasRole('manager');
+    }
+
+    public function isEmployee()
+    {
+        return $this->hasRole('employee');
+    }
 
     /**
      * The attributes that should be hidden for serialization.
@@ -61,6 +75,12 @@ class User extends Authenticatable
     /**
      * Relacionamentos
     */
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
+    }
+
+    
 
     /**
      * Scopes

@@ -15,15 +15,17 @@ class CreateOcorrenciasTable extends Migration
     {
         Schema::create('ocorrencias', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();          
-            $table->foreignId('company_id')->constrained()->cascadeOnDelete();
+            $table->unsignedBigInteger('company_id');
+            $table->unsignedBigInteger('user_id');
             $table->string('title');
             $table->longText('content')->nullable();
             $table->unsignedTinyInteger('status')->default(0);
             $table->unsignedBigInteger('views')->default(0);
-            $table->foreignId('update_user_id')->nullable()->constrained('users')->nullOnDelete();
-
+            $table->unsignedBigInteger('update_user_id')->nullable();
             $table->timestamps();
+
+            $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

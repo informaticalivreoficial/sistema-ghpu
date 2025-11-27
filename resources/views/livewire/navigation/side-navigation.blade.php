@@ -2,7 +2,7 @@
     <!-- Brand Logo -->
     <a href="#" class="pt-3 d-flex justify-content-center">
         <img src="{{ $config->getlogoadmin() }}" alt="{{ $config->app_name }}"
-            class="brand-image elevation-3">        
+            class="brand-image elevation-3 w-32 mx-auto">        
     </a>
 
     <div class="sidebar mt-3">
@@ -62,6 +62,12 @@
                     </ul>
                 </li>
                 <li class="nav-item">
+                    <a href="{{route('companies.index')}}" class="nav-link {{ Route::is('companies.*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-industry"></i>
+                        <p>Empresas</p>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="{{ route('ocorrencias.index') }}" class="nav-link {{ Route::is('ocorrencias.*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-file"></i>
                         <p>
@@ -69,13 +75,7 @@
                             <span class="badge badge-info right">{{ $ocorrenciaCount }}</span>
                         </p>
                     </a>
-                </li>     
-                <li class="nav-item">
-                    <a href="{{route('slides.index')}}" class="nav-link {{ Route::is('slides.*') ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-film"></i>
-                        <p>Banners</p>
-                    </a>
-                </li>  
+                </li> 
                 <li class="nav-item {{ Route::is('posts.*') ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link {{ Route::is('posts.*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-pencil-alt"></i>

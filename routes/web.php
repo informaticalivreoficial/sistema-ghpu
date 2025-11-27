@@ -25,6 +25,8 @@ use App\Http\Controllers\Web\{
     FeedController,
     Webcontroller
 };
+use App\Livewire\Dashboard\Companies\Companies;
+use App\Livewire\Dashboard\Companies\CompanyForm;
 use App\Livewire\Dashboard\Ocorrencias\OcorrenciaForm;
 use App\Livewire\Dashboard\Ocorrencias\Ocorrencias;
 use App\Livewire\Dashboard\Posts\CatPosts;
@@ -99,24 +101,11 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], functi
     // Route::get('gerarxml', [SitemapController::class, 'gerarxml'])->name('admin.gerarxml');
 
     
-    // Route::put('listas/email/{id}', [NewsletterController::class, 'newsletterUpdate'])->name('listas.newsletter.update');
-    // Route::get('listas/email/set-status', [NewsletterController::class, 'emailSetStatus'])->name('emails.emailSetStatus');
-    // Route::get('listas/email/delete', [NewsletterController::class, 'emailDelete'])->name('emails.delete');
-    // Route::delete('listas/email/deleteon', [NewsletterController::class, 'emailDeleteon'])->name('emails.deleteon');
-    // Route::get('listas/email/{id}/edit', [NewsletterController::class, 'newsletterEdit'])->name('listas.newsletter.edit');
-    // Route::get('listas/email/cadastrar', [NewsletterController::class, 'newsletterCreate'])->name('lista.newsletter.create');
-    // Route::post('listas/email/store', [NewsletterController::class, 'newsletterStore'])->name('listas.newsletter.store');
-    // Route::get('listas/emails/categoria/{categoria}', [NewsletterController::class, 'newsletters'])->name('lista.newsletters');
-
-    //******************* Templates ************************************************/
-    Route::get('templates/set-status', [TemplateController::class, 'templateSetStatus'])->name('templates.templateSetStatus');
-    Route::get('templates/delete', [TemplateController::class, 'delete'])->name('templates.delete');
-    Route::delete('templates/deleteon', [TemplateController::class, 'deleteon'])->name('templates.deleteon');
-    Route::put('templates/{id}', [TemplateController::class, 'update'])->name('templates.update');
-    Route::get('templates/{id}/edit', [TemplateController::class, 'edit'])->name('templates.edit');
-    Route::get('templates/create', [TemplateController::class, 'create'])->name('templates.create');
-    Route::post('templates/store', [TemplateController::class, 'store'])->name('templates.store');
-    Route::get('templates', [TemplateController::class, 'index'])->name('templates.index');
+    // Companies
+    Route::get('empresas', Companies::class)->name('companies.index');
+    Route::get('empresas/cadastrar-empresa', CompanyForm::class)->name('companies.create');
+    Route::get('empresas/{company}/editar-empresa', CompanyForm::class)->name('companies.edit');
+    Route::get('empresas/{company}/visualizar-empresa', ViewUser::class)->name('companies.view');
 
    
     //*********************** Slides ********************************************/

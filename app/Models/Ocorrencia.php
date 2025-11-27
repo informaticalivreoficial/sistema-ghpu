@@ -19,7 +19,25 @@ class Ocorrencia extends Model
         'status',
         'views',
         'update_user_id',
+        'form',
     ];
+
+    protected $casts = [
+        'form' => 'array',
+    ];
+
+    protected static function booted()
+    {
+        static::addGlobalScope('company', function ($query) {
+            $user = auth()->user();
+
+            if (!$user || $user->isSuperAdmin()) {
+                return;
+            }
+
+            $query->where('company_id', $user->company_id);
+        });
+    }
 
     /**
      * Relacionamentos

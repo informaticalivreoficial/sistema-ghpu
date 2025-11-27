@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Company;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -25,6 +26,7 @@ class UserFactory extends Factory
     {
         return [
             'name' => fake()->name,
+            'company_id' => Company::inRandomOrder()->first()?->id ?? Company::factory(),
             'email' => fake()->unique()->safeEmail(),
             'cpf' => fake()->cpf,
             'rg' => fake()->rg,

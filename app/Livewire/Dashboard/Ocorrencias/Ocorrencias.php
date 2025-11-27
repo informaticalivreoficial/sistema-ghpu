@@ -52,7 +52,7 @@ class Ocorrencias extends Component
     public function render()
     {
         $title = 'Ocorrências';
-        $searchableFields = ['title','city','state','reference','type','neighborhood'];
+        $searchableFields = ['title','content'];
         $ocorrencias = Ocorrencia::query()
             ->when($this->search, function ($query) use ($searchableFields) {
                 $query->where(function ($q) use ($searchableFields) {

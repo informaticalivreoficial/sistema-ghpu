@@ -3,11 +3,10 @@
 namespace App\Livewire\Dashboard\Companies;
 
 use App\Models\Company;
-use App\Models\User;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
 class CompanyForm extends Component
@@ -15,9 +14,10 @@ class CompanyForm extends Component
     use WithFileUploads;
 
     public ?Company $company = null;
-    public Collection $clients;  
 
-    public ?int $user = null;
+    public $logo;
+    public $logoUrl; 
+
     public ?string $social_name = null;
     public ?string $alias_name = null;
     public ?string $document_company = null;
@@ -34,7 +34,6 @@ class CompanyForm extends Component
         $companyId = $this->company->id ?? null;
 
         return [
-            'user' => 'required|exists:users,id',
             'zipcode' => 'required|min:8|max:10',
             'email' => ['required', 'email', Rule::unique('companies', 'email')->ignore($companyId)],
             'cell_phone' => 'required|string|min:15',
@@ -50,11 +49,13 @@ class CompanyForm extends Component
     public function mount(Company $company)
     {
         $this->company = $company;
-
-        $this->clients = User::orderBy('name')->where('client', 1)->get();
         
         if ($company->exists) {
             $this->fillFromCompany($company);
+        }
+
+        if ($this->company && $this->company->logo) {
+            $this->logoUrl = Storage::url($this->company->logo);
         }
     }
 
@@ -62,10 +63,17 @@ class CompanyForm extends Component
     {
         $validated = $this->validate();
 
-        //$this->sanitizeInputs();
+        if($this->logo){
+            $this->validate([
+                'logo' => 'image|max:1024'
+            ]);
+            $caminhoLogo = $this->logo->store('company', 'public');
+        }else{
+            $caminhoLogo = null;
+        }
 
         $data = [
-            'user' => $validated['user'],
+            'logo' => $caminhoLogo, 
             'social_name' => $this->social_name,
             'alias_name' => $this->alias_name,
             'zipcode' => $this->zipcode,
@@ -119,7 +127,6 @@ class CompanyForm extends Component
 
     protected function fillFromCompany(Company $company): void
     {
-        $this->user = $company->user;
         $this->social_name = $company->social_name;
         $this->alias_name = $company->alias_name;
         $this->zipcode = $company->zipcode;
@@ -139,5 +146,13 @@ class CompanyForm extends Component
         $this->cell_phone = $company->cell_phone;
         $this->whatsapp = $company->whatsapp;
         $this->telegram = $company->telegram;
+    }
+
+    public function updatedLogo()
+    {
+        $this->validate([
+            'logo' => 'image|max:1024'
+        ]);
+        $this->logoUrl = $this->logo->temporaryUrl(); // Gera a URL temporária da foto
     }
 }

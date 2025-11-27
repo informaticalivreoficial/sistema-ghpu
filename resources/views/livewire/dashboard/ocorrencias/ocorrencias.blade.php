@@ -62,15 +62,22 @@
                                         {{ $ocorrencia->status ? 'checked' : '' }}>
                                     <span class="slider round"></span>
                                 </label> 
-                                <a wire:navigate href="visualizar-empresa/" class="btn btn-xs btn-info text-white"><i class="fas fa-search"></i></a>
-                                <a wire:navigate href="{{ route('ocorrencia.edit', $ocorrencia->id) }}" 
-                                    class="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200 hover:text-blue-800 transition flex-shrink-0">
+                                <a href="{{-- route('posts.show', $post->id) --}}" 
+                                    class="action-btn btn-view" 
+                                    data-tooltip="Visualizar">
+                                    <i class="fas fa-search"></i>
+                                </a>
+                                <a href="{{ route('ocorrencia.edit', $ocorrencia->id) }}" 
+                                    class="action-btn btn-edit" 
+                                    data-tooltip="Editar">
                                     <i class="fas fa-pen"></i>
                                 </a>
+
+                                <!-- Delete -->
                                 <button type="button" 
-                                        class="flex items-center justify-center w-8 h-8 rounded-full bg-red-100 text-red-600 hover:bg-red-200 hover:text-red-800 transition flex-shrink-0"
-                                        wire:click="setDeleteId({{ $ocorrencia->id }})" 
-                                        title="Excluir">
+                                    class="action-btn btn-delete" 
+                                    data-tooltip="Excluir"
+                                    wire:click="setDeleteId({{ $ocorrencia->id }})">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </td>

@@ -14,10 +14,8 @@
                 </div>
             </div>
         </div>    
-    </div>   {{-- 
-    @if ($updateMode)
-        @livewire('dashboard.companys.form')
-    @endif  --}} 
+    </div>
+    
     <div class="card">
         <div class="card-header">
             <div class="row">
@@ -36,61 +34,79 @@
                 </div>
             </div>
         </div>        
-        <!-- /.card-header -->
+       
         <div class="card-body">
-            <div class="row">
-                <div class="col-12">                
-                    @if(session()->exists('message'))
-                        @message(['color' => session()->get('color')])
-                            {{ session()->get('mensagem') }}
-                        @endmessage
-                    @endif
-                </div>            
-            </div>
             @if(!empty($companies) && $companies->count() > 0)
-                <table class="table table-bordered table-striped projects">
-                    <thead>
-                        <tr>
-                            <th wire:click="sortBy('alias_name')">Nome Fantasia <i class="expandable-table-caret fas fa-caret-down fa-fw"></i></th>
-                            <th>Manifestos</th>
-                            <th>Faturas</th>
-                            <th class="text-center">Status</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($companies as $company)                    
-                        <tr style="{{ ($company->status == true ? '' : 'background: #fffed8 !important;')  }}">                            
-                            <td>{{$company->alias_name}}</td>
-                            <td>{{$company->manifest->count()}}</td>
-                            <td></td>
-                            <td class="text-center">
-                                <label class="switch" wire:model="active">
-                                    <input type="checkbox" value="{{$company->status}}"  wire:change="toggleStatus({{$company->id}})" wire:loading.attr="disabled" {{$company->status ? 'checked': ''}}>
-                                    <span class="slider round"></span>
-                                </label>
-                            </td>
-                            <td>                                
-                                @if($company->whatsapp)
-                                    <a target="_blank" href="{{\App\Helpers\WhatsApp::getNumZap($company->whatsapp)}}" class="btn btn-xs btn-success text-white"><i class="fab fa-whatsapp"></i></a>
-                                @endif
-                                
-                                <form class="btn btn-xs" action="{{--route('email.send')--}}" method="post">
-                                    @csrf
-                                    <input type="hidden" name="nome" value="{{ $company->name }}">
-                                    <input type="hidden" name="email" value="{{ $company->email }}">
-                                    <button title="Enviar Email" type="submit" class="btn btn-xs text-white bg-teal"><i class="fas fa-envelope"></i></button>
-                                </form> 
-                                <a wire:navigate href="visualizar-empresa/{{$company->id}}" class="btn btn-xs btn-info text-white"><i class="fas fa-search"></i></a>
-                                <a wire:navigate href="{{ route('companies.edit', [ 'company' => $company->id ]) }}" class="btn btn-xs btn-default"><i class="fas fa-pen"></i></a>
-                                <button type="button" class="btn btn-xs btn-danger text-white" wire:click="setDeleteId({{$company->id}})" title="Excluir">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>                
-                </table>
+                <div class="overflow-x-auto" x-data="{ showModal: false, imageUrl: '' }">
+                    <table class="table table-bordered table-striped projects">
+                        <thead>
+                            <tr>
+                                <th>Logomarca</th>
+                                <th wire:click="sortBy('alias_name')">Nome Fantasia <i class="expandable-table-caret fas fa-caret-down fa-fw"></i></th>
+                                <th class="text-center">Ocorrências</th>
+                                <th class="text-center">Colaboradores</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($companies as $company)                    
+                            <tr style="{{ ($company->status == true ? '' : 'background: #fffed8 !important;')  }}">                            
+                                <td>
+                                    <img 
+                                        src="{{$company->getlogo()}}" 
+                                        alt="{{$company->alias_name}}" 
+                                        title="{{$company->alias_name}}"
+                                        class="w-16 mx-auto cursor-pointer rounded-lg hover:scale-105 transition-transform"
+                                        @click="showModal = true; imageUrl = '{{ addslashes(url($company->getlogo())) }}'"
+                                    />
+                                </td>
+                                <td>{{$company->alias_name}}</td>
+                                <td class="text-center">{{$company->ocorrencias->count()}}</td>
+                                <td class="text-center">{{$company->users->count()}}</td>
+                                <td>                                
+                                    <label class="switch flex-shrink-0">
+                                        <input type="checkbox" 
+                                            value="{{ $company->status }}"  
+                                            wire:change="toggleStatus({{ $company->id }})" 
+                                            wire:loading.attr="disabled" 
+                                            {{ $company->status ? 'checked' : '' }}>
+                                        <span class="slider round"></span>
+                                    </label> 
+                                    <button 
+                                        class="action-btn btn-view" 
+                                        data-tooltip="Visualizar"
+                                        wire:click="viewCompany({{ $company->id }})">
+                                        <i class="fas fa-search"></i>
+                                    </button>                                    
+                                    <a href="{{ route('companies.edit', $company->id) }}" 
+                                        class="action-btn btn-edit" 
+                                        data-tooltip="Editar">
+                                        <i class="fas fa-pen"></i>
+                                    </a>
+                                    <button type="button" 
+                                        class="action-btn btn-delete" 
+                                        data-tooltip="Excluir"
+                                        wire:click="setDeleteId({{ $company->id }})">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>                
+                    </table>
+                    <!-- Modal de imagem -->
+                    <div x-show="showModal" x-cloak
+                        class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-[9999]"
+                        x-transition>
+                        <div class="relative">
+                            <img :src="imageUrl" class="max-w-[70vw] max-h-[70vh] object-contain mx-auto rounded shadow-lg">
+                            <button type="button" @click="showModal = false"
+                                    class="absolute top-2 right-2 text-white text-xl bg-black bg-opacity-50 rounded-full px-2 py-1 hover:bg-opacity-75 transition">
+                                ✕
+                            </button>
+                        </div>
+                    </div>
+                </div>
             @else
                 <div class="row mb-4">
                     <div class="col-12">                                                        
@@ -106,11 +122,48 @@
         </div>
     </div>
 
+    @if($showCompanyModal && $companySelected)
+    <div 
+        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999]"
+        x-data
+        x-init="@this.on('close-modal', () => $el.remove())"
+    >
+        <div class="bg-white w-[600px] rounded-lg shadow-lg p-6 relative animate-fade">
+
+            <!-- Botão fechar -->
+            <button 
+                class="absolute top-2 right-2 text-xl"
+                wire:click="$set('showCompanyModal', false)">
+                ✕
+            </button>
+
+            <h2 class="text-xl font-bold mb-4">Detalhes da Empresa</h2>
+
+            <div class="space-y-2">
+                <p><strong>Nome Fantasia:</strong> {{ $companySelected->alias_name }}</p>
+                <p><strong>Razão Social:</strong> {{ $companySelected->corporate_name }}</p>
+                <p><strong>CNPJ:</strong> {{ $companySelected->cnpj }}</p>
+                <p><strong>Status:</strong> {{ $companySelected->status ? 'Ativa' : 'Inativa' }}</p>
+
+                <p><strong>Ocorrências:</strong> {{ $companySelected->ocorrencias->count() }}</p>
+                <p><strong>Colaboradores:</strong> {{ $companySelected->users->count() }}</p>
+            </div>
+
+            <div class="mt-4 text-right">
+                <button 
+                    class="px-4 py-2 bg-gray-600 text-white rounded"
+                    wire:click="$set('showCompanyModal', false)">
+                    Fechar
+                </button>
+            </div>
+
+        </div>
+    </div>
+    @endif
+
 </div>
 
-
-<script>
-    
+<script>    
     document.addEventListener('livewire:initialized', () => {
         @this.on('swal', (event) => {
             const data = event
@@ -125,7 +178,7 @@
             swal.fire({
                 icon: 'warning',
                 title: 'Atenção',
-                text: 'Você tem certeza que deseja excluir este Cliente?',
+                text: 'Você tem certeza que deseja excluir esta Empresa?',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
@@ -137,5 +190,4 @@
             })
         })
     });
-
 </script>
