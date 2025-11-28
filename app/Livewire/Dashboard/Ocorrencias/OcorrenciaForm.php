@@ -35,6 +35,31 @@ class OcorrenciaForm extends Component
         'form.porta_interna' => 'Porta interna',
         'form.porta_externa' => 'Porta externa',
         'form.luzes_estacionamento1' => 'Luzes do estacionamento 1',
+
+        'form.maquina_safra_1' => 'Máquina Safra 1',    
+        'form.maquina_safra_2' => 'Máquina Safra 2',
+        'form.celular_1' => 'Celular 1',
+        'form.celular_2' => 'Celular 2',
+
+        'form.maquina_safra_1.required' => 'Informe a porcentagem da bateria.',
+        'form.maquina_safra_1.numeric' => 'A bateria deve ser um número.',
+        'form.maquina_safra_1.min' => 'A bateria mínima é 0%.',
+        'form.maquina_safra_1.max' => 'A bateria máxima é 100%.',
+
+        'form.maquina_safra_2.required' => 'Informe a porcentagem da bateria.',
+        'form.maquina_safra_2.numeric' => 'A bateria deve ser um número.',
+        'form.maquina_safra_2.min' => 'A bateria mínima é 0%.',
+        'form.maquina_safra_2.max' => 'A bateria máxima é 100%.',
+
+        'form.celular_1.required' => 'Informe a porcentagem da bateria.',
+        'form.celular_1.numeric' => 'A bateria deve ser um número.',
+        'form.celular_1.min' => 'A bateria mínima é 0%.',
+        'form.celular_1.max' => 'A bateria máxima é 100%.',
+
+        'form.celular_2.required' => 'Informe a porcentagem da bateria.',
+        'form.celular_2.numeric' => 'A bateria deve ser um número.',
+        'form.celular_2.min' => 'A bateria mínima é 0%.',
+        'form.celular_2.max' => 'A bateria máxima é 100%.',
         
         'form.tvbox_103.required' => 'Informe o status do TV Box do apto 103.',
         'form.tvbox_201.required' => 'Informe o status do TV Box do apto 201.',
@@ -48,7 +73,14 @@ class OcorrenciaForm extends Component
 
         // Celulares
         'form.celulares.*.bateria.required' => 'Informe a porcentagem da bateria.',
-        'form.celulares.*.funcionario.required' => 'Informe com quem está o celular.',
+        //'form.celulares.*.funcionario.required' => 'Informe com quem está o celular.',
+
+        'form.celulares.*.bateria.required' => 'Informe a porcentagem da bateria.',
+        'form.celulares.*.bateria.numeric' => 'A bateria deve ser um número.',
+        'form.celulares.*.bateria.min' => 'A bateria mínima é 0%.',
+        'form.celulares.*.bateria.max' => 'A bateria máxima é 100%.',
+        //'form.celulares.*.funcionario.required' => 'Informe com quem está o celular.',
+        //'form.celulares.*.funcionario.min' => 'O nome deve ter no mínimo 3 caracteres.',
 
         // Chaves mecânicas
         'form.chaves_mecanicas.*.status.required' => 'Selecione o status da chave mecânica.',
@@ -408,8 +440,10 @@ class OcorrenciaForm extends Component
             if (empty($this->type)) {
                 $this->validate([
                     'type' => 'required|string',
+                ], [
+                    'type.required' => 'Selecione o tipo de ocorrência antes de continuar.',
                 ]);
-                return; // Para aqui se não tiver tipo
+                return; 
             }
             
             // Validação completa quando há tipo selecionado
@@ -441,7 +475,17 @@ class OcorrenciaForm extends Component
 
             $this->ocorrencia = $ocorrencia;
 
-            $this->dispatch('toast', type: 'success', message: 'Ocorrência salva com sucesso!');
+            // Mensagem de sucesso diferente para criar/editar
+            $mensagem = $this->ocorrencia->wasRecentlyCreated 
+                ? 'Ocorrência cadastrada com sucesso!' 
+                : 'Ocorrência atualizada com sucesso!';
+            
+            $this->dispatch('toast', type: 'success', message: $mensagem);
+            
+            // Redireciona para a lista após salvar (opcional)
+            return $this->redirect(route('ocorrencias.index'), navigate: true);
+
+            //$this->dispatch('toast', type: 'success', message: 'Ocorrência salva com sucesso!');
             
         } catch (\Illuminate\Validation\ValidationException $e) {
             $errorCount = count($e->validator->errors()->all());
@@ -465,7 +509,7 @@ class OcorrenciaForm extends Component
             'passagem-de-turno' => [
                 //Seção 1
                 'form.sauna' => 'required|in:ligada,desligada',
-                'form.temperatura_aquecedor' => 'required|string|min:2|max:10',
+                'form.temperatura_aquecedor' => 'required|string|min:2|max:100',
                 'form.chama_aquecedor' => 'required|in:acesa,apagada',
                 'form.motor_piscina' => 'required|in:ligado,desligado',
                 'form.piscina_coberta' => 'required|in:coberta,descoberta',
@@ -477,13 +521,13 @@ class OcorrenciaForm extends Component
                 //Seção 2
                 'form.porta_interna' => 'required|in:aberta,fechada',
                 'form.porta_externa' => 'required|in:aberta,fechada',
-                'form.luzes_estacionamento1' => 'required|in:ligadas,desligadas',
+                'form.luzes_estacionamento1' => 'required|in:ligada,desligada',
 
                 //Seção 3
-                'form.maquina_safra_1' => 'required|digits_between:2,10',
-                'form.maquina_safra_2' => 'required|digits_between:2,10',
-                'form.celular_1' => 'required|digits_between:10,11',
-                'form.celular_2' => 'required|digits_between:10,11',
+                'form.maquina_safra_1' => 'required|numeric|min:1|max:100',
+                'form.maquina_safra_2' => 'required|numeric|min:1|max:100',
+                'form.celular_1' => 'required|numeric|min:1|max:100',
+                'form.celular_2' => 'required|numeric|min:1|max:100',
 
                 //Seção 5
                 'form.tvbox_103' => 'required|in:pote,uso',
@@ -600,8 +644,8 @@ class OcorrenciaForm extends Component
 
             // Adiciona validação dos celulares (8 itens)
             foreach ($this->celulares as $index => $c) {
-                $rulesMap[$type]["form.celulares.{$index}.bateria"] = 'required|numeric|min:0|max:100';
-                $rulesMap[$type]["form.celulares.{$index}.funcionario"] = 'required|string|min:3';
+                $rulesMap[$type]["form.celulares.{$index}.bateria"] = 'required|numeric|min:2|max:100';
+               // $rulesMap[$type]["form.celulares.{$index}.funcionario"] = 'required|string|min:3';
             }
 
             // Adiciona validação das chaves mecânicas

@@ -20,6 +20,11 @@
         <div class="card">
             <div class="card-header bg-primary">
                 <h3 class="card-title">Checklist — 3° Andar::</h3>
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool text-white" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                </div>
             </div>
 
             <div class="card-body">
@@ -186,6 +191,11 @@
         <div class="card">
             <div class="card-header bg-primary">
                 <h3 class="card-title">Checklist — Área Externa, Estacionamento e Lixeiras::</h3>
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool text-white" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                </div>
             </div>
 
             <div class="card-body">
@@ -299,6 +309,11 @@
         <div class="card">
             <div class="card-header bg-primary">
                 <h3 class="card-title">Checklist — Recepção (Celulares e Máquinas de Cartão)::</h3>
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool text-white" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                </div>
             </div>
 
             <div class="card-body">
@@ -317,6 +332,7 @@
                             wire:model="form.maquina_safra_1"
                             min="2" max="10"
                             placeholder="Informe %">
+                        @error('form.maquina_safra_1') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
                 </div>
 
@@ -335,6 +351,7 @@
                             wire:model="form.maquina_safra_2"
                             min="2" max="10"
                             placeholder="Informe %">
+                        @error('form.maquina_safra_2') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
                 </div>
 
@@ -353,6 +370,7 @@
                             wire:model="form.celular_1"
                             min="2" max="10"
                             placeholder="Informe %">
+                        @error('form.celular_1') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
                 </div>
 
@@ -371,6 +389,7 @@
                             wire:model="form.celular_2"
                             min="2" max="10"
                             placeholder="Informe %">
+                        @error('form.celular_2') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
                 </div>
 
@@ -380,7 +399,12 @@
 
         <div class="card mt-4">
             <div class="card-header bg-primary">
-                <h3 class="card-title">Checklist — Chaves de Serviço Diário — Estoque Fixo (15 unidades)</h3>
+                <h3 class="card-title">Checklist — Chaves de Serviço Diário — Estoque Fixo (15 unidades)::</h3>
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool text-white" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                </div>
             </div>
 
             <div class="card-body">
@@ -466,6 +490,11 @@
         <div class="card">
             <div class="card-header bg-primary">
                 <h3 class="card-title">Checklist — Controles de TV Box (Estoque fixo: 7 unidades)::</h3>
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool text-white" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                </div>
             </div>
 
             <div class="card-body">
@@ -596,6 +625,11 @@
         <div class="card">
             <div class="card-header bg-primary">
                 <h3 class="card-title">Checklist — Secador de Cabelo (Estoque Fixo: 5 unidades)::</h3>
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool text-white" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                </div>
             </div>
 
             <div class="card-body">
@@ -662,6 +696,11 @@
         <div class="card">
             <div class="card-header bg-primary">
                 <h3 class="card-title">Checklist — Rádios Comunicadores de Serviços (7 unidades)::</h3>
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool text-white" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                </div>
             </div>
 
             <div class="card-body">
@@ -720,6 +759,11 @@
         <div class="card">
             <div class="card-header bg-primary">
                 <h3 class="card-title">Checklist — Celulares de Serviço (8 unidades)::</h3>
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool text-white" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                </div>
             </div>
 
             <div class="card-body">
@@ -763,6 +807,11 @@
         <div class="card">
             <div class="card-header bg-primary">
                 <h3 class="card-title">Checklist — Gavetas de Jogos e Controles do 3° e Ar Cond.::</h3>
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool text-white" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                </div>
             </div>
 
             <div class="card-body">
@@ -843,6 +892,11 @@
         <div class="card">
             <div class="card-header bg-primary">
                 <h3 class="card-title">Checklist — Dados do Turno::</h3>
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool text-white" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                </div>
             </div>
 
             <div class="card-body">
@@ -1155,6 +1209,11 @@
         <div class="card">
             <div class="card-header bg-primary">
                 <h3 class="card-title">Checklist — Chaves Mecânicas dos Apartamentos::</h3>
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool text-white" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                </div>
             </div>
             <div class="card-body">
                 <div class="row">
