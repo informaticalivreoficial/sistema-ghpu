@@ -94,6 +94,24 @@
                 }, 100);
             }
         });
+        
+    });
+
+    
+    document.addEventListener('swal-redirect', function(event) {
+        const data = Array.isArray(event.detail) ? event.detail[0] : event.detail;
+        console.log(data);
+        Swal.fire({
+            title: data.title,
+            text: data.text,
+            icon: data.icon,
+            showConfirmButton: false,
+            timer: 3000 // fecha sozinho
+        }).then(() => {
+            if (data.redirect) {
+                window.location.href = data.redirect; // redireciona dinamicamente
+            }
+        });
     });
 </script>
 @endpush

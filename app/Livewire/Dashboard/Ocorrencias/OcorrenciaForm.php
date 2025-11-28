@@ -454,7 +454,7 @@ class OcorrenciaForm extends Component
             ];
             
             // Adiciona regras específicas baseadas no tipo
-            $rules = array_merge($rules, $this->getRulesForType($this->type));
+            //$rules = array_merge($rules, $this->getRulesForType($this->type));
             
             $this->validate($rules);
 
@@ -479,11 +479,18 @@ class OcorrenciaForm extends Component
             $mensagem = $this->ocorrencia->wasRecentlyCreated 
                 ? 'Ocorrência cadastrada com sucesso!' 
                 : 'Ocorrência atualizada com sucesso!';
+
+            $this->dispatch('swal-redirect', [
+                'title' => 'Sucesso!',
+                'text' => $mensagem ,
+                'icon' => 'success',
+                'redirect' => route('ocorrencias.index'), // rota dinâmica
+            ]);
             
-            $this->dispatch('toast', type: 'success', message: $mensagem);
+            //$this->dispatch('toast', type: 'success', message: $mensagem);
             
             // Redireciona para a lista após salvar (opcional)
-            return $this->redirect(route('ocorrencias.index'), navigate: true);
+            //return $this->redirect(route('ocorrencias.index'), navigate: true);
 
             //$this->dispatch('toast', type: 'success', message: 'Ocorrência salva com sucesso!');
             
