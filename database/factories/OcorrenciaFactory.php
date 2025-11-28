@@ -26,6 +26,7 @@ class OcorrenciaFactory extends Factory
             'company_id' => Company::inRandomOrder()->first()?->id ?? Company::factory(),
 
             'title' => $this->faker->sentence(),
+            'destinatario' => $this->faker->name(),
             'content' => $this->faker->paragraphs(3, true),
 
             'status' => $this->faker->numberBetween(0, 1),

@@ -190,5 +190,8 @@ return [
         'message'               => 'mensagem',
         'comment'               => 'comentário',
         'terms'                 => 'termos',
+
+       
+
     ],
 ];

@@ -24,16 +24,16 @@
                 <div class="col-12 col-md-6 col-lg-4">
                     <div class="form-group">
                         <label class="labelforms text-muted"><b>*Selecione o Tipo de Ocorrência</b></label>
-                        <select class="form-control @error('type') is-invalid @enderror" wire:model.live="type">
+                        <select name="type" class="form-control @error('type') is-invalid @enderror" wire:model.live="type">
                             <option value="">Selecione...</option>
                             <option value="branco">Em Branco</option>
                             <option value="varreduras-fichas-sistemas">Varreduras de fichas x sistemas</option>
                             <option value="ocorrencias-diarias">Ocorrências Diárias</option>
                             <option value="passagem-de-turno">Passagem de Turno</option>
-                        </select>
+                        </select>    
                         @error('type')
-                            <span class="invalid-feedback d-block">{{ $message }}</span>
-                        @enderror
+                            <span class="error erro-feedback">{{ $message }}</span>
+                        @enderror                    
                     </div>
                 </div> 
             </div>
@@ -53,7 +53,7 @@
                 @endif
                 <div class="row text-right mt-3">
                     <div class="col-12 mb-4">
-                        <button type="button" wire:click="save" class="btn btn-lg btn-success p-3">
+                        <button wire:click="save" wire class="btn btn-lg btn-success p-3">
                             <i class="nav-icon fas fa-check mr-2"></i> {{ $ocorrencia ? 'Atualizar Agora' : 'Cadastrar Agora' }}
                         </button>
                     </div>
@@ -62,3 +62,39 @@
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script>
+    document.addEventListener('livewire:init', () => {
+        // Configurações do Toastr
+        toastr.options = {
+            "closeButton": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "timeOut": "4000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut",
+            "preventDuplicates": false,
+            "newestOnTop": true
+        };
+
+        Livewire.on('toast', (event) => {
+            toastr[event.type](event.message);
+            
+            // Só faz scroll para o topo se for erro (validação)
+            if (event.type === 'error') {
+                setTimeout(() => {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                }, 100);
+            }
+        });
+    });
+</script>
+@endpush
+

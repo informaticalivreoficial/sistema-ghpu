@@ -1,5 +1,22 @@
-<div>     
+<div> 
+    <h1 class="text-xl text-center pb-4">Passagem de Turno Hotel São Charbel</h1>    
     <form wire:submit.prevent="save" autocomplete="off">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label class="labelforms">De => {{ auth()->user()->name }} para:</label>
+                            <input type="text"  wire:model.live="destinatario" class="form-control w-50 @error('destinatario') is-invalid @enderror" placeholder="Nome do funcionário que está assumindo o turno">
+                            @error('destinatario')
+                                <span class="error erro-feedback">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>                     
+                </div>
+            </div>            
+        </div>
+
         <div class="card">
             <div class="card-header bg-primary">
                 <h3 class="card-title">Checklist — 3° Andar::</h3>
@@ -13,11 +30,11 @@
                             <label class="labelforms">A sauna está ligada?</label>
                             <div class="d-flex flex-wrap">
                                 <label class="mr-3">
-                                    <input type="radio" value="ligada" wire:model.live="form.sauna"> Ligada em uso
+                                    <input type="radio" name="form.sauna" value="ligada" wire:model.live="form.sauna"> Ligada em uso
                                 </label>
 
                                 <label>
-                                    <input type="radio" value="desligada" wire:model.live="form.sauna"> Desligada e fechada
+                                    <input type="radio" name="form.sauna" value="desligada" wire:model.live="form.sauna"> Desligada e fechada
                                 </label>
                             </div>
                             @error('form.sauna') <small class="text-danger">{{ $message }}</small> @enderror
@@ -30,7 +47,7 @@
                     <div class="col-12 col-sm-6 col-md-6 mb-3">
                         <div class="form-group">
                             <label class="labelforms">Como está a temperatura do aquecedor?</label>
-                            <input type="number" class="form-control w-25"
+                            <input type="number" name="form.temperatura_aquecedor" class="form-control w-25"
                                 wire:model.live="form.temperatura_aquecedor"
                                 placeholder="°C">
                             @error('form.temperatura_aquecedor') <small class="text-danger">{{ $message }}</small> @enderror
@@ -205,6 +222,7 @@
                                     </label>
                                 </div>
                             </div>
+                            @error('form.porta_interna') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
                     </div>
 
@@ -238,6 +256,7 @@
                                     </label>
                                 </div>
                             </div>
+                            @error('form.porta_externa') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
                     </div>
                     <div class="col-md-4 col-sm-6 mb-4">
@@ -270,6 +289,7 @@
                                     </label>
                                 </div>
                             </div>
+                            @error('form.luzes_estacionamento1') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
                     </div>
                 </div>
@@ -293,9 +313,9 @@
                     </div>
 
                     <div class="col-md-4">
-                        <input type="number" class="form-control"
+                        <input type="number" class="form-control @error('form.maquina_safra_1') is-invalid @enderror"
                             wire:model="form.maquina_safra_1"
-                            min="0" max="100"
+                            min="2" max="10"
                             placeholder="Informe %">
                     </div>
                 </div>
@@ -311,9 +331,9 @@
                     </div>
 
                     <div class="col-md-4">
-                        <input type="number" class="form-control"
+                        <input type="number" class="form-control @error('form.maquina_safra_2') is-invalid @enderror"
                             wire:model="form.maquina_safra_2"
-                            min="0" max="100"
+                            min="2" max="10"
                             placeholder="Informe %">
                     </div>
                 </div>
@@ -329,9 +349,9 @@
                     </div>
 
                     <div class="col-md-4">
-                        <input type="number" class="form-control"
+                        <input type="number" class="form-control @error('form.celular_1') is-invalid @enderror"
                             wire:model="form.celular_1"
-                            min="0" max="100"
+                            min="2" max="10"
                             placeholder="Informe %">
                     </div>
                 </div>
@@ -347,9 +367,9 @@
                     </div>
 
                     <div class="col-md-4">
-                        <input type="number" class="form-control"
+                        <input type="number" class="form-control @error('form.celular_2') is-invalid @enderror"
                             wire:model="form.celular_2"
-                            min="0" max="100"
+                            min="2" max="10"
                             placeholder="Informe %">
                     </div>
                 </div>
@@ -417,6 +437,7 @@
                                         Está com:
                                     </label>
                                 </div>
+                                
                             </div>
 
                             <div class="col-md-4">
@@ -428,8 +449,14 @@
                                     placeholder="Nome da pessoa"
                                     wire:model.live="form.chaves.{{ $key }}.pessoa"
                                     @if($status !== 'com') disabled @endif>
+                                @error('form.chaves.'.$key.'.pessoa')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
                             </div>
                         </div>
+                        @error('form.chaves.'.$key.'.status')
+                            <small class="text-danger d-block mt-2">{{ $message }}</small>
+                        @enderror
                     </div>
                 @endforeach
             </div>
@@ -445,7 +472,7 @@
 
                 <!-- Linha: Apto 103 -->
                 <div class="form-group">
-                    <label><strong>Apto 103</strong></label>
+                    <label><strong>Apto 103</strong> @error('form.tvbox_103') <small class="text-danger">{{ $message }}</small> @enderror</label>
                     <div class="row">
 
                         <!-- Está no pote -->
@@ -469,15 +496,14 @@
                                 <label class="form-check-label" for="tvbox_103_uso">Está emprestado / em uso</label>
                             </div>
                         </div>
-
-                    </div>
+                    </div>                    
                 </div>
-
-                <hr>
+                
+                <hr style="margin-top:5px !important; margin-bottom: 5px !important;">
 
                 <!-- Linha: Apto 201 -->
                 <div class="form-group">
-                    <label><strong>Apto 201</strong></label>
+                    <label><strong>Apto 201</strong> @error('form.tvbox_201') <small class="text-danger">{{ $message }}</small> @enderror</label>
                     <div class="row">
                         
                         <div class="col-md-6">
@@ -503,11 +529,11 @@
                     </div>
                 </div>
 
-                <hr>
+                <hr style="margin-top:5px !important; margin-bottom: 5px !important;">
 
                 <!-- Linha: Apto 203 -->
                 <div class="form-group">
-                    <label><strong>Apto 203</strong></label>
+                    <label><strong>Apto 203</strong> @error('form.tvbox_203') <small class="text-danger">{{ $message }}</small> @enderror</label>
                     <div class="row">
                         
                         <div class="col-md-6">
@@ -533,11 +559,11 @@
                     </div>
                 </div>
 
-                <hr>
+                <hr style="margin-top:5px !important; margin-bottom: 5px !important;">
 
                 <!-- Linha: Apto 204 -->
                 <div class="form-group">
-                    <label><strong>Apto 204</strong></label>
+                    <label><strong>Apto 204</strong> @error('form.tvbox_204') <small class="text-danger">{{ $message }}</small> @enderror</label>
                     <div class="row">
                         
                         <div class="col-md-6">
@@ -563,8 +589,6 @@
                     </div>
                 </div>
 
-                <hr>
-
             </div>
         </div>
 
@@ -578,7 +602,11 @@
 
                 @for($i = 1; $i <= 5; $i++)
                     <div class="form-group mb-4">
-                        <label><strong>Secador {{ $i }}</strong></label>
+                        <label><strong>Secador {{ $i }}</strong>
+                        @error('form.secadores.'.$i)
+                            <small class="text-danger d-block mt-1">{{ $message }}</small>
+                        @enderror
+                        </label>
                         <div class="row">
 
                             <!-- Está na gaveta -->
@@ -615,12 +643,16 @@
                                         placeholder="Nº do Apto"
                                         wire:model="form.secadores_apto.{{ $i }}"
                                         style="max-width:160px;">
-                                </div>
+                                </div>                                
+                                
+                                @error('form.secadores_apto.'.$i)
+                                    <small class="text-danger d-block mt-1">{{ $message }}</small>
+                                @enderror
                             </div>
 
                         </div>
                     </div>
-                    <hr>
+                    <hr style="margin-top:5px !important; margin-bottom: 5px !important;">
                 @endfor
 
             </div>
@@ -633,199 +665,54 @@
             </div>
 
             <div class="card-body">
-                
                 <div class="row">
-                    <!-- ITEM 1 -->
-                    <div class="col-md-6 mb-4">
-                        <label><strong>1. Rádio Comunicador</strong></label>
-                        <div class="d-flex flex-column">
+                    @for($i = 1; $i <= 7; $i++)
+                        <div class="col-md-6 mb-4">
+                            <label><strong>{{ $i }}. Rádio Comunicador</strong></label>
+                            <div class="d-flex flex-column">
 
-                            <div class="form-check">
-                                <input type="radio" class="form-check-input"
-                                    id="radio1_base"
-                                    wire:model="form.radios.1.status"
-                                    value="base">
-                                <label class="form-check-label" for="radio1_base">Na base</label>
-                            </div>
+                                <div class="form-check">
+                                    <input type="radio" 
+                                        class="form-check-input"
+                                        id="radio{{ $i }}_base"
+                                        wire:model.live="form.radios.{{ $i }}.status"
+                                        value="base">
+                                    <label class="form-check-label" for="radio{{ $i }}_base">Na base</label>
+                                </div>
 
-                            <div class="form-check mt-2 d-flex align-items-center">
-                                <input type="radio" class="form-check-input"
-                                    id="radio1_func"
-                                    wire:model="form.radios.1.status"
-                                    value="funcionario">
-                                <label class="form-check-label mr-2" for="radio1_func">
-                                    Funcionário:
-                                </label>
+                                <div class="form-check mt-2 d-flex align-items-center">
+                                    <input type="radio" 
+                                        class="form-check-input"
+                                        id="radio{{ $i }}_func"
+                                        wire:model.live="form.radios.{{ $i }}.status"
+                                        value="funcionario">
+                                    <label class="form-check-label mr-2" for="radio{{ $i }}_func">
+                                        Funcionário:
+                                    </label>
 
-                                <input type="text" class="form-control form-control-sm w-50 ml-2"
-                                    wire:model="form.radios.1.funcionario"
-                                    placeholder="Nome">
-                            </div>
+                                    @php 
+                                        $radioStatus = $form['radios'][$i]['status'] ?? null;
+                                    @endphp
 
-                        </div>
-                    </div>
+                                    <input type="text" 
+                                        class="form-control form-control-sm w-50 ml-2"
+                                        wire:model.live="form.radios.{{ $i }}.funcionario"
+                                        placeholder="Nome"
+                                        @if($radioStatus !== 'funcionario') disabled @endif>
+                                </div>
 
-                    <!-- ITEM 2 -->
-                    <div class="col-md-6 mb-4">
-                        <label><strong>2. Rádio Comunicador</strong></label>
-                        <div class="d-flex flex-column">
+                                @error('form.radios.'.$i.'.status')
+                                    <small class="text-danger d-block mt-2">{{ $message }}</small>
+                                @enderror
+                                
+                                @error('form.radios.'.$i.'.funcionario')
+                                    <small class="text-danger d-block mt-2">{{ $message }}</small>
+                                @enderror
 
-                            <div class="form-check">
-                                <input type="radio" class="form-check-input"
-                                    id="radio2_base"
-                                    wire:model="form.radios.2.status"
-                                    value="base">
-                                <label class="form-check-label" for="radio2_base">Na base</label>
-                            </div>
-
-                            <div class="form-check mt-2 d-flex align-items-center">
-                                <input type="radio" class="form-check-input"
-                                    id="radio2_func"
-                                    wire:model="form.radios.2.status"
-                                    value="funcionario">
-                                <label class="form-check-label mr-2" for="radio2_func">
-                                    Funcionário:
-                                </label>
-
-                                <input type="text" class="form-control form-control-sm w-50 ml-2"
-                                    wire:model="form.radios.2.funcionario"
-                                    placeholder="Nome">
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <!-- ITEM 3 -->
-                    <div class="col-md-6 mb-4">
-                        <label><strong>3. Rádio Comunicador</strong></label>
-                        <div class="d-flex flex-column">
-                            
-                            <div class="form-check">
-                                <input type="radio" class="form-check-input"
-                                    id="radio3_base"
-                                    wire:model="form.radios.3.status"
-                                    value="base">
-                                <label for="radio3_base" class="form-check-label">Na base</label>
-                            </div>
-
-                            <div class="form-check mt-2 d-flex align-items-center">
-                                <input type="radio" class="form-check-input"
-                                    id="radio3_func"
-                                    wire:model="form.radios.3.status"
-                                    value="funcionario">
-                                <label class="form-check-label mr-2" for="radio3_func">
-                                    Funcionário:
-                                </label>
-
-                                <input type="text" class="form-control form-control-sm w-50 ml-2"
-                                    wire:model="form.radios.3.funcionario">
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <!-- ITEM 4 -->
-                    <div class="col-md-6 mb-4">
-                        <label><strong>4. Rádio Comunicador</strong></label>
-                        <div class="d-flex flex-column">
-
-                            <div class="form-check">
-                                <input type="radio" class="form-check-input"
-                                    id="radio4_base"
-                                    wire:model="form.radios.4.status"
-                                    value="base">
-                                <label class="form-check-label" for="radio4_base">Na base</label>
-                            </div>
-
-                            <div class="form-check mt-2 d-flex align-items-center">
-                                <input type="radio" class="form-check-input"
-                                    id="radio4_func"
-                                    wire:model="form.radios.4.status"
-                                    value="funcionario">
-                                <label class="form-check-label mr-2" for="radio4_func">Funcionário:</label>
-                                <input type="text" class="form-control form-control-sm w-50 ml-2"
-                                    wire:model="form.radios.4.funcionario">
                             </div>
                         </div>
-                    </div>
-
-                    <!-- ITEM 5 -->
-                    <div class="col-md-6 mb-4">
-                        <label><strong>5. Rádio Comunicador</strong></label>
-                        <div class="d-flex flex-column">
-
-                            <div class="form-check">
-                                <input type="radio" class="form-check-input"
-                                    id="radio5_base"
-                                    wire:model="form.radios.5.status"
-                                    value="base">
-                                <label class="form-check-label" for="radio5_base">Na base</label>
-                            </div>
-
-                            <div class="form-check mt-2 d-flex align-items-center">
-                                <input type="radio" class="form-check-input"
-                                    id="radio5_func"
-                                    wire:model="form.radios.5.status"
-                                    value="funcionario">
-                                <label class="form-check-label mr-2" for="radio5_func">Funcionário:</label>
-                                <input type="text" class="form-control form-control-sm w-50 ml-2"
-                                    wire:model="form.radios.5.funcionario">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- ITEM 6 -->
-                    <div class="col-md-6 mb-4">
-                        <label><strong>6. Rádio Comunicador</strong></label>
-                        <div class="d-flex flex-column">
-
-                            <div class="form-check">
-                                <input type="radio" class="form-check-input"
-                                    id="radio6_base"
-                                    wire:model="form.radios.6.status"
-                                    value="base">
-                                <label class="form-check-label" for="radio6_base">Na base</label>
-                            </div>
-
-                            <div class="form-check mt-2 d-flex align-items-center">
-                                <input type="radio" class="form-check-input"
-                                    id="radio6_func"
-                                    wire:model="form.radios.6.status"
-                                    value="funcionario">
-                                <label class="form-check-label mr-2" for="radio6_func">Funcionário:</label>
-                                <input type="text" class="form-control form-control-sm w-50 ml-2"
-                                    wire:model="form.radios.6.funcionario">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- ITEM 7 -->
-                    <div class="col-md-6 mb-4">
-                        <label><strong>7. Rádio Comunicador</strong></label>
-                        <div class="d-flex flex-column">
-
-                            <div class="form-check">
-                                <input type="radio" class="form-check-input"
-                                    id="radio7_base"
-                                    wire:model="form.radios.7.status"
-                                    value="base">
-                                <label class="form-check-label" for="radio7_base">Na base</label>
-                            </div>
-
-                            <div class="form-check mt-2 d-flex align-items-center">
-                                <input type="radio" class="form-check-input"
-                                    id="radio7_func"
-                                    wire:model="form.radios.7.status"
-                                    value="funcionario">
-                                <label class="form-check-label mr-2" for="radio7_func">Funcionário:</label>
-                                <input type="text" class="form-control form-control-sm w-50 ml-2"
-                                    wire:model="form.radios.7.funcionario">
-                            </div>
-                        </div>
-                    </div>
-
+                    @endfor
                 </div>
-
             </div>
         </div>
 
@@ -852,6 +739,9 @@
                                     class="form-control"
                                     wire:model="form.celulares.{{ $i }}.bateria"
                                     placeholder="Informe % da carga">
+                                @error('form.celulares.'.$i.'.bateria')
+                                    <small class="text-danger d-block mt-1">{{ $message }}</small>
+                                @enderror
                             </div>
 
                             {{-- Está com funcionário --}}
@@ -899,7 +789,9 @@
                             <div class="border p-3 mb-3 rounded">
 
                                 <label class="font-weight-bold">{{ $item['id'] }}. {{ $item['label'] }}</label>
-
+                                @error('form.gavetas.'.$item['id'])
+                                    <small class="text-danger d-block mt-1">{{ $message }}</small>
+                                @enderror
                                 <div class="mt-2">
                                     <div class="form-check">
                                         <input type="radio"
@@ -916,17 +808,25 @@
                                         <input type="radio"
                                             class="form-check-input"
                                             id="emprestado_{{ $item['id'] }}"
-                                            wire:model="form.gavetas.{{ $item['id'] }}"
+                                            wire:model.live="form.gavetas.{{ $item['id'] }}"
                                             value="emprestado">
                                         <label class="form-check-label" for="emprestado_{{ $item['id'] }}">
                                             Emprestado, Nº APTO:
                                         </label>
 
-                                        @if(data_get($form, "gavetas.$item[id]") === 'emprestado')
+                                        @php
+                                            $gavetaStatus = $form['gavetas'][$item['id']] ?? null;
+                                        @endphp
+
+                                        @if($gavetaStatus === 'emprestado')
                                             <input type="text"
-                                                class="form-control mt-2"
+                                                class="form-control mt-2 @error('form.apto_emprestado.'.$item['id']) is-invalid @enderror"
                                                 placeholder="Informe o nº do apartamento"
-                                                wire:model="form.apto_emprestado.{{ $item['id'] }}">
+                                                wire:model.live="form.apto_emprestado.{{ $item['id'] }}">
+                                            
+                                            @error('form.apto_emprestado.'.$item['id'])
+                                                <small class="text-danger d-block mt-1">{{ $message }}</small>
+                                            @enderror
                                         @endif
                                     </div>
                                 </div>
@@ -951,17 +851,27 @@
                     <!-- Hóspedes -->
                     <div class="col-md-6">
                         <label class="font-weight-bold">Quantos hóspedes no hotel agora?</label>
-                        <input type="number" class="form-control"
-                            wire:model="form.turno.hospedes"
-                            placeholder="Informe o total de pessoas">
+                        <input type="number" 
+                            class="form-control @error('form.turno.hospedes') is-invalid @enderror"
+                            wire:model.live="form.turno.hospedes"
+                            placeholder="Informe o total de pessoas"
+                            min="0">
+                        @error('form.turno.hospedes')
+                            <small class="text-danger d-block mt-1">{{ $message }}</small>
+                        @enderror
                     </div>
 
                     <!-- Apos ocupados -->
                     <div class="col-md-6">
                         <label class="font-weight-bold">Quantos aptos ocupados agora?</label>
-                        <input type="number" class="form-control"
-                            wire:model="form.turno.apto_ocupados"
-                            placeholder="Informe o total de apartamentos">
+                        <input type="number" 
+                            class="form-control @error('form.turno.apto_ocupados') is-invalid @enderror"
+                            wire:model.live="form.turno.apto_ocupados"
+                            placeholder="Informe o total de apartamentos"
+                            min="0">
+                        @error('form.turno.apto_ocupados')
+                            <small class="text-danger d-block mt-1">{{ $message }}</small>
+                        @enderror
                     </div>
                 </div>
 
@@ -969,17 +879,27 @@
                     <!-- Reservas -->
                     <div class="col-md-6">
                         <label class="font-weight-bold">Quantas reservas para chegar?</label>
-                        <input type="number" class="form-control"
-                            wire:model="form.turno.reservas"
-                            placeholder="Informe o total">
+                        <input type="number" 
+                            class="form-control @error('form.turno.reservas') is-invalid @enderror"
+                            wire:model.live="form.turno.reservas"
+                            placeholder="Informe o total"
+                            min="0">
+                        @error('form.turno.reservas')
+                            <small class="text-danger d-block mt-1">{{ $message }}</small>
+                        @enderror
                     </div>
 
                     <!-- Check out -->
                     <div class="col-md-6">
                         <label class="font-weight-bold">Quantos check outs à fazer?</label>
-                        <input type="number" class="form-control"
-                            wire:model="form.turno.checkouts"
-                            placeholder="Informe o total">
+                        <input type="number" 
+                            class="form-control @error('form.turno.checkouts') is-invalid @enderror"
+                            wire:model.live="form.turno.checkouts"
+                            placeholder="Informe o total"
+                            min="0">
+                        @error('form.turno.checkouts')
+                            <small class="text-danger d-block mt-1">{{ $message }}</small>
+                        @enderror
                     </div>
                 </div>
 
@@ -987,17 +907,27 @@
                     <!-- Interditados -->
                     <div class="col-md-6">
                         <label class="font-weight-bold">Quantos aptos interditados?</label>
-                        <input type="number" class="form-control"
-                            wire:model="form.turno.interditados"
-                            placeholder="Informe o total">
+                        <input type="number" 
+                            class="form-control @error('form.turno.interditados') is-invalid @enderror"
+                            wire:model.live="form.turno.interditados"
+                            placeholder="Informe o total"
+                            min="0">
+                        @error('form.turno.interditados')
+                            <small class="text-danger d-block mt-1">{{ $message }}</small>
+                        @enderror
                     </div>
 
                     <!-- Cartões emprestados -->
                     <div class="col-md-6">
                         <label class="font-weight-bold">Cartões magnéticos emprestados?</label>
-                        <input type="number" class="form-control"
-                            wire:model="form.turno.cartoes_emprestados"
-                            placeholder="Quantidade de cartões">
+                        <input type="number" 
+                            class="form-control @error('form.turno.cartoes_emprestados') is-invalid @enderror"
+                            wire:model.live="form.turno.cartoes_emprestados"
+                            placeholder="Quantidade de cartões"
+                            min="0">
+                        @error('form.turno.cartoes_emprestados')
+                            <small class="text-danger d-block mt-1">{{ $message }}</small>
+                        @enderror
                     </div>
                 </div>
 
@@ -1005,9 +935,14 @@
                     <!-- Cartões aguardando -->
                     <div class="col-md-6">
                         <label class="font-weight-bold">Cartões aguardando para uso?</label>
-                        <input type="number" class="form-control"
-                            wire:model="form.turno.cartoes_aguardando"
-                            placeholder="Quantidade de cartões">
+                        <input type="number" 
+                            class="form-control @error('form.turno.cartoes_aguardando') is-invalid @enderror"
+                            wire:model.live="form.turno.cartoes_aguardando"
+                            placeholder="Quantidade de cartões"
+                            min="0">
+                        @error('form.turno.cartoes_aguardando')
+                            <small class="text-danger d-block mt-1">{{ $message }}</small>
+                        @enderror
                     </div>
 
                     <!-- Luzes da calçada -->
@@ -1015,21 +950,26 @@
                         <label class="font-weight-bold">As luzes da calçada estão acesas? 17h30</label>
                         <div class="d-flex gap-3 mt-2">
                             <div class="form-check mr-3">
-                                <input type="radio" class="form-check-input"
+                                <input type="radio" 
+                                    class="form-check-input"
                                     id="luz_ligada"
-                                    wire:model="form.turno.luzes_calcada"
+                                    wire:model.live="form.turno.luzes_calcada"
                                     value="ligada">
                                 <label class="form-check-label" for="luz_ligada">Ligada</label>
                             </div>
 
                             <div class="form-check">
-                                <input type="radio" class="form-check-input"
+                                <input type="radio" 
+                                    class="form-check-input"
                                     id="luz_desligada"
-                                    wire:model="form.turno.luzes_calcada"
+                                    wire:model.live="form.turno.luzes_calcada"
                                     value="desligada">
                                 <label class="form-check-label" for="luz_desligada">Desligada</label>
                             </div>
                         </div>
+                        @error('form.turno.luzes_calcada')
+                            <small class="text-danger d-block mt-1">{{ $message }}</small>
+                        @enderror
                     </div>
                 </div>
 
@@ -1038,9 +978,13 @@
                 <!-- Responsabilidade do caixa -->
                 <div class="form-group">
                     <label class="font-weight-bold">Responsabilidade do caixa entregue para:</label>
-                    <input type="text" class="form-control"
-                        wire:model="form.turno.caixa_responsavel"
+                    <input type="text" 
+                        class="form-control @error('form.turno.caixa_responsavel') is-invalid @enderror"
+                        wire:model.live="form.turno.caixa_responsavel"
                         placeholder="Nome do funcionário">
+                    @error('form.turno.caixa_responsavel')
+                        <small class="text-danger d-block mt-1">{{ $message }}</small>
+                    @enderror
                 </div>
 
                 <!-- Cartão mestre -->
@@ -1048,21 +992,26 @@
                     <label class="font-weight-bold">O cartão mestre da recepção está no caixa?</label>
                     <div class="d-flex gap-3 mt-2">
                         <div class="form-check mr-3">
-                            <input type="radio" class="form-check-input"
+                            <input type="radio" 
+                                class="form-check-input"
                                 id="cartao_mestre_sim"
-                                wire:model="form.turno.cartao_mestre"
+                                wire:model.live="form.turno.cartao_mestre"
                                 value="sim">
                             <label class="form-check-label" for="cartao_mestre_sim">Sim</label>
                         </div>
 
                         <div class="form-check">
-                            <input type="radio" class="form-check-input"
+                            <input type="radio" 
+                                class="form-check-input"
                                 id="cartao_mestre_nao"
-                                wire:model="form.turno.cartao_mestre"
+                                wire:model.live="form.turno.cartao_mestre"
                                 value="nao">
                             <label class="form-check-label" for="cartao_mestre_nao">Não</label>
                         </div>
                     </div>
+                    @error('form.turno.cartao_mestre')
+                        <small class="text-danger d-block mt-1">{{ $message }}</small>
+                    @enderror
                 </div>
 
                 <!-- Chave aquecedor -->
@@ -1070,21 +1019,26 @@
                     <label class="font-weight-bold">A chave do aquecedor está no caixa?</label>
                     <div class="d-flex gap-3 mt-2">
                         <div class="form-check mr-3">
-                            <input type="radio" class="form-check-input"
+                            <input type="radio" 
+                                class="form-check-input"
                                 id="aquecedor_sim"
-                                wire:model="form.turno.aquecedor"
+                                wire:model.live="form.turno.aquecedor"
                                 value="sim">
                             <label class="form-check-label" for="aquecedor_sim">Sim</label>
                         </div>
 
                         <div class="form-check">
-                            <input type="radio" class="form-check-input"
+                            <input type="radio" 
+                                class="form-check-input"
                                 id="aquecedor_nao"
-                                wire:model="form.turno.aquecedor"
+                                wire:model.live="form.turno.aquecedor"
                                 value="nao">
                             <label class="form-check-label" for="aquecedor_nao">Não</label>
                         </div>
                     </div>
+                    @error('form.turno.aquecedor')
+                        <small class="text-danger d-block mt-1">{{ $message }}</small>
+                    @enderror
                 </div>
 
                 <!-- Cartões extras -->
@@ -1092,26 +1046,35 @@
                     <label class="font-weight-bold">Cartões extras (20 und.) estão no caixa?</label>
                     <div class="d-flex gap-3 mt-2">
                         <div class="form-check mr-3">
-                            <input type="radio" class="form-check-input"
+                            <input type="radio" 
+                                class="form-check-input"
                                 id="cartoes_extras_sim"
-                                wire:model="form.turno.cartoes_extras"
+                                wire:model.live="form.turno.cartoes_extras"
                                 value="sim">
                             <label class="form-check-label" for="cartoes_extras_sim">Sim</label>
                         </div>
 
                         <div class="form-check">
-                            <input type="radio" class="form-check-input"
+                            <input type="radio" 
+                                class="form-check-input"
                                 id="cartoes_extras_nao"
-                                wire:model="form.turno.cartoes_extras"
+                                wire:model.live="form.turno.cartoes_extras"
                                 value="nao">
                             <label class="form-check-label" for="cartoes_extras_nao">Não</label>
                         </div>
                     </div>
+                    @error('form.turno.cartoes_extras')
+                        <small class="text-danger d-block mt-1">{{ $message }}</small>
+                    @enderror
 
                     @if(isset($form['turno']['cartoes_extras']) && $form['turno']['cartoes_extras'] === 'nao')
-                        <input type="text" class="form-control mt-2"
+                        <input type="text" 
+                            class="form-control mt-2"
                             placeholder="Informe onde estão"
-                            wire:model="form.turno.cartoes_extras_local">
+                            wire:model.live="form.turno.cartoes_extras_local">
+                        @error('form.turno.cartoes_extras_local')
+                            <small class="text-danger d-block mt-1">{{ $message }}</small>
+                        @enderror
                     @endif
                 </div>
 
@@ -1120,21 +1083,26 @@
                     <label class="font-weight-bold">Foi batido o código de cores antes de passar o turno?</label>
                     <div class="d-flex gap-3 mt-2">
                         <div class="form-check mr-3">
-                            <input type="radio" class="form-check-input"
+                            <input type="radio" 
+                                class="form-check-input"
                                 id="cores_sim"
-                                wire:model="form.turno.codigo_cores"
+                                wire:model.live="form.turno.codigo_cores"
                                 value="sim">
                             <label class="form-check-label" for="cores_sim">Sim</label>
                         </div>
 
                         <div class="form-check">
-                            <input type="radio" class="form-check-input"
+                            <input type="radio" 
+                                class="form-check-input"
                                 id="cores_nao"
-                                wire:model="form.turno.codigo_cores"
+                                wire:model.live="form.turno.codigo_cores"
                                 value="nao">
                             <label class="form-check-label" for="cores_nao">Não</label>
                         </div>
                     </div>
+                    @error('form.turno.codigo_cores')
+                        <small class="text-danger d-block mt-1">{{ $message }}</small>
+                    @enderror
                 </div>
 
                 <hr class="mt-4">
@@ -1144,21 +1112,39 @@
 
                 <div class="row mt-2">
                     <div class="col-md-4">
-                        <input type="number" class="form-control"
+                        <input type="number" 
+                            class="form-control"
                             placeholder="Valor em dinheiro"
-                            wire:model="form.turno.caixa_dinheiro">
+                            wire:model.live="form.turno.caixa_dinheiro"
+                            step="0.01"
+                            min="0">
+                        @error('form.turno.caixa_dinheiro')
+                            <small class="text-danger d-block mt-1">{{ $message }}</small>
+                        @enderror
                     </div>
 
                     <div class="col-md-4">
-                        <input type="number" class="form-control"
+                        <input type="number" 
+                            class="form-control"
                             placeholder="Valor em cartões"
-                            wire:model="form.turno.caixa_cartoes">
+                            wire:model.live="form.turno.caixa_cartoes"
+                            step="0.01"
+                            min="0">
+                        @error('form.turno.caixa_cartoes')
+                            <small class="text-danger d-block mt-1">{{ $message }}</small>
+                        @enderror
                     </div>
 
                     <div class="col-md-4">
-                        <input type="number" class="form-control"
+                        <input type="number" 
+                            class="form-control"
                             placeholder="Valor faturamento"
-                            wire:model="form.turno.caixa_faturamento">
+                            wire:model.live="form.turno.caixa_faturamento"
+                            step="0.01"
+                            min="0">
+                        @error('form.turno.caixa_faturamento')
+                            <small class="text-danger d-block mt-1">{{ $message }}</small>
+                        @enderror
                     </div>
                 </div>
 
@@ -1199,6 +1185,3 @@
 
     </form>    
 </div>
-
-
-

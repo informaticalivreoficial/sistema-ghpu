@@ -18,6 +18,7 @@ class CreateOcorrenciasTable extends Migration
             $table->unsignedBigInteger('company_id');
             $table->unsignedBigInteger('user_id');
             $table->string('title');
+            $table->string('destinatario')->nullable();
             $table->longText('content')->nullable();
             $table->unsignedTinyInteger('status')->default(0);
             $table->unsignedBigInteger('views')->default(0);

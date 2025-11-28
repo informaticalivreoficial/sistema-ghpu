@@ -13,6 +13,7 @@ class Ocorrencia extends Model
 
     protected $fillable = [
         'user_id',
+        'destinatario',
         'company_id',
         'title',
         'content',
