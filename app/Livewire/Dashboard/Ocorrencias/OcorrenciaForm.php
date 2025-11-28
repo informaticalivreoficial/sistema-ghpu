@@ -12,7 +12,7 @@ class OcorrenciaForm extends Component
 
     public ?Ocorrencia $ocorrencia = null;
 
-    public $type = null;
+    public $type = '';
     public $destinatario = null;
     public $celulares = [];
     public $chavesMec = [];
@@ -378,8 +378,131 @@ class OcorrenciaForm extends Component
 
     
 
-    public function mount()
+    public function mount($id = null)
     {
+
+        // PRIMEIRO: Inicializa as estruturas base
+        $this->initializeArrays();
+        
+        // SEGUNDO: Se for edição, carrega e SOBRESCREVE os dados
+        if ($id) {
+            $this->ocorrencia = Ocorrencia::findOrFail($id);
+            
+            // Carrega o tipo
+            $this->type = $this->ocorrencia->type;
+            
+            // Carrega o destinatário
+            $this->destinatario = $this->ocorrencia->destinatario;
+            
+            // IMPORTANTE: Sobrescreve o form inteiro com os dados salvos
+            if ($this->ocorrencia->form) {
+                $this->form = $this->ocorrencia->form;
+            }
+        }
+
+        // $this->initializeArrays();
+
+        // if ($id) {
+        //     // Busca a ocorrência do banco de dados
+        //     $this->ocorrencia = Ocorrencia::findOrFail($id);
+            
+        //     // Carrega o tipo (isso vai fazer o formulário aparecer)
+        //     $this->type = $this->ocorrencia->type;
+            
+        //     // Carrega o destinatário
+        //     $this->destinatario = $this->ocorrencia->destinatario ?? '';
+            
+        //     // Carrega os dados do formulário salvos
+        //     if ($this->ocorrencia->form) {
+        //         $formData = is_string($this->ocorrencia->form) 
+        //             ? json_decode($this->ocorrencia->form, true) 
+        //             : $this->ocorrencia->form;
+                
+        //         // IMPORTANTE: Sobrescreve apenas os campos que existem nos dados salvos
+        //         foreach ($formData as $key => $value) {
+        //             if (array_key_exists($key, $this->form)) {
+        //                 if (is_array($value) && is_array($this->form[$key])) {
+        //                     // Se for array, mescla mantendo a estrutura
+        //                     $this->form[$key] = $this->mergeFormData($this->form[$key], $value);
+        //                 } else {
+        //                     // Se não for array, substitui diretamente
+        //                     $this->form[$key] = $value;
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
+
+        // $this->chavesMec = [
+        //     '108 CASAL',
+        //     '109 CASAL',
+        //     '109 SOLT',
+        //     '119 CASAL',
+        //     '119 SOLT',
+        //     '208 CASAL',
+        //     '209 CASAL',
+        //     '209 SOLT',
+        //     '219 CASAL',
+        //     '219 SOLT',
+        // ];
+
+        // foreach ($this->chavesMec as $index => $apto) {
+        //     $this->form['chaves_mecanicas'][$index] = [
+        //         'status' => null,
+        //         'pessoa' => '',
+        //     ];
+        // }
+
+        // $this->celulares = [
+        //     ['titulo' => 'Recepção 1080'],
+        //     ['titulo' => 'Recepção 9664'],
+        //     ['titulo' => 'Manutenção 01'],
+        //     ['titulo' => 'Manutenção 02'],
+        //     ['titulo' => 'Governança 01'],
+        //     ['titulo' => 'Governança 02'],
+        //     ['titulo' => 'Governança 03'],
+        //     ['titulo' => 'Governança 04'],
+        // ];
+
+        // foreach ($this->celulares as $index => $c) {
+        //     $this->form['celulares'][$index] = [
+        //         'bateria' => '',
+        //         'funcionario' => '',
+        //     ];
+        // }
+
+        // foreach ($this->itensChavesFixas as $key => $label) {
+        //     $this->form['chaves'][$key] = [
+        //         'status' => null,
+        //         'pessoa' => '',
+        //     ];
+        // }
+
+        // // ADICIONE ISSO - Inicializa as gavetas (11 itens)
+        // for ($i = 1; $i <= 11; $i++) {
+        //     $this->form['gavetas'][$i] = null;
+        //     $this->form['apto_emprestado'][$i] = '';
+        // }
+        
+    }
+
+    private function mergeFormData($base, $data)
+    {
+        foreach ($data as $key => $value) {
+            if (is_array($value) && isset($base[$key]) && is_array($base[$key])) {
+                $base[$key] = $this->mergeFormData($base[$key], $value);
+            } else {
+                $base[$key] = $value;
+            }
+        }
+        return $base;
+    }
+
+    private function initializeArrays()
+    {           
+        // Só inicializa se NÃO for edição (ou seja, se form estiver vazio)
+        // Na edição, isso será sobrescrito
+        
         $this->chavesMec = [
             '108 CASAL',
             '109 CASAL',
@@ -393,11 +516,14 @@ class OcorrenciaForm extends Component
             '219 SOLT',
         ];
 
-        foreach ($this->chavesMec as $index => $apto) {
-            $this->form['chaves_mecanicas'][$index] = [
-                'status' => null,
-                'pessoa' => '',
-            ];
+        // Inicializa apenas se estiver vazio
+        if (empty($this->form['chaves_mecanicas'])) {
+            foreach ($this->chavesMec as $index => $apto) {
+                $this->form['chaves_mecanicas'][$index] = [
+                    'status' => null,
+                    'pessoa' => '',
+                ];
+            }
         }
 
         $this->celulares = [
@@ -411,26 +537,30 @@ class OcorrenciaForm extends Component
             ['titulo' => 'Governança 04'],
         ];
 
-        foreach ($this->celulares as $index => $c) {
-            $this->form['celulares'][$index] = [
-                'bateria' => '',
-                'funcionario' => '',
-            ];
+        if (empty($this->form['celulares'])) {
+            foreach ($this->celulares as $index => $c) {
+                $this->form['celulares'][$index] = [
+                    'bateria' => '',
+                    'funcionario' => '',
+                ];
+            }
         }
 
-        foreach ($this->itensChavesFixas as $key => $label) {
-            $this->form['chaves'][$key] = [
-                'status' => null,
-                'pessoa' => '',
-            ];
+        if (empty($this->form['chaves'])) {
+            foreach ($this->itensChavesFixas as $key => $label) {
+                $this->form['chaves'][$key] = [
+                    'status' => null,
+                    'pessoa' => '',
+                ];
+            }
         }
 
-        // ADICIONE ISSO - Inicializa as gavetas (11 itens)
-        for ($i = 1; $i <= 11; $i++) {
-            $this->form['gavetas'][$i] = null;
-            $this->form['apto_emprestado'][$i] = '';
+        if (empty($this->form['gavetas'])) {
+            for ($i = 1; $i <= 11; $i++) {
+                $this->form['gavetas'][$i] = null;
+                $this->form['apto_emprestado'][$i] = '';
+            }
         }
-        
     }
 
     public function save()
@@ -454,18 +584,19 @@ class OcorrenciaForm extends Component
             ];
             
             // Adiciona regras específicas baseadas no tipo
-            //$rules = array_merge($rules, $this->getRulesForType($this->type));
+            $rules = array_merge($rules, $this->getRulesForType($this->type));
             
             $this->validate($rules);
 
             // Salva
             $data = [
-                'company_id' => auth()->user()->company_id,
-                'user_id'    => auth()->id(),
-                'type'       => $this->type,
-                'title'      => $this->titleFromType($this->type),
-                'form'       => $this->form,
-                'status'     => 1,
+                'company_id'   => auth()->user()->company_id,
+                'user_id'      => auth()->id(),
+                'type'         => $this->type,
+                'title'        => $this->titleFromType($this->type),
+                'destinatario' => $this->destinatario,
+                'form'         => $this->form,
+                'status'       => 1,
             ];
 
             $ocorrencia = Ocorrencia::updateOrCreate(
@@ -476,15 +607,18 @@ class OcorrenciaForm extends Component
             $this->ocorrencia = $ocorrencia;
 
             // Mensagem de sucesso diferente para criar/editar
-            $mensagem = $this->ocorrencia->wasRecentlyCreated 
+            $foiCriacao = $this->ocorrencia->wasRecentlyCreated;
+
+            // Mensagem de sucesso diferente para criar/editar
+            $mensagem = $foiCriacao 
                 ? 'Ocorrência cadastrada com sucesso!' 
                 : 'Ocorrência atualizada com sucesso!';
 
             $this->dispatch('swal-redirect', [
                 'title' => 'Sucesso!',
-                'text' => $mensagem ,
+                'text' => $mensagem,
                 'icon' => 'success',
-                'redirect' => route('ocorrencias.index'), // rota dinâmica
+                'redirect' => $foiCriacao ? route('ocorrencias.index') : null, // ← null = não redireciona
             ]);
             
             //$this->dispatch('toast', type: 'success', message: $mensagem);

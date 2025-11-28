@@ -108,8 +108,8 @@
             showConfirmButton: false,
             timer: 3000 // fecha sozinho
         }).then(() => {
-            if (data.redirect) {
-                window.location.href = data.redirect; // redireciona dinamicamente
+            if (data.redirect) { // ← Só redireciona se tiver URL
+                window.location.href = data.redirect;
             }
         });
     });

@@ -49,6 +49,13 @@ class Ocorrencias extends Component
         $this->resetPage();
     }
 
+    public function toggleStatus($id)
+    {              
+        $ocorrencia = Ocorrencia::findOrFail($id);
+        $ocorrencia->status = !$ocorrencia->status;        
+        $ocorrencia->save();
+    }
+
     public function render()
     {
         $title = 'Ocorrências';
