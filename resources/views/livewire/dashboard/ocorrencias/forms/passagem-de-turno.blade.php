@@ -1159,22 +1159,34 @@
             <div class="card-body">
                 <div class="row">
                     @foreach ($chavesMec as $index => $apto) 
-                        <div class="col-lg-4">
-                            <label class="labelforms">{{ $apto }}</label>
+                        <div class="col-lg-4 mb-3">
+                            <label class="labelforms"><strong>{{ $apto }}</strong></label>
 
                             <div class="form-group">
-                                <select class="form-control mb-2"
+                                <select class="form-control mb-2 @error('form.chaves_mecanicas.'.$index.'.status') is-invalid @enderror"
                                         wire:model.live="form.chaves_mecanicas.{{ $index }}.status">
                                     <option value="">Selecione</option>
                                     <option value="recepcao">RECEPÇÃO</option>
                                     <option value="pessoa">ESTÁ COM</option>
                                 </select>
+                                
+                                @error('form.chaves_mecanicas.'.$index.'.status')
+                                    <small class="text-danger d-block mt-1">{{ $message }}</small>
+                                @enderror
+
+                                @php
+                                    $chaveStatus = $form['chaves_mecanicas'][$index]['status'] ?? null;
+                                @endphp
 
                                 <input type="text"
-                                    class="form-control"
+                                    class="form-control mt-2 @error('form.chaves_mecanicas.'.$index.'.pessoa') is-invalid @enderror"
                                     placeholder="Nome da pessoa"
                                     wire:model.live="form.chaves_mecanicas.{{ $index }}.pessoa"
-                                    {{ $form['chaves_mecanicas'][$index]['status'] === 'pessoa' ? '' : 'disabled' }}>
+                                    @if($chaveStatus !== 'pessoa') disabled @endif>
+                                
+                                @error('form.chaves_mecanicas.'.$index.'.pessoa')
+                                    <small class="text-danger d-block mt-1">{{ $message }}</small>
+                                @enderror
                             </div>
                         </div>
                     @endforeach

@@ -197,6 +197,34 @@ class OcorrenciaForm extends Component
 
         'form.turno.cartoes_extras_local.required_if' => 'Informe onde estão os cartões extras.',
         'form.turno.cartoes_extras_local.min' => 'A informação deve ter no mínimo 3 caracteres.',
+
+        // Seção 11 - Chaves Mecânicas
+        'form.chaves_mecanicas.0.status.required' => 'Selecione o status da chave 108 CASAL.',
+        'form.chaves_mecanicas.1.status.required' => 'Selecione o status da chave 109 CASAL.',
+        'form.chaves_mecanicas.2.status.required' => 'Selecione o status da chave 109 SOLT.',
+        'form.chaves_mecanicas.3.status.required' => 'Selecione o status da chave 119 CASAL.',
+        'form.chaves_mecanicas.4.status.required' => 'Selecione o status da chave 119 SOLT.',
+        'form.chaves_mecanicas.5.status.required' => 'Selecione o status da chave 208 CASAL.',
+        'form.chaves_mecanicas.6.status.required' => 'Selecione o status da chave 209 CASAL.',
+        'form.chaves_mecanicas.7.status.required' => 'Selecione o status da chave 209 SOLT.',
+        'form.chaves_mecanicas.8.status.required' => 'Selecione o status da chave 219 CASAL.',
+        'form.chaves_mecanicas.9.status.required' => 'Selecione o status da chave 219 SOLT.',
+        
+        'form.chaves_mecanicas.*.status.in' => 'O status deve ser "recepcao" ou "pessoa".',
+        
+        'form.chaves_mecanicas.0.pessoa.required_if' => 'Informe com quem está a chave 108 CASAL.',
+        'form.chaves_mecanicas.1.pessoa.required_if' => 'Informe com quem está a chave 109 CASAL.',
+        'form.chaves_mecanicas.2.pessoa.required_if' => 'Informe com quem está a chave 109 SOLT.',
+        'form.chaves_mecanicas.3.pessoa.required_if' => 'Informe com quem está a chave 119 CASAL.',
+        'form.chaves_mecanicas.4.pessoa.required_if' => 'Informe com quem está a chave 119 SOLT.',
+        'form.chaves_mecanicas.5.pessoa.required_if' => 'Informe com quem está a chave 208 CASAL.',
+        'form.chaves_mecanicas.6.pessoa.required_if' => 'Informe com quem está a chave 209 CASAL.',
+        'form.chaves_mecanicas.7.pessoa.required_if' => 'Informe com quem está a chave 209 SOLT.',
+        'form.chaves_mecanicas.8.pessoa.required_if' => 'Informe com quem está a chave 219 CASAL.',
+        'form.chaves_mecanicas.9.pessoa.required_if' => 'Informe com quem está a chave 219 SOLT.',
+        
+        'form.chaves_mecanicas.*.pessoa.min' => 'O nome deve ter no mínimo 3 caracteres.',
+        'form.chaves_mecanicas.*.pessoa.max' => 'O nome deve ter no máximo 100 caracteres.',
     ];
 
     public array $itensChavesFixas = [
@@ -580,6 +608,11 @@ class OcorrenciaForm extends Component
             foreach ($this->chavesMec as $index => $apto) {
                 $rulesMap[$type]["form.chaves_mecanicas.{$index}.status"] = 'required|in:gaveta,emprestado';
                 $rulesMap[$type]["form.chaves_mecanicas.{$index}.pessoa"] = "required_if:form.chaves_mecanicas.{$index}.status,emprestado|nullable|string|min:3|max:100";
+            }
+
+            foreach ($this->chavesMec as $index => $apto) {
+                $rulesMap[$type]["form.chaves_mecanicas.{$index}.status"] = 'required|in:recepcao,pessoa';
+                $rulesMap[$type]["form.chaves_mecanicas.{$index}.pessoa"] = "required_if:form.chaves_mecanicas.{$index}.status,pessoa|nullable|string|min:3|max:100";
             }
         }
         
