@@ -119,3 +119,34 @@
         @endif
     </div>
 </div>
+
+@push('scripts')
+    <script>
+        document.addEventListener('livewire:initialized', () => {
+            @this.on('swal', (event) => {
+                const data = event
+                swal.fire({
+                    icon:data[0]['icon'],
+                    title:data[0]['title'],
+                    text:data[0]['text'],
+                })
+            })
+
+            @this.on('delete-prompt', (event) => {
+                swal.fire({
+                    icon: 'warning',
+                    title: 'Atenção',
+                    text: 'Você tem certeza que deseja excluir esta Ocorrência?',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Sim, excluir!',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        @this.dispatch('goOn-Delete')
+                    }
+                })
+            })
+        });
+    </script>
+@endpush

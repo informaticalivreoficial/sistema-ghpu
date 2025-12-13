@@ -7,17 +7,16 @@ use App\Models\Ocorrencia;
 use App\Models\Post;
 use App\Models\User;
 use Livewire\Component;
+use Spatie\Permission\Models\Role;
 
 class SideNavigation extends Component
 {
     public function render()
     {
-        $clientCount = User::where('client', 1)->count();
-        $timeCount = User::where(function($query) {
-            $query->where('editor', 1)
-                ->orWhere('admin', 1)
-                ->orWhere('superadmin', 1);
-        })->count();
+        // Conta quantos têm cada role
+        $clientCount = User::role('employee')->count();   // Colaborador
+        $timeCount   = User::role(['manager', 'admin'])->count(); // Gerente, admin e super
+
         $postsCount = Post::count();
         $ocorrenciaCount = Ocorrencia::count();
         // Manifest count

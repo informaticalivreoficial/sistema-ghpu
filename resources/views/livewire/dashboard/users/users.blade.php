@@ -3,12 +3,12 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1><i class="fas fa-search mr-2"></i> Clientes</h1>
+                    <h1><i class="fas fa-search mr-2"></i> Colaboradores</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">                    
                         <li class="breadcrumb-item"><a href="{{route('admin')}}">Painel de Controle</a></li>
-                        <li class="breadcrumb-item active">Clientes</li>
+                        <li class="breadcrumb-item active">Colaboradores</li>
                     </ol>
                 </div>
             </div>
@@ -17,7 +17,7 @@
     @if ($updateMode)
         @livewire('dashboard.users.form')
     @endif  --}} 
-    <div class="card">
+    <div class="card" x-data="{ openImage: false, imageSrc: '' }">
         <div class="card-header">
             <div class="row">
                 <div class="col-12 col-sm-6 my-2">
@@ -37,23 +37,14 @@
         </div>        
         <!-- /.card-header -->
         <div class="card-body">
-            <div class="row">
-                <div class="col-12">                
-                    @if(session()->exists('message'))
-                        @message(['color' => session()->get('color')])
-                            {{ session()->get('mensagem') }}
-                        @endmessage
-                    @endif
-                </div>            
-            </div>
             @if(!empty($users) && $users->count() > 0)
                 <table class="table table-bordered table-striped projects">
                     <thead>
                         <tr>
                             <th>Foto</th>
                             <th wire:click="sortBy('name')">Nome <i class="expandable-table-caret fas fa-caret-down fa-fw"></i></th>
-                            <th>CPF</th>
-                            <th class="text-center">Status</th>
+                            <th>Empresa</th>
+                            <th>Cargo</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
@@ -74,33 +65,40 @@
                                 }
                             @endphp
                             <td class="text-center">
-                                <a href="{{url($cover)}}" data-title="{{$user->name}}" data-toggle="lightbox">
-                                    <img alt="{{$user->name}}" class="table-avatar" src="{{url($cover)}}">
-                                </a>
-                            </td>
+                                <img 
+                                    src="{{ $cover }}" 
+                                    alt="{{ $user->name }}" 
+                                    class="w-12 h-12 rounded-full object-cover mx-auto cursor-pointer"
+                                    @click="openImage = true; imageSrc = '{{ $cover }}'"
+                                >
+                            </td>                            
                             <td>{{$user->name}}</td>
-                            <td>{{$user->cpf}}</td>
-                            <td class="text-center">
-                                <label class="switch" wire:model="active">
-                                    <input type="checkbox" value="{{$user->status}}"  wire:change="toggleStatus({{$user->id}})" wire:loading.attr="disabled" {{$user->status ? 'checked': ''}}>
-                                    <span class="slider round"></span>
-                                </label>
-                            </td>
+                            <td>{{$user->company->alias_name}}</td>
+                            <td>{{$user->cargo}}</td>
                             <td>
-                                
-                                @if($user->whatsapp != '')
-                                    <a target="_blank" href="{{\App\Helpers\WhatsApp::getNumZap($user->whatsapp)}}" class="btn btn-xs btn-success text-white"><i class="fab fa-whatsapp"></i></a>
-                                @endif
-                                
-                                <form class="btn btn-xs" action="{{--route('email.send')--}}" method="post">
-                                    @csrf
-                                    <input type="hidden" name="nome" value="{{ $user->name }}">
-                                    <input type="hidden" name="email" value="{{ $user->email }}">
-                                    <button title="Enviar Email" type="submit" class="btn btn-xs text-white bg-teal"><i class="fas fa-envelope"></i></button>
-                                </form> 
-                                <a wire:navigate href="visualizar/{{$user->id}}" class="btn btn-xs btn-info text-white"><i class="fas fa-search"></i></a>
-                                <a wire:navigate href="{{ route('users.edit', [ 'userId' => $user->id ]) }}" class="btn btn-xs btn-default"><i class="fas fa-pen"></i></a>
-                                <button type="button" class="btn btn-xs btn-danger text-white" wire:click="setDeleteId({{$user->id}})">
+                                <label class="switch flex-shrink-0">
+                                    <input type="checkbox" 
+                                        value="{{ $user->status }}"  
+                                        wire:change="toggleStatus({{ $user->id }})" 
+                                        wire:loading.attr="disabled" 
+                                        {{ $user->status ? 'checked' : '' }}>
+                                    <span class="slider round"></span>
+                                </label> 
+                                <button 
+                                    class="action-btn btn-view" 
+                                    data-tooltip="Visualizar"
+                                    wire:click="#">
+                                    <i class="fas fa-search"></i>
+                                </button>                                    
+                                <a href="{{ route('users.edit', [ 'userId' => $user->id ]) }}" 
+                                    class="action-btn btn-edit" 
+                                    data-tooltip="Editar">
+                                    <i class="fas fa-pen"></i>
+                                </a>
+                                <button type="button" 
+                                    class="action-btn btn-delete" 
+                                    data-tooltip="Excluir"
+                                    wire:click="setDeleteId({{ $user->id }})">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </td>
@@ -108,6 +106,31 @@
                         @endforeach
                     </tbody>                
                 </table>
+
+                <!-- Modal -->
+                <div 
+                    x-show="openImage"
+                    x-transition.opacity
+                    class="fixed inset-0 bg-black/70 flex items-center justify-center z-[9999]"
+                    @click.self="openImage = false"
+                >
+                    <div class="relative">
+                        
+                        <!-- Botão fechar -->
+                        <button 
+                            class="absolute top-2 right-2 text-white text-3xl font-bold"
+                            @click="openImage = false"
+                        >
+                            ×
+                        </button>
+
+                        <!-- Imagem grande -->
+                        <img 
+                            :src="imageSrc" 
+                            class="max-w-[90vw] max-h-[90vh] rounded shadow-lg"
+                        >
+                    </div>
+                </div>
             @else
                 <div class="row">
                     <div class="col-12">                                                        
@@ -142,7 +165,7 @@
             swal.fire({
                 icon: 'warning',
                 title: 'Atenção',
-                text: 'Você tem certeza que deseja excluir este Cliente?',
+                text: 'Você tem certeza que deseja excluir este Usuário?',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',

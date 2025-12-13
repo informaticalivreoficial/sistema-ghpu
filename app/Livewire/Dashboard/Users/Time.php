@@ -27,10 +27,7 @@ class Time extends Component
     {
         $title = 'Time de Usuários';
 
-        $users = User::query()
-            ->where(function($query) {
-                $query->where('editor', 1)->orWhere('admin', 1);
-            })
+        $users = User::role(['manager', 'admin']) // Filtra por roles
             ->when($this->search, function($query) {
                 $query->where(function($q) {
                     $q->where('name', 'LIKE', "%{$this->search}%")

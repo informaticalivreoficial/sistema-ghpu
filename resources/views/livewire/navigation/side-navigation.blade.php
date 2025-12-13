@@ -44,7 +44,7 @@
                         <li class="nav-item">
                             <a href="{{route('users.index')}}" class="nav-link {{ Route::is('users.index') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Clientes <span class="badge badge-info right">{{$clientCount}}</span></p>
+                                <p>Colaboradores <span class="badge badge-info right">{{$clientCount}}</span></p>
                             </a>
                         </li>
                         <li class="nav-item">

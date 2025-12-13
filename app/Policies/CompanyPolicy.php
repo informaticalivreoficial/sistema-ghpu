@@ -9,30 +9,73 @@ use Illuminate\Auth\Access\Response;
 
 class CompanyPolicy
 {
-    public function view(User $user, Ocorrencia $occ)
+    /**
+     * Quem pode criar empresas
+     */
+    public function create(User $user)
     {
-        if ($user->isSuperAdmin()) {
-            return true;
-        }
-
-        return $user->company_id === $occ->company_id;
+        // Apenas SuperAdmin pode criar empresas
+        return $user->isSuperAdmin();
     }
 
-    public function update(User $user, Ocorrencia $occ)
+    /**
+     * Quem pode ver a lista de empresas
+     */
+    public function viewAny(User $user)
     {
-        if ($user->isSuperAdmin()) {
-            return true;
-        }
-
-        return $user->company_id === $occ->company_id;
+        // SuperAdmin e Admin podem ver todas as empresas
+        return $user->isSuperAdmin() || $user->isAdmin();
     }
 
-    public function delete(User $user, Ocorrencia $occ)
+    /**
+     * Quem pode visualizar uma empresa específica
+     */
+    public function view(User $user, Company $company)
     {
+        // SuperAdmin e Admin veem TODAS as empresas
+        if ($user->isSuperAdmin() || $user->isAdmin()) {
+            return true;
+        }
+
+        // Manager e Employee só veem a própria empresa
+        return $user->company_id === $company->id;
+    }
+
+    /**
+     * Quem pode editar uma empresa
+     */
+    public function update(User $user, Company $company)
+    {
+        // SuperAdmin pode editar TODAS as empresas
         if ($user->isSuperAdmin()) {
             return true;
         }
 
-        return $user->company_id === $occ->company_id;
+        // Admin pode editar TODAS as empresas
+        if ($user->isAdmin()) {
+            return true;
+        }
+
+        // Manager pode editar apenas a própria empresa
+        if ($user->isManager()) {
+            return $user->company_id === $company->id;
+        }
+
+        // Employee NÃO pode editar empresas
+        return false;
+    }
+
+    /**
+     * Quem pode deletar uma empresa
+     */
+    public function delete(User $user, Company $company)
+    {
+        // Apenas SuperAdmin pode deletar empresas
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
+        // Ninguém mais pode deletar
+        return false;
     }
 }

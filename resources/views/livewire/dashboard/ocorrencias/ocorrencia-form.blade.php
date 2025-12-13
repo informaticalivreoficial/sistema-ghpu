@@ -9,7 +9,7 @@
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{{ route('admin') }}">Painel de Controle</a></li>
-                        <li class="breadcrumb-item"><a wire:navigate href="{{ route('ocorrencias.index') }}">Ocorrências</a>
+                        <li class="breadcrumb-item"><a href="{{ route('ocorrencias.index') }}">Ocorrências</a>
                         </li>
                         <li class="breadcrumb-item active">{{ $ocorrencia ? 'Editar' : 'Cadastrar' }}</li>
                     </ol>
@@ -17,6 +17,14 @@
             </div>
         </div>
     </div>
+
+    {{-- DEBUG - REMOVER DEPOIS 
+    <div class="alert alert-info">
+        <strong>Debug:</strong><br>
+        Ocorrência ID: {{ $ocorrencia->id ?? 'null' }}<br>
+        Type carregado: {{ $type ?? 'vazio' }}<br>
+        Type da ocorrência: {{ $ocorrencia->type ?? 'null' }}
+    </div>--}}
 
     <div class="card card-teal card-outline">
         <div class="card-body text-muted">
@@ -47,7 +55,7 @@
 
                 @elseif($type === 'ocorrencias-diarias')
                     @include('livewire.dashboard.ocorrencias.forms.ocorrencias-diarias')
-
+                    
                 @elseif($type === 'passagem-de-turno')
                     @include('livewire.dashboard.ocorrencias.forms.passagem-de-turno')
                 @endif
@@ -62,6 +70,9 @@
         </div>
     </div>
 </div>
+
+
+
 
 @push('scripts')
 <script>
@@ -100,7 +111,7 @@
     
     document.addEventListener('swal-redirect', function(event) {
         const data = Array.isArray(event.detail) ? event.detail[0] : event.detail;
-        console.log(data);
+        //console.log(data);
         Swal.fire({
             title: data.title,
             text: data.text,

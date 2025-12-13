@@ -3,6 +3,7 @@
 namespace App\Livewire\Dashboard\Users;
 
 use App\Http\Requests\Admin\UserRequest;
+use App\Models\Company;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Attributes\Title;
@@ -19,6 +20,18 @@ class Form extends Component
 
     public $foto; // Propriedade para armazenar a foto temporariamente
     public $fotoUrl; // Propriedade para armazenar o caminho da foto após o upload
+
+    public $roles;
+    public array $roleLabels = [
+        'super-admin' => 'Super Administrador',
+        'admin'       => 'Administrador',
+        'manager'     => 'Gerente',
+        'employee'    => 'Colaborador',
+    ];
+    public $roleSelected;
+
+    public $company_id;
+    public $companies = [];
     
     protected $rules = [
         //'foto' => 'image|max:1024',
@@ -32,7 +45,7 @@ class Form extends Component
     ];       
 
     //Informations about
-    public $name, $birthday, $gender, $naturalness, $civil_status, $code ,$avatar;    
+    public $name, $cargo, $birthday, $gender, $naturalness, $civil_status, $code ,$avatar;    
     
     //Documents
     public $cpf, $rg, $rg_expedition;
@@ -60,11 +73,23 @@ class Form extends Component
 
     public function mount($userId = null)
     {
+        
+    
+        if (auth()->user()->hasAnyRole(['super-admin', 'admin'])) {
+            $this->companies = Company::orderBy('alias_name')->get();
+        }
+
         if ($userId) {
-            $user = User::find($userId);
-            if ($user) {
+            $user = User::findOrFail($userId);
+
+            // Carrega as roles do usuário
+            $this->roleSelected = $user->roles->pluck('name')->first();            
+
+            
                 $this->userId = $user->id;
-                $this->name = $user->name;                
+                $this->company_id = $user->company_id;
+                $this->name = $user->name;  
+                $this->cargo = $user->cargo;              
                 $this->password = $user->password;       
                 $this->avatar = $user->avatar;                
                 $this->birthday = $user->birthday;
@@ -89,12 +114,11 @@ class Form extends Component
                 $this->complement = $user->complement;
                 $this->facebook = $user->facebook;
                 $this->instagram = $user->instagram;
-                $this->linkedin = $user->linkedin;
-                $this->admin = $user->admin;
-                $this->superadmin = $user->superadmin;
-                $this->editor = $user->editor;
-                $this->client = $user->client;
-            }            
+                $this->linkedin = $user->linkedin;                
+
+                // Carrega a role do usuário
+                $this->roleSelected = $user->roles->pluck('name')->first();
+                $this->role = $user->roles->pluck('name')->first();
         }        
     }
 
@@ -120,7 +144,7 @@ class Form extends Component
             $this->validate([
                 'foto' => 'image|max:1024'
             ]);
-            $caminhoFoto = $this->foto->store('client', 'public');
+            $caminhoFoto = $this->foto->store('user', 'public');
         }else{
             $caminhoFoto = null;
         }
@@ -132,7 +156,9 @@ class Form extends Component
        // }
         //dd($this->password, $this->password_confirmation);
         $data = [
-            'name' => $validated['name'],                
+            'name' => $validated['name'], 
+            'cargo' => $this->cargo, 
+            'company_id' => $this->company_id,          
             'password' => Hash::make($this->password),       
             'avatar' => $caminhoFoto,                
             'birthday' => $validated['birthday'],
@@ -157,15 +183,19 @@ class Form extends Component
             'complement' => $this->complement,
             'facebook' => $this->facebook,
             'instagram' => $this->instagram,
-            'linkedin' => $this->linkedin,
-            'admin' => $this->admin,
-            'superadmin' => $this->superadmin,
-            'editor' => $this->editor,
-            'client' => $this->client
+            'linkedin' => $this->linkedin            
         ];
-        //dd($data);
+
+        // Se não for Admin ou Super Admin, NUNCA altera a empresa
+        if (!auth()->user()->hasAnyRole(['super-admin', 'admin'])) {
+            unset($validated['company_id']);
+        }
+
         $userCreate = User::create($data);
         $userCreate->save();
+
+        $userCreate->syncRoles([$this->roleSelected]);
+
         $this->dispatch(['cliente-cadastrado']);
         return redirect()->route('users.edit', $userCreate->id);
     }
@@ -180,7 +210,7 @@ class Form extends Component
                 Storage::delete($this->avatar);
             }
             // Salva a nova foto no diretório 'public/fotos'
-            $caminhoFoto = $this->foto->store('client', 'public');
+            $caminhoFoto = $this->foto->store('user', 'public');
             $user->update([
                 'avatar' => $caminhoFoto
             ]);
@@ -188,6 +218,8 @@ class Form extends Component
                
         $user->update([            
             'name' => $this->name,
+            'cargo' => $this->cargo,
+            'company_id' => $this->company_id,
             'email' => $this->email,
             'facebook' => $this->facebook,
             'instagram' => $this->instagram,
@@ -210,13 +242,11 @@ class Form extends Component
             'city' => $this->city,
             'state' => $this->state,
             'complement' => $this->complement,
-            'telegram' => $this->telegram,
-            'admin' => $this->admin,
-            'superadmin' => $this->superadmin,
-            'editor' => $this->editor,
-            'client' => $this->client,
+            'telegram' => $this->telegram            
         ]);
-        
+
+        $user->syncRoles([$this->roleSelected]);
+
         $this->dispatch('userId');
         $this->dispatch(['cliente-atualizado']);
         $this->reset('foto');        

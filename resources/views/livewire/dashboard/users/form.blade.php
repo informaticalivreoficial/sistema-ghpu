@@ -8,7 +8,7 @@
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{{ route('admin') }}">Painel de Controle</a></li>
-                        <li class="breadcrumb-item"><a wire:navigate href="{{ route('users.index') }}">Usuários</a>
+                        <li class="breadcrumb-item"><a href="{{ route('users.index') }}">Usuários</a>
                         </li>
                         <li class="breadcrumb-item active">{{ $userId ? 'Editar' : 'Cadastrar' }}</li>
                     </ol>
@@ -70,6 +70,7 @@
                                     @enderror                                                                                                                                      
                                 </div>
                             </div>
+                            
                             <div class="col-12 col-md-6 col-lg-4 mb-2">
                                 <div class="form-group">
                                     <label class="labelforms"><b>Genero</b></label>
@@ -286,43 +287,62 @@
                 <div class="card text-muted">
                     <div class="card-header">
                         <h4>
-                            <strong>Permissões de Acesso</strong>
+                            <strong>Permissões & Acesso</strong>
                         </h4>
                     </div>                                
                     <div class="card-body">
-                        <div class="row">                            
-                            <div class="col-sm-12 bg-gray-light mb-3">
-                                <!-- checkbox -->
-                                <div class="form-group p-3 mb-0">
-                                    <span class="mr-3"><b>Acesso ao Sistema:</b></span>
-                                    <div class="form-check d-inline mx-2">
-                                        <input id="client" class="form-check-input" type="checkbox"
-                                            wire:model="client" {{ $client == true ? 'checked' : null }}>
-                                        <label for="client" class="form-check-label">Cliente</label>
+                        <div class="row">   
+                            @role(['super-admin', 'admin'])
+                                <div class="col-12 col-md-6 col-lg-4">
+                                    <div class="form-group">
+                                        <label class="labelforms"><b>Empresa</b></label>
+                                        <select class="form-control" wire:model="company_id">
+                                            <option value="">Selecione</option>
+                                            @foreach ($companies as $company)
+                                                <option value="{{ $company->id }}">{{ $company->alias_name }}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('company_id') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
                                     </div>
-                                    <div class="form-check d-inline mx-2">
-                                        <input id="editor" class="form-check-input" type="checkbox"
-                                            wire:model="editor" {{ $editor == true ? 'checked' : null }}>
-                                        <label for="editor" class="form-check-label">Editor</label>
-                                    </div>
-                                    @if (\Illuminate\Support\Facades\Auth::user()->superadmin == 1)
-                                        <div class="form-check d-inline mx-2">
-                                            <input id="admin" class="form-check-input" type="checkbox"
-                                                wire:model="admin" {{ $admin == true ? 'checked' : null }}>
-                                            <label for="admin" class="form-check-label">Administrador</label>
-                                        </div>
-
-                                        <div class="form-check d-inline mx-2">
-                                            <input id="superadmin" class="form-check-input" type="checkbox"
-                                                wire:model="superadmin"
-                                                {{ $superadmin == true ? 'checked' : null }}>
-                                            <label for="superadmin" class="form-check-label">Super Administrador</label>
-                                        </div>
-                                    @endif
+                                </div>                                
+                            @endrole
+                            <div class="col-12 col-md-6 col-lg-4">
+                                <div class="form-group">
+                                    <label class="labelforms"><b>Cargo</b></label>
+                                    <input type="text" class="form-control @error('cargo') is-invalid @enderror" id="cargo" placeholder="Cargo" wire:model="cargo">
+                                    @error('cargo')
+                                        <span class="error erro-feedback">{{ $message }}</span>
+                                    @enderror
                                 </div>
                             </div>
+                            <div class="col-12 mt-3">
+                                <div class="form-check d-inline mx-2">
+                                    <input id="employee" class="form-check-input" type="radio"
+                                        wire:model="roleSelected" value="employee">
+                                    <label for="employee">Colaborador</label>
+                                </div>
+
+                                <div class="form-check d-inline mx-2">
+                                    <input id="manager" class="form-check-input" type="radio"
+                                        wire:model="roleSelected" value="manager">
+                                    <label for="manager">Gerente</label>
+                                </div>
+
+                                <div class="form-check d-inline mx-2">
+                                    <input id="admin" class="form-check-input" type="radio"
+                                        wire:model="roleSelected" value="admin">
+                                    <label for="admin">Administrador</label>
+                                </div>
+
+                                <div class="form-check d-inline mx-2">
+                                    <input id="superadmin" class="form-check-input" type="radio"
+                                        wire:model="roleSelected" value="super-admin">
+                                    <label for="superadmin">Super Administrador</label>
+                                </div>
+                            </div>  
+                             
                             @if (!$userId)
-                                <div class="col-12 col-md-6 col-lg-4">
+                                <div class="col-12 col-md-6 col-lg-4 mt-3">
                                     <label class="labelforms text-muted"><b>Senha:</b></label>
                                     <div class="input-group input-group-md">                                    
                                         <input type="password" id="password" class="form-control @error('password') is-invalid @enderror" wire:model="password">
@@ -333,7 +353,7 @@
                                     @error('password') <span class="text-danger text-sm">{{ $message }}</span> @enderror
                                 </div>
 
-                                <div class="col-12 col-md-6 col-lg-4">
+                                <div class="col-12 col-md-6 col-lg-4 mt-3">
                                     <label class="labelforms text-muted"><b>Confirmar Senha:</b></label>
                                     <div class="input-group input-group-md">                                    
                                         <input type="password" id="password_confirmation" class="form-control @error('password_confirmation') is-invalid @enderror" wire:model.lazy="password_confirmation">

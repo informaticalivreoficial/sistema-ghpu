@@ -35,6 +35,8 @@ class UserRequest extends FormRequest
             'gender' => 'required|in:masculino,feminino',
             //'civil_status' => 'required|in:casado,separado,solteiro,divorciado,viuvo',
             'cpf' => (!empty($this->request->all()['id']) ? 'required|min:11|max:14|unique:users,cpf,' . $this->request->all()['id'] : 'required|min:11|max:14|unique:users,cpf'),
+            'role'  => 'required',
+            'company_id' => 'nullable',
             //'rg' => 'required_if:client,on|min:8|max:12',
             //'rg' => 'required|min:8|max:12',
             //'rg_expedicao' => 'required',

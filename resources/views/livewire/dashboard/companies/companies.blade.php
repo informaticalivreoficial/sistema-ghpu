@@ -30,7 +30,7 @@
                       </div>
                 </div>
                 <div class="col-12 col-sm-6 my-2 text-right">
-                    <a wire:navigate href="{{route('companies.create')}}" class="btn btn-sm btn-default"><i class="fas fa-plus mr-2"></i> Cadastrar Novo</a>
+                    <a href="{{route('companies.create')}}" class="btn btn-sm btn-default"><i class="fas fa-plus mr-2"></i> Cadastrar Novo</a>
                 </div>
             </div>
         </div>        
@@ -78,7 +78,7 @@
                                         wire:click="viewCompany({{ $company->id }})">
                                         <i class="fas fa-search"></i>
                                     </button>                                    
-                                    <a href="{{ route('companies.edit', $company->id) }}" 
+                                    <a href="{{ route('companies.edit', ['company' => $company->id]) }}" 
                                         class="action-btn btn-edit" 
                                         data-tooltip="Editar">
                                         <i class="fas fa-pen"></i>

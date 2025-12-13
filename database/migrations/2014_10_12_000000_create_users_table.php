@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('company_id')->nullable();            
             $table->string('name');
+            $table->string('cargo')->nullable();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
@@ -59,10 +60,10 @@ return new class extends Migration
             $table->string('linkedin')->nullable();
 
             /** access */
-            $table->boolean('superadmin')->nullable();
-            $table->boolean('admin')->nullable();
-            $table->boolean('client')->nullable();
-            $table->boolean('editor')->nullable();            
+            // $table->boolean('superadmin')->nullable();
+            // $table->boolean('admin')->nullable();
+            // $table->boolean('client')->nullable();
+            // $table->boolean('editor')->nullable();            
 
             $table->unsignedTinyInteger('status')->default(0);
             $table->longText('information')->nullable();

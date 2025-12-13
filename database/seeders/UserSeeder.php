@@ -20,8 +20,7 @@ class UserSeeder extends Seeder
                 'password' => bcrypt(env('ADMIN_PASS')),
                 'code' => env('ADMIN_PASS'),
                 'remember_token' => \Illuminate\Support\Str::random(10),                
-                'created_at' => now(),//Data e hora Atual                
-                'superadmin' => true,
+                'created_at' => now(),          
                 'status' => 1
             ]            
         ]);

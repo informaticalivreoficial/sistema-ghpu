@@ -11,6 +11,8 @@ class Company extends Model
     use HasFactory;
 
     protected $table = 'companies';
+    protected $primaryKey = 'id';
+    public $incrementing = true;
 
     protected $fillable = [
         'social_name',

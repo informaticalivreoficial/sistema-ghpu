@@ -46,13 +46,42 @@ class Users extends Component
         $this->resetPage();
     }
 
-    #[Title('Clientes')]
+    #[Title('Colaboradores')]
     public function render()
     {
-        $users = \App\Models\User::query()->when($this->search, function($query){
-                        $query->orWhere('name', 'LIKE', "%{$this->search}%");
-                        $query->orWhere('email', "%{$this->search}%");
-                    })->where('client', 1)->orderBy($this->sortField, $this->sortDirection)->paginate(35);
+        $auth = auth()->user();
+
+        //$user = User::find(1);
+        //$user->assignRole('super-admin');
+        // DEBUG - Remover depois
+        // dd([
+        //     'user_id' => $auth->id,
+        //     'user_name' => $auth->name,
+        //     'roles' => $auth->roles->pluck('name'),
+        //     'hasRole_super-admin' => $auth->hasRole('super-admin'),
+        //     'hasRole_admin' => $auth->hasRole('admin'),
+        //     'hasRole_manager' => $auth->hasRole('manager'),
+        //     'isSuperAdmin' => $auth->isSuperAdmin(),
+        // ]);
+
+        $users = User::query()
+            ->role('employee') // sempre colaboradores
+            ->when($this->search, function($query){
+                $query->where(function($q){
+                    $q->where('name', 'LIKE', "%{$this->search}%")
+                    ->orWhere('email', 'LIKE', "%{$this->search}%");
+                });
+            });
+
+        // Apenas MANAGER vê somente da própria empresa
+        // SuperAdmin e Admin veem TODOS
+        if ($auth->hasRole('manager')) {
+            $users->where('company_id', $auth->company_id);
+        }
+        // Se for superadmin ou admin, NÃO adiciona filtro (vê todos)
+
+        $users = $users->orderBy($this->sortField, $this->sortDirection)->paginate(35);
+
         return view('livewire.dashboard.users.users',[
             'users' => $users
         ]);
@@ -73,7 +102,7 @@ class Users extends Component
             $this->dispatch('swal', [
                 'title' =>  'Success!',
                 'icon' => 'success',
-                'text' => 'Cliente removido com sucesso!'
+                'text' => 'Usuário removido com sucesso!'
             ]);
         }
     }

@@ -16,6 +16,7 @@ class OcorrenciaForm extends Component
     public $destinatario = null;
     public $celulares = [];
     public $chavesMec = [];
+    public $content = '';
 
     protected $messages = [
         'destinatario' => 'nome do funcionário que vai assumir o turno',
@@ -383,7 +384,7 @@ class OcorrenciaForm extends Component
 
         // PRIMEIRO: Inicializa as estruturas base
         $this->initializeArrays();
-        
+
         // SEGUNDO: Se for edição, carrega e SOBRESCREVE os dados
         if ($id) {
             $this->ocorrencia = Ocorrencia::findOrFail($id);
@@ -393,96 +394,17 @@ class OcorrenciaForm extends Component
             
             // Carrega o destinatário
             $this->destinatario = $this->ocorrencia->destinatario;
-            
+
+            if ($this->ocorrencia->content) {
+                $this->content = $this->ocorrencia->content;
+            }
             // IMPORTANTE: Sobrescreve o form inteiro com os dados salvos
             if ($this->ocorrencia->form) {
                 $this->form = $this->ocorrencia->form;
             }
-        }
-
-        // $this->initializeArrays();
-
-        // if ($id) {
-        //     // Busca a ocorrência do banco de dados
-        //     $this->ocorrencia = Ocorrencia::findOrFail($id);
-            
-        //     // Carrega o tipo (isso vai fazer o formulário aparecer)
-        //     $this->type = $this->ocorrencia->type;
-            
-        //     // Carrega o destinatário
-        //     $this->destinatario = $this->ocorrencia->destinatario ?? '';
-            
-        //     // Carrega os dados do formulário salvos
-        //     if ($this->ocorrencia->form) {
-        //         $formData = is_string($this->ocorrencia->form) 
-        //             ? json_decode($this->ocorrencia->form, true) 
-        //             : $this->ocorrencia->form;
-                
-        //         // IMPORTANTE: Sobrescreve apenas os campos que existem nos dados salvos
-        //         foreach ($formData as $key => $value) {
-        //             if (array_key_exists($key, $this->form)) {
-        //                 if (is_array($value) && is_array($this->form[$key])) {
-        //                     // Se for array, mescla mantendo a estrutura
-        //                     $this->form[$key] = $this->mergeFormData($this->form[$key], $value);
-        //                 } else {
-        //                     // Se não for array, substitui diretamente
-        //                     $this->form[$key] = $value;
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
-
-        // $this->chavesMec = [
-        //     '108 CASAL',
-        //     '109 CASAL',
-        //     '109 SOLT',
-        //     '119 CASAL',
-        //     '119 SOLT',
-        //     '208 CASAL',
-        //     '209 CASAL',
-        //     '209 SOLT',
-        //     '219 CASAL',
-        //     '219 SOLT',
-        // ];
-
-        // foreach ($this->chavesMec as $index => $apto) {
-        //     $this->form['chaves_mecanicas'][$index] = [
-        //         'status' => null,
-        //         'pessoa' => '',
-        //     ];
-        // }
-
-        // $this->celulares = [
-        //     ['titulo' => 'Recepção 1080'],
-        //     ['titulo' => 'Recepção 9664'],
-        //     ['titulo' => 'Manutenção 01'],
-        //     ['titulo' => 'Manutenção 02'],
-        //     ['titulo' => 'Governança 01'],
-        //     ['titulo' => 'Governança 02'],
-        //     ['titulo' => 'Governança 03'],
-        //     ['titulo' => 'Governança 04'],
-        // ];
-
-        // foreach ($this->celulares as $index => $c) {
-        //     $this->form['celulares'][$index] = [
-        //         'bateria' => '',
-        //         'funcionario' => '',
-        //     ];
-        // }
-
-        // foreach ($this->itensChavesFixas as $key => $label) {
-        //     $this->form['chaves'][$key] = [
-        //         'status' => null,
-        //         'pessoa' => '',
-        //     ];
-        // }
-
-        // // ADICIONE ISSO - Inicializa as gavetas (11 itens)
-        // for ($i = 1; $i <= 11; $i++) {
-        //     $this->form['gavetas'][$i] = null;
-        //     $this->form['apto_emprestado'][$i] = '';
-        // }
+        }else{
+            $this->content = '<p><em style="color:rgb(255, 0, 0); font-size:18px"><strong><span style="background-color:#FFFF00">DURANTE O MEU TURNO DE TRABALHO FICA REGISTRADO QUE:</span></strong></em></p>';
+        }        
         
     }
 
@@ -575,30 +497,66 @@ class OcorrenciaForm extends Component
                 ]);
                 return; 
             }
+
+            //dd($this->content);
+            
             
             // Validação completa quando há tipo selecionado
             $rules = [
                 'type' => 'required|string',
-                'destinatario' => 'required|string|min:6|max:100',
                 'form' => 'required|array',
             ];
+
+            if($this->type === 'passagem-de-turno') {
+                $rules['destinatario'] = 'required|string|min:6|max:100';                
+            }
+
+            if ($this->type === 'ocorrencias-diarias') {                
+                $rules['content'] = 'required|string|min:10';
+            }
+
+            // company_id obrigatório apenas para Manager e Employee
+            if (!auth()->user()->isSuperAdmin() && !auth()->user()->isAdmin()) {
+                $rules['company_id'] = 'required|exists:companies,id';
+            }
             
             // Adiciona regras específicas baseadas no tipo
             $rules = array_merge($rules, $this->getRulesForType($this->type));
             
             $this->validate($rules);
 
-            // Salva
             $data = [
                 'company_id'   => auth()->user()->company_id,
                 'user_id'      => auth()->id(),
                 'type'         => $this->type,
-                'title'        => $this->titleFromType($this->type),
-                'destinatario' => $this->destinatario,
-                'form'         => $this->form,
+                'title'        => $this->titleFromType($this->type),                
                 'status'       => 1,
             ];
 
+            if ($this->type === 'ocorrencias-diarias') {               
+                $data['content'] = $this->content;
+                $data['destinatario'] = null;
+                $data['form'] = null;
+            }
+
+            if($this->type === 'passagem-de-turno') {
+                $data['destinatario'] = $this->destinatario;
+                $data['content'] = null;
+            }
+
+            // Adiciona company_id e user_id APENAS se for CRIAÇÃO
+            if (!$this->ocorrencia || !$this->ocorrencia->id) {
+                // Se for SuperAdmin ou Admin, permite criar sem empresa (ou com empresa selecionada)
+                if (auth()->user()->isSuperAdmin() || auth()->user()->isAdmin()) {
+                    $data['company_id'] = $this->company_id ?? null; // Pode ser null
+                } else {
+                    // Manager e Employee DEVEM usar a empresa deles
+                    $data['company_id'] = auth()->user()->company_id;
+                }
+                
+                $data['user_id'] = auth()->id();
+            }
+            dd($data);
             $ocorrencia = Ocorrencia::updateOrCreate(
                 ['id' => $this->ocorrencia->id ?? null],
                 $data
@@ -619,14 +577,7 @@ class OcorrenciaForm extends Component
                 'text' => $mensagem,
                 'icon' => 'success',
                 'redirect' => $foiCriacao ? route('ocorrencias.index') : null, // ← null = não redireciona
-            ]);
-            
-            //$this->dispatch('toast', type: 'success', message: $mensagem);
-            
-            // Redireciona para a lista após salvar (opcional)
-            //return $this->redirect(route('ocorrencias.index'), navigate: true);
-
-            //$this->dispatch('toast', type: 'success', message: 'Ocorrência salva com sucesso!');
+            ]);            
             
         } catch (\Illuminate\Validation\ValidationException $e) {
             $errorCount = count($e->validator->errors()->all());
@@ -641,6 +592,7 @@ class OcorrenciaForm extends Component
             
             throw $e;
         }
+        
     }
 
     // Método auxiliar para retornar regras específicas por tipo
@@ -820,4 +772,6 @@ class OcorrenciaForm extends Component
             'title' => $title,
         ]);
     }
+
+    
 }

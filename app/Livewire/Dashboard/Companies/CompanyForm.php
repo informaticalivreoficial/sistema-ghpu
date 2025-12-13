@@ -14,7 +14,7 @@ class CompanyForm extends Component
     use WithFileUploads;
 
     public ?Company $company = null;
-
+    
     public $logo;
     public $logoUrl; 
 
@@ -42,20 +42,16 @@ class CompanyForm extends Component
 
     public function render()
     {
-        $title = $this->company ? 'Editar Empresa' : 'Cadastrar Empresa';
+        $title = $this->company->exists ? 'Editar Empresa' : 'Cadastrar Empresa';
         return view('livewire.dashboard.companies.company-form')->with('title', $title);
     }
 
     public function mount(Company $company)
-    {
+    { 
         $this->company = $company;
         
         if ($company->exists) {
             $this->fillFromCompany($company);
-        }
-
-        if ($this->company && $this->company->logo) {
-            $this->logoUrl = Storage::url($this->company->logo);
         }
     }
 
@@ -93,16 +89,16 @@ class CompanyForm extends Component
             'whatsapp' => $this->whatsapp,
             'telegram' => $this->telegram,
             'cell_phone' => $this->cell_phone,
-        ];
+        ];        
 
-        if ($this->company) {
+        if ($this->company->exists) {
             $this->company->update($data);
             $this->dispatch(['empresa-atualizada']);
         } else {
             $this->company = Company::create($data);
             $this->company->save();
             $this->dispatch(['empresa-cadastrada']);
-            return redirect()->route('companies.edit', $this->company->id);
+            return redirect()->route('companies.edit', ['company' => $this->company->id]);
         }
     }
 

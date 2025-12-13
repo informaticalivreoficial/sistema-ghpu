@@ -92,20 +92,29 @@ Route::group(['namespace' => 'Web', 'as' => 'web.'], function () {
      Route::get('/pagina/{slug}', [WebController::class, 'page'])->name('page');
 });
 
+
+
 Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], function () {
 
+    //Somente Gerente e Super Admin
+    Route::middleware('role:super-admin|admin')->group(function () {
+        Route::get('configuracoes', Settings::class)->name('settings');
+
+        // Companies
+        Route::get('empresas', Companies::class)->name('companies.index');
+        Route::get('empresas/cadastrar-empresa', CompanyForm::class)->name('companies.create');
+        Route::get('empresas/{company}/editar-empresa', CompanyForm::class)->name('companies.edit');
+        Route::get('empresas/{company}/visualizar-empresa', ViewUser::class)->name('companies.view');
+    });
+
     Route::get('/', Dashboard::class)->name('admin');
-    Route::get('configuracoes', Settings::class)->name('settings');
+    
 
     //******************************* Sitemap *********************************************/
     // Route::get('gerarxml', [SitemapController::class, 'gerarxml'])->name('admin.gerarxml');
 
     
-    // Companies
-    Route::get('empresas', Companies::class)->name('companies.index');
-    Route::get('empresas/cadastrar-empresa', CompanyForm::class)->name('companies.create');
-    Route::get('empresas/{company}/editar-empresa', CompanyForm::class)->name('companies.edit');
-    Route::get('empresas/{company}/visualizar-empresa', ViewUser::class)->name('companies.view');
+    
 
    
     //*********************** Slides ********************************************/

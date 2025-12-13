@@ -4,14 +4,14 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1><i class="fas fa-industry mr-2"></i> {{ $company ? 'Editar' : 'Cadastrar' }}</h1>
+                    <h1><i class="fas fa-industry mr-2"></i> {{ $company->exists ? 'Editar' : 'Cadastrar' }}</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{{ route('admin') }}">Painel de Controle</a></li>
-                        <li class="breadcrumb-item"><a wire:navigate href="{{ route('companies.index') }}">Empresas</a>
+                        <li class="breadcrumb-item"><a href="{{ route('companies.index') }}">Empresas</a>
                         </li>
-                        <li class="breadcrumb-item active">{{ $company ? 'Editar' : 'Cadastrar' }}</li>
+                        <li class="breadcrumb-item active">{{ $company->exists ? 'Editar' : 'Cadastrar' }}</li>
                     </ol>
                 </div>
             </div>
@@ -202,7 +202,7 @@
             <div class="row text-right mt-3">
                 <div class="col-12 mb-4">
                     <button type="button" wire:click="save" class="btn btn-lg btn-success p-3">
-                        <i class="nav-icon fas fa-check mr-2"></i> {{ $company ? 'Atualizar Agora' : 'Cadastrar Agora' }}
+                        <i class="nav-icon fas fa-check mr-2"></i> {{ $company->exists ? 'Atualizar Agora' : 'Cadastrar Agora' }}
                     </button>
                 </div>
             </div>                

@@ -4,18 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasRoles;
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
     protected $fillable = [
-        'name', 'company_id', 'password', 'remember_token', 'code',
+        'name', 'cargo', 'company_id', 'password', 'remember_token', 'code',
         'gender',
         'cpf',
         'rg',
@@ -36,15 +35,20 @@ class User extends Authenticatable
 
     public function isSuperAdmin(): bool
     {
-        return $this->hasRole('superadmin');
+        return $this->hasRole('super-admin');
     }
 
-    public function isManager()
+    public function isAdmin(): bool
+    {
+        return $this->hasRole('admin');
+    }
+
+    public function isManager(): bool
     {
         return $this->hasRole('manager');
     }
 
-    public function isEmployee()
+    public function isEmployee(): bool
     {
         return $this->hasRole('employee');
     }
@@ -67,9 +71,6 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
-        'client' => 'boolean',
-        'admin' => 'boolean',
-        'superadmin' => 'boolean',
     ];
 
     /**
@@ -100,19 +101,19 @@ class User extends Authenticatable
     */
 
     //Exibe a função do usuário
-    public function getFuncao() {
-        if($this->admin == 1 && $this->client == 0 && $this->superadmin == 0){
-            return 'Administrador';
-        }elseif($this->admin == 0 && $this->client == 1 && $this->superadmin == 0){
-            return 'Cliente';
-        }elseif($this->admin == 0 && $this->client == 0 && $this->editor == 1 && $this->superadmin == 0){
-            return 'Editor';
-        }elseif($this->admin == 1 && $this->client == 1 && $this->superadmin == 0){
-            return 'Administrador/Cliente'; 
-        }else{
-            return 'Super Administrador'; 
-        }
-    }
+    // public function getFuncao() {
+    //     if($this->admin == 1 && $this->client == 0 && $this->superadmin == 0){
+    //         return 'Administrador';
+    //     }elseif($this->admin == 0 && $this->client == 1 && $this->superadmin == 0){
+    //         return 'Cliente';
+    //     }elseif($this->admin == 0 && $this->client == 0 && $this->editor == 1 && $this->superadmin == 0){
+    //         return 'Editor';
+    //     }elseif($this->admin == 1 && $this->client == 1 && $this->superadmin == 0){
+    //         return 'Administrador/Cliente'; 
+    //     }else{
+    //         return 'Super Administrador'; 
+    //     }
+    // }
 
     public function getUrlAvatarAttribute()
     {

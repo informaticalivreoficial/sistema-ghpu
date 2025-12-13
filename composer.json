@@ -18,9 +18,11 @@
         "livewire/livewire": "^3.5",
         "simplesoftwareio/simple-qrcode": "^4.2",
         "spatie/laravel-analytics": "^5.0",
-        "spatie/laravel-permission": "^6.23"
+        "spatie/laravel-permission": "^6.3.0"
     },
     "require-dev": {
+        "barryvdh/laravel-debugbar": "^3.16",
+        "barryvdh/laravel-ide-helper": "^3.1",
         "fakerphp/faker": "^1.9.1",
         "laravel/pint": "^1.0",
         "laravel/sail": "^1.18",

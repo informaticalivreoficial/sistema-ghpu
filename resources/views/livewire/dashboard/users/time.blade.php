@@ -48,7 +48,7 @@
                                     <div class="row">
                                         <div class="col-7">
                                             <h2 class="lead"><b>{{$user->name}}</b></h2>
-                                            <p class="text-muted text-sm">{{$user->getFuncao()}}</p>
+                                            <p class="text-muted text-sm">{{$user->cargo}}</p>
                                             <p class="text-muted text-sm"><b>Data de Entrada: </b><br>
                                                 05/05/2025
                                             </p>

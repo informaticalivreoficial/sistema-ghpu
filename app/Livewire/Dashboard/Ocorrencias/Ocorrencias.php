@@ -5,6 +5,7 @@ namespace App\Livewire\Dashboard\Ocorrencias;
 use App\Models\Ocorrencia;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Livewire\Attributes\On;
 
 class Ocorrencias extends Component
 {
@@ -54,6 +55,36 @@ class Ocorrencias extends Component
         $ocorrencia = Ocorrencia::findOrFail($id);
         $ocorrencia->status = !$ocorrencia->status;        
         $ocorrencia->save();
+    }
+
+    public function setDeleteId($id)
+    {
+        $this->delete_id = $id;
+        $this->dispatch('delete-prompt');        
+    }
+
+    #[On('goOn-Delete')]
+    public function delete(): void
+    {
+        try {
+            $ocorrencia = Ocorrencia::findOrFail($this->delete_id);            
+
+            $ocorrencia->delete();
+
+            $this->delete_id = null;
+
+            $this->dispatch('swal', [
+                'title' => 'Sucesso!',
+                'icon'  => 'success',
+                'text'  => 'Ocorrência removida!',
+            ]);
+        } catch (\Exception $e) {
+            $this->dispatch('swal', [
+                'title' => 'Erro!',
+                'icon'  => 'error',
+                'text'  => 'Não foi possível excluir a ocorrência.',
+            ]);
+        }
     }
 
     public function render()
