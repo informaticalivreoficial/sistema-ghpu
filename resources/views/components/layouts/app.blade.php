@@ -41,7 +41,7 @@
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/basiclightbox@5/dist/basicLightbox.min.css">
 
-    <link rel="stylesheet" href="https://unpkg.com/trix@2.0.0/dist/trix.css">
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 
     <style>
         .basicLightbox {
@@ -145,8 +145,63 @@
 
     <script src="https://cdn.jsdelivr.net/npm/basiclightbox@5/dist/basicLightbox.min.js"></script>
 
-   <script src="https://unpkg.com/trix@2.0.0/dist/trix.umd.min.js"></script>
+    <!-- Quill Editor CSS -->
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
     {{-- Livewire Scripts --}}
+
+    <script>
+        document.addEventListener('alpine:init', () => {
+        Alpine.data('quillEditor', ({ value, model }) => ({
+            quill: null,
+
+            init() {
+                if (this.quill) return; // 🔥 evita duplicar editor
+
+                this.quill = new Quill(this.$refs.editor, {
+                    theme: 'snow',
+                    placeholder: 'Digite aqui...',
+                    modules: {
+                        toolbar: [
+                            [{ header: [1, 2, 3, false] }],
+                            [{ font: [] }, { size: ['small', false, 'large', 'huge'] }],
+                            ['bold', 'italic', 'underline', 'strike'],
+                            [{ color: [] }, { background: [] }],
+                            [{ list: 'ordered' }, { list: 'bullet' }],
+                            ['blockquote'],
+                            ['link'],
+                            ['clean'],
+                        ],
+                    },
+                });
+
+                // Conteúdo inicial (edit)
+                if (value) {
+                    this.quill.root.innerHTML = value;
+                }
+
+                // 🔥 SINCRONIZAÇÃO INICIAL (create FIX)
+                this.sync();
+
+                // Atualização ao digitar
+                this.quill.on('text-change', () => {
+                    this.sync();
+                });
+            },
+
+            sync() {
+                const html = this.quill.root.innerHTML;
+                const componentEl = this.$el.closest('[wire\\:id]');
+
+                if (!componentEl || typeof Livewire === 'undefined') return;
+
+                const component = Livewire.find(componentEl.getAttribute('wire:id'));
+                if (component) {
+                    component.set(model, html, false);
+                }
+            },
+        }));
+    });
+    </script>
 
     @stack('scripts') 
     

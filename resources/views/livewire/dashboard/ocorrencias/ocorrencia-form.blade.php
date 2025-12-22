@@ -28,23 +28,32 @@
 
     <div class="card card-teal card-outline">
         <div class="card-body text-muted">
-            <div class="row mb-3">
-                <div class="col-12 col-md-6 col-lg-4">
-                    <div class="form-group">
-                        <label class="labelforms text-muted"><b>*Selecione o Tipo de Ocorrência</b></label>
-                        <select name="type" class="form-control @error('type') is-invalid @enderror" wire:model.live="type">
-                            <option value="">Selecione...</option>
-                            <option value="branco">Em Branco</option>
-                            <option value="varreduras-fichas-sistemas">Varreduras de fichas x sistemas</option>
-                            <option value="ocorrencias-diarias">Ocorrências Diárias</option>
-                            <option value="passagem-de-turno">Passagem de Turno</option>
-                        </select>    
-                        @error('type')
-                            <span class="error erro-feedback">{{ $message }}</span>
-                        @enderror                    
-                    </div>
-                </div> 
-            </div>
+            @if ($ocorrencia)
+                <div class="alert alert-info">
+                    Você está editando a ocorrência <strong>#{{ $ocorrencia->id }}</strong> criada em
+                    <strong>{{ $ocorrencia->created_at->format('d/m/Y H:i') }}</strong>.
+                    por <strong>{{ $ocorrencia->user->name }}</strong>.
+                </div>
+            @else 
+                <div class="row mb-3">
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="form-group">
+                            <label class="labelforms text-muted"><b>*Selecione o Tipo de Ocorrência</b></label>
+                            <select name="type" class="form-control @error('type') is-invalid @enderror" wire:model.live="type">
+                                <option value="">Selecione...</option>
+                                <option value="branco">Em Branco</option>
+                                <option value="varreduras-fichas-sistemas">Varreduras de fichas x sistemas</option>
+                                <option value="ocorrencias-diarias">Ocorrências Diárias</option>
+                                <option value="passagem-de-turno">Passagem de Turno</option>
+                            </select>    
+                            @error('type')
+                                <span class="error erro-feedback">{{ $message }}</span>
+                            @enderror                    
+                        </div>
+                    </div> 
+                </div>               
+            @endif
+            
             {{-- Renderização dinâmica --}}
             <form wire:submit.prevent="save" autocomplete="off">
                 @if($type === 'branco')
@@ -123,7 +132,7 @@
                 window.location.href = data.redirect;
             }
         });
-    });
+    });    
 </script>
 @endpush
 

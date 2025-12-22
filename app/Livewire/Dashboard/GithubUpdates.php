@@ -16,13 +16,27 @@ class GithubUpdates extends Component
 
     public function loadCommits()
     {
-        $repoUser = env('GITHUB_USER'); // exemplo: renato
-        $repoName = env('GITHUB_REPO'); // exemplo: noronhashop
+        $repoUser = config('services.github.user');
+        $repoName = config('services.github.repo');
 
-        $response = Http::get("https://api.github.com/repos/{$repoUser}/{$repoName}/commits");
-        
+        if (!$repoUser || !$repoName) {
+            logger('GitHub repo config missing');
+            return;
+        }
+
+        $response = Http::withToken(config('services.github.token'))
+            ->timeout(10)
+            ->get("https://api.github.com/repos/{$repoUser}/{$repoName}/commits");
+
         if ($response->successful()) {
-            $this->commits = array_slice($response->json(), 0, 5); // últimos 5 commits
+            $this->commits = collect($response->json())
+                ->take(5)
+                ->toArray();
+        } else {
+            logger('GitHub API error', [
+                'status' => $response->status(),
+                'body' => $response->body(),
+            ]);
         }
     }
 

@@ -5,6 +5,7 @@ namespace App\Livewire\Dashboard\Ocorrencias;
 use App\Models\Ocorrencia;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Livewire\Attributes\On;
 
 class OcorrenciaForm extends Component
 {
@@ -17,6 +18,7 @@ class OcorrenciaForm extends Component
     public $celulares = [];
     public $chavesMec = [];
     public $content = '';
+    public $title = '';
 
     protected $messages = [
         'destinatario' => 'nome do funcionário que vai assumir o turno',
@@ -30,8 +32,16 @@ class OcorrenciaForm extends Component
         'form.tv_3andar' => 'TV do 3º andar',
         'form.temperatura_aquecedor' => 'Temperatura do aquecedor',
         'form.nome' => 'Nome',
-        'form.title' => 'Título',
+        //'form.title' => 'Título',
         'type' => 'Tipo de Ocorrência',
+
+        'title.required' => 'O título é obrigatório.',
+        'title.string' => 'O título deve ser um texto.',
+        'title.min' => 'O título deve ter no mínimo 3 caracteres.',
+        'title.max' => 'O título deve ter no máximo 255 caracteres.',
+        'content.required' => 'O conteúdo é obrigatório.',
+        'content.string' => 'O conteúdo deve ser um texto.',
+        'content.min' => 'O conteúdo deve ter no mínimo 10 caracteres.',
 
         'form.porta_interna' => 'Porta interna',
         'form.porta_externa' => 'Porta externa',
@@ -377,11 +387,8 @@ class OcorrenciaForm extends Component
         
     ];
 
-    
-
     public function mount($id = null)
     {
-
         // PRIMEIRO: Inicializa as estruturas base
         $this->initializeArrays();
 
@@ -389,23 +396,12 @@ class OcorrenciaForm extends Component
         if ($id) {
             $this->ocorrencia = Ocorrencia::findOrFail($id);
             
-            // Carrega o tipo
             $this->type = $this->ocorrencia->type;
-            
-            // Carrega o destinatário
+            $this->title = $this->ocorrencia->title;
             $this->destinatario = $this->ocorrencia->destinatario;
-
-            if ($this->ocorrencia->content) {
-                $this->content = $this->ocorrencia->content;
-            }
-            // IMPORTANTE: Sobrescreve o form inteiro com os dados salvos
-            if ($this->ocorrencia->form) {
-                $this->form = $this->ocorrencia->form;
-            }
-        }else{
-            $this->content = '<p><em style="color:rgb(255, 0, 0); font-size:18px"><strong><span style="background-color:#FFFF00">DURANTE O MEU TURNO DE TRABALHO FICA REGISTRADO QUE:</span></strong></em></p>';
-        }        
-        
+            $this->content = $this->ocorrencia->content ?? '';
+            $this->form = $this->ocorrencia->form ?? [];
+        } 
     }
 
     private function mergeFormData($base, $data)
@@ -515,6 +511,11 @@ class OcorrenciaForm extends Component
                 $rules['content'] = 'required|string|min:10';
             }
 
+            if ($this->type === 'branco') {
+                $rules['title'] = 'required|string|min:3|max:255';
+                $rules['content'] = 'required|string|min:10';
+            }
+
             // company_id obrigatório apenas para Manager e Employee
             if (!auth()->user()->isSuperAdmin() && !auth()->user()->isAdmin()) {
                 $rules['company_id'] = 'required|exists:companies,id';
@@ -522,26 +523,34 @@ class OcorrenciaForm extends Component
             
             // Adiciona regras específicas baseadas no tipo
             $rules = array_merge($rules, $this->getRulesForType($this->type));
-            
+            //dd($rules);
             $this->validate($rules);
 
             $data = [
                 'company_id'   => auth()->user()->company_id,
                 'user_id'      => auth()->id(),
-                'type'         => $this->type,
-                'title'        => $this->titleFromType($this->type),                
+                'type'         => $this->type,                               
                 'status'       => 1,
             ];
 
-            if ($this->type === 'ocorrencias-diarias') {               
-                $data['content'] = $this->content;
+            if ($this->type === 'ocorrencias-diarias') {   
+                $data['title']        = $this->titleFromType($this->type);             
+                $data['content']      = $this->content;
                 $data['destinatario'] = null;
-                $data['form'] = null;
+                $data['form']         = null;
             }
 
             if($this->type === 'passagem-de-turno') {
+                $data['title']   = $this->titleFromType($this->type);
                 $data['destinatario'] = $this->destinatario;
                 $data['content'] = null;
+            }
+
+            if($this->type === 'branco') {
+                $data['title'] = $this->title;
+                $data['destinatario'] = null;
+                $data['content'] = $this->content;
+                $data['form'] = null;
             }
 
             // Adiciona company_id e user_id APENAS se for CRIAÇÃO
@@ -557,6 +566,12 @@ class OcorrenciaForm extends Component
                 $data['user_id'] = auth()->id();
             }
             dd($data);
+            // dd([
+            //     'type' => $this->type,
+            //     'content' => $this->content,
+            //     'content_length' => strlen($this->content ?? ''),
+            //     'ocorrencia_exists' => $this->ocorrencia ? $this->ocorrencia->id : 'null',
+            // ]);
             $ocorrencia = Ocorrencia::updateOrCreate(
                 ['id' => $this->ocorrencia->id ?? null],
                 $data
@@ -719,13 +734,13 @@ class OcorrenciaForm extends Component
                 
             ],
             'ocorrencias-diarias' => [
-                // Regras específicas para ocorrências diárias
+                //'form.content' => 'required|string|min:10',
             ],
             'varreduras-fichas-sistemas' => [
                 // Regras específicas para varreduras
             ],
             'branco' => [
-                // Regras específicas para formulário em branco
+                // Regras específicas para formulário em branco                
             ],
         ];
 
@@ -761,6 +776,8 @@ class OcorrenciaForm extends Component
         return match ($type) {
             'passagem-de-turno' => 'Passagem de Turno',
             'ocorrencias-diarias' => 'Ocorrências Diárias',
+            'varreduras-fichas-sistemas' => 'Varreduras, Fichas e Sistemas',
+            //'branco' => 'Formulário em Branco',
             default => $type,
         };
     }
@@ -771,6 +788,22 @@ class OcorrenciaForm extends Component
         return view('livewire.dashboard.ocorrencias.ocorrencia-form', [
             'title' => $title,
         ]);
+    }
+
+    public function updatedType($value)
+    {
+        // Só no cadastro
+        if ($this->ocorrencia) {
+            return;
+        }
+
+        if ($value === 'branco') {
+            $this->content = '';
+        }
+
+        if ($value === 'ocorrencias-diarias') {
+            $this->content = '<p><em style="color:rgb(255, 0, 0); font-size:18px"><strong><span style="background-color:#FFFF00">DURANTE O MEU TURNO DE TRABALHO FICA REGISTRADO QUE:</span></strong></em></p>';
+        }
     }
 
     
