@@ -1,0 +1,48 @@
+<?php
+
+namespace App\Livewire\Dashboard;
+
+use Livewire\Component;
+use Livewire\WithPagination;
+use Illuminate\Support\Facades\Auth;
+
+class NotificationsList extends Component
+{
+    use WithPagination;
+
+    public function markAsRead($notificationId)
+    {
+        $notification = Auth::user()
+            ->notifications()
+            ->where('id', $notificationId)
+            ->first();
+
+        if ($notification) {
+            $notification->markAsRead();
+            $this->dispatch('toast', [
+                'type' => 'success',
+                'message' => 'Notificação marcada como lida'
+            ]);
+        }
+    }
+
+    public function markAllAsRead()
+    {
+        Auth::user()->unreadNotifications->markAsRead();
+        $this->dispatch('toast', [
+            'type' => 'success',
+            'message' => 'Todas marcadas como lidas'
+        ]);
+    }
+
+    public function render()
+    {
+        $notifications = Auth::user()
+            ->notifications()
+            ->paginate(20);
+
+        return view('livewire.dashboard.notifications-list',[
+            'notifications' => $notifications
+        ]);
+    }
+}

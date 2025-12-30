@@ -3,6 +3,9 @@
 namespace App\Livewire\Dashboard\Ocorrencias;
 
 use App\Models\Ocorrencia;
+use App\Models\User;
+use App\Notifications\OcorrenciaCriada;
+use Illuminate\Support\Facades\Notification;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\Attributes\On;
@@ -565,7 +568,7 @@ class OcorrenciaForm extends Component
                 
                 $data['user_id'] = auth()->id();
             }
-            dd($data);
+            //dd($data);
             // dd([
             //     'type' => $this->type,
             //     'content' => $this->content,
@@ -578,11 +581,15 @@ class OcorrenciaForm extends Component
             );
 
             $this->ocorrencia = $ocorrencia;
-
             // Mensagem de sucesso diferente para criar/editar
             $foiCriacao = $this->ocorrencia->wasRecentlyCreated;
 
-            // Mensagem de sucesso diferente para criar/editar
+            // Envia notificação APENAS para criação
+            if ($foiCriacao) {
+                $admins = User::role('super-admin')->get();
+                Notification::send($admins, new OcorrenciaCriada($ocorrencia));
+            }            
+
             $mensagem = $foiCriacao 
                 ? 'Ocorrência cadastrada com sucesso!' 
                 : 'Ocorrência atualizada com sucesso!';
@@ -803,6 +810,36 @@ class OcorrenciaForm extends Component
 
         if ($value === 'ocorrencias-diarias') {
             $this->content = '<p><em style="color:rgb(255, 0, 0); font-size:18px"><strong><span style="background-color:#FFFF00">DURANTE O MEU TURNO DE TRABALHO FICA REGISTRADO QUE:</span></strong></em></p>';
+        }
+    }
+
+    private function enviarNotificacoes(Ocorrencia $ocorrencia)
+    {
+        $destinatarios = collect();
+        
+        // Super-admin e Admin recebem TODAS as notificações
+        $destinatarios = $destinatarios->merge(
+            User::whereHas('roles', function($query) {
+                $query->whereIn('name', ['super-admin', 'admin']);
+            })->get()
+        );
+        
+        // Se a ocorrência tem empresa, notifica os gerentes dessa empresa
+        if ($ocorrencia->company_id) {
+            $destinatarios = $destinatarios->merge(
+                User::whereHas('roles', function($query) {
+                    $query->where('name', 'manager');
+                })
+                ->where('company_id', $ocorrencia->company_id)
+                ->get()
+            );
+        }
+        
+        // Remove duplicados e envia
+        $destinatarios = $destinatarios->unique('id');
+        
+        if ($destinatarios->isNotEmpty()) {
+            Notification::send($destinatarios, new OcorrenciaCriada($ocorrencia));
         }
     }
 

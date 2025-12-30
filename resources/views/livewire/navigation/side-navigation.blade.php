@@ -27,14 +27,14 @@
                         <p> Painel de Controle</p>
                     </a>                    
                 </li>
-
+                @role(['super-admin', 'admin'])
                 <li class="nav-item">
                     <a href="{{route('settings')}}" class="nav-link {{ Route::is('settings') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-cog"></i> 
                         <p> Configurações</p>
                     </a>
                 </li>
-
+                @endrole
                 <li class="nav-item {{ Route::is('users.*') ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link {{ Route::is('users.*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-users"></i>
@@ -47,12 +47,14 @@
                                 <p>Colaboradores <span class="badge badge-info right">{{$clientCount}}</span></p>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a href="{{route('users.time')}}" class="nav-link {{ Route::is('users.time') ? 'active' : '' }}">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Time <span class="badge badge-info right">{{$timeCount}}</span></p>
-                            </a>
-                        </li>
+                        @role(['super-admin', 'admin'])
+                            <li class="nav-item">
+                                <a href="{{route('users.time')}}" class="nav-link {{ Route::is('users.time') ? 'active' : '' }}">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Time <span class="badge badge-info right">{{$timeCount}}</span></p>
+                                </a>
+                            </li>
+                        @endrole
                         <li class="nav-item">
                             <a href="{{route('users.create')}}" class="nav-link {{ Route::is('users.create') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
@@ -61,12 +63,14 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item">
-                    <a href="{{route('companies.index')}}" class="nav-link {{ Route::is('companies.*') ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-industry"></i>
-                        <p>Empresas</p>
-                    </a>
-                </li>
+                @role(['super-admin', 'admin'])
+                    <li class="nav-item">
+                        <a href="{{route('companies.index')}}" class="nav-link {{ Route::is('companies.*') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-industry"></i>
+                            <p>Empresas</p>
+                        </a>
+                    </li>
+                @endrole
                 <li class="nav-item">
                     <a href="{{ route('ocorrencias.index') }}" class="nav-link {{ Route::is('ocorrencias.*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-file"></i>
@@ -76,30 +80,33 @@
                         </p>
                     </a>
                 </li> 
-                <li class="nav-item {{ Route::is('posts.*') ? 'menu-open' : '' }}">
-                    <a href="#" class="nav-link {{ Route::is('posts.*') ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-pencil-alt"></i>
-                        <p>Posts <i class="fas fa-angle-left right"></i></p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{route('posts.index')}}" class="nav-link {{ Route::is('posts.index') ? 'active' : '' }}">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>
-                                    Listar Todos
-                                    <span class="badge badge-info right">{{$postsCount}}</span>
-                                </p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{route('posts.categories.index')}}" class="nav-link {{ Route::is('posts.categories.index') ? 'active' : '' }}">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Categorias</p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>  
-                    
+                @role(['super-admin', 'admin'])
+                    <li class="nav-item {{ Route::is('posts.*') ? 'menu-open' : '' }}">
+                        <a href="#" class="nav-link {{ Route::is('posts.*') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-pencil-alt"></i>
+                            <p>Posts <i class="fas fa-angle-left right"></i></p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{route('posts.index')}}" class="nav-link {{ Route::is('posts.index') ? 'active' : '' }}">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>
+                                        Listar Todos
+                                        <span class="badge badge-info right">{{$postsCount}}</span>
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{route('posts.categories.index')}}" class="nav-link {{ Route::is('posts.categories.index') ? 'active' : '' }}">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Categorias</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>  
+                @endrole
+
+                @role(['super-admin', 'admin', 'manager'])
                 <li class="nav-item">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-chart-bar"></i>
@@ -132,6 +139,7 @@
                         </li>
                     </ul>
                 </li>
+                @endrole
                 {{-- Segurança 
                 <li class="nav-item">
                     <a href="#" class="nav-link">

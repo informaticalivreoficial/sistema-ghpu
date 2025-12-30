@@ -4,6 +4,7 @@ use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
 use App\Livewire\Dashboard\Dashboard;
 use App\Livewire\Dashboard\{
+    NotificationsList,
     Settings,
 };
 use App\Livewire\Dashboard\Users\{
@@ -110,11 +111,7 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], functi
     Route::get('/', Dashboard::class)->name('admin');
     
 
-    //******************************* Sitemap *********************************************/
-    // Route::get('gerarxml', [SitemapController::class, 'gerarxml'])->name('admin.gerarxml');
-
-    
-    
+    Route::get('notificacoes', NotificationsList::class)->name('notifications.index');    
 
    
     //*********************** Slides ********************************************/

@@ -203,6 +203,29 @@
     });
     </script>
 
+    <script>
+        // document.addEventListener('livewire:init', () => {
+
+        //     toastr.options = {
+        //         closeButton: true,
+        //         progressBar: true,
+        //         positionClass: "toast-top-right",
+        //         timeOut: 4000,
+        //         extendedTimeOut: 1000,
+        //         newestOnTop: true,
+        //     };
+
+        //     Livewire.on('toast', (event) => {
+        //         toastr[event.type](event.message);
+
+        //         if (event.type === 'error') {
+        //             window.scrollTo({ top: 0, behavior: 'smooth' });
+        //         }
+        //     });
+
+        // });
+    </script>
+
     @stack('scripts') 
     
 </body>
