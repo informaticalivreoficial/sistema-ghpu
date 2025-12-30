@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\{
     ConfigController,
     EmailController,
+    OcorrenciaPdfController,
     TemplateController,
     UserController
 };
@@ -106,6 +107,8 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], functi
         Route::get('empresas/cadastrar-empresa', CompanyForm::class)->name('companies.create');
         Route::get('empresas/{company}/editar-empresa', CompanyForm::class)->name('companies.edit');
         Route::get('empresas/{company}/visualizar-empresa', ViewUser::class)->name('companies.view');
+
+        Route::get('ocorrencias/{ocorrencia}/visualizar', [OcorrenciaPdfController::class, 'show'])->name('ocorrencia.pdf');
     });
 
     Route::get('/', Dashboard::class)->name('admin');

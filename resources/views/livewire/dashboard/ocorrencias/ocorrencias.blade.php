@@ -62,7 +62,7 @@
                                         {{ $ocorrencia->status ? 'checked' : '' }}>
                                     <span class="slider round"></span>
                                 </label> 
-                                <a href="{{-- route('posts.show', $post->id) --}}" 
+                                <a target="_blank" href="{{ route('ocorrencia.pdf', $ocorrencia->id) }}" 
                                     class="action-btn btn-view" 
                                     data-tooltip="Visualizar">
                                     <i class="fas fa-search"></i>

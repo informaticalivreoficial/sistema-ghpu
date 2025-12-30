@@ -148,4 +148,20 @@ class Renato
         return $Result;
     }
 
+
+
+    public static function formatCurrency($value): string
+    {
+        if ($value === null || $value === '') {
+            return 'R$ 0,00';
+        }
+
+        return 'R$ ' . number_format(
+            (float) $value,
+            2,
+            ',',
+            '.'
+        );
+    }    
+
 }

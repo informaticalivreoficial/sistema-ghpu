@@ -23,7 +23,7 @@ class Company extends Model
         'logo',
         'status',
         'zipcode',
-        'address',
+        'street',
         'number',
         'complement',
         'neighborhood',
@@ -59,5 +59,14 @@ class Company extends Model
             return asset('theme/images/image.jpg');
         } 
         return Storage::url($this->logo);
+    }
+
+    public function logoPathForPdf(): string
+    {
+        if ($this->logo && file_exists(storage_path('app/public/' . $this->logo))) {
+            return storage_path('app/public/' . $this->logo);
+        }
+
+        return public_path('theme/images/image.jpg');
     }
 }
