@@ -30,7 +30,7 @@
                       </div>
                 </div>
                 <div class="col-12 col-sm-6 my-2 text-right">
-                    <a wire:navigate href="{{route('ocorrencia.create')}}" class="btn btn-sm btn-default"><i class="fas fa-plus mr-2"></i> Cadastrar Novo</a>
+                    <a wire:navigate href="{{route('ocorrencia.create')}}" class="btn btn-sm btn-default"><i class="fas fa-plus mr-2"></i> Cadastrar Ocorrência</a>
                 </div>
             </div>
         </div>        

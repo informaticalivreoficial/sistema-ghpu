@@ -26,14 +26,16 @@
         Type da ocorrência: {{ $ocorrencia->type ?? 'null' }}
     </div>--}}
 
-    <div class="card card-teal card-outline">
+    <div class="card card-primary card-outline">
         <div class="card-body text-muted">
             @if ($ocorrencia)
-                <div class="alert alert-info">
-                    Você está editando a ocorrência <strong>#{{ $ocorrencia->id }}</strong> criada em
-                    <strong>{{ $ocorrencia->created_at->format('d/m/Y H:i') }}</strong>.
-                    por <strong>{{ $ocorrencia->user->name }}</strong>.
-                </div>
+                @if (!auth()->user()->isEmployee())
+                    <div class="alert alert-info">
+                        Você está editando a ocorrência <strong>#{{ $ocorrencia->id }}</strong> criada em
+                        <strong>{{ $ocorrencia->created_at->format('d/m/Y H:i') }}</strong>.
+                        por <strong>{{ $ocorrencia->user->name }}</strong>.
+                    </div>
+                @endif                
             @else 
                 <div class="row mb-3">
                     <div class="col-12 col-md-6 col-lg-4">

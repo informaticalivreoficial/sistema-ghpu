@@ -71,7 +71,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="hold-transition sidebar-mini text-sm">
+<body class="hold-transition sidebar-mini text-sm {{ auth()->user()->isEmployee() ? 'sidebar-closed sidebar-collapse' : '' }}">
     <div class="wrapper">
         <livewire:navigation.top-navigation />
 

@@ -35,7 +35,7 @@ class Ocorrencias extends Component
 
     public function loadMore()
     {
-        $this->perPage += 12; 
+        $this->perPage += 24; 
     }
 
     public function sortBy(string $field): void
@@ -90,19 +90,37 @@ class Ocorrencias extends Component
     public function render()
     {
         $title = 'Ocorrências';
+
         $searchableFields = ['title','content'];
+        
         $ocorrencias = Ocorrencia::query()
-            ->when($this->search, function ($query) use ($searchableFields) {
-                $query->where(function ($q) use ($searchableFields) {
-                    foreach ($searchableFields as $field) {
-                        $q->orWhere($field, 'LIKE', "%{$this->search}%");
-                    }
+        ->when($this->search, function ($query) use ($searchableFields) {
+            $query->where(function ($q) use ($searchableFields) {
+                // Busca nos campos do modelo
+                foreach ($searchableFields as $field) {
+                    $q->orWhere($field, 'LIKE', "%{$this->search}%");
+                }
+
+                // Busca pelo nome do colaborador relacionado
+                $q->orWhereHas('user', function ($qUser) {
+                    $qUser->where('name', 'LIKE', "%{$this->search}%");
                 });
-            })
-            ->orderBy($this->sortField, $this->sortDirection)
-            ->paginate($this->perPage);
-        return view('livewire.dashboard.ocorrencias.ocorrencias',[
+            });
+        })
+        ->orderBy($this->sortField, $this->sortDirection)
+        ->paginate($this->perPage);
+
+        $view = auth()->user()->hasRole('employee')
+        ? 'livewire.dashboard.ocorrencias.ocorrencias-colaborador'
+        : 'livewire.dashboard.ocorrencias.ocorrencias';
+
+        return view($view, [
             'ocorrencias' => $ocorrencias,
-        ])->with('title', $title);
+            'title' => $title,
+        ]);    
+
+        // return view('livewire.dashboard.ocorrencias.ocorrencias',[
+        //     'ocorrencias' => $ocorrencias,
+        // ])->with('title', $title);
     }
 }

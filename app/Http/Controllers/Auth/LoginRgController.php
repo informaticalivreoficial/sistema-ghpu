@@ -9,9 +9,12 @@ use Illuminate\Support\Facades\Auth;
 
 class LoginRgController extends Controller
 {
+    public $config;
+
     public function show()
     {
-        return view('auth.login-rg');
+        $this->config = \App\Models\Config::first();
+        return view('auth.login-rg', ['config' => $this->config]);
     }
 
     public function login(Request $request)

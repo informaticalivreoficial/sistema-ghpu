@@ -14,9 +14,9 @@
 
         {{-- HEADER --}}
         <div class="px-8 pt-8 pb-6 text-center border-b">
-            <div class="mx-auto h-14 w-14 rounded-full bg-black text-white flex items-center justify-center text-xl font-bold mb-3">
-                H
-            </div>
+            <img width="{{env('LOGOMARCA_GERENCIADOR_WIDTH')}}" height="{{env('LOGOMARCA_GERENCIADOR_HEIGHT')}}" 
+                src="{{ $config->getlogoadmin() }}" alt="{{$config->app_name}}"
+                    class="mx-auto d-block mb-4 cursor-pointer" />
 
             <h1 class="text-xl font-semibold text-gray-900">
                 Acesso do Colaborador

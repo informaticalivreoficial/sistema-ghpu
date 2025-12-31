@@ -8,8 +8,12 @@
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{{ route('admin') }}">Painel de Controle</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('users.index') }}">Usuários</a>
-                        </li>
+                        @if (auth()->user()->isEmployee())
+                            <li class="breadcrumb-item">Colaboradores</li>
+                        @else
+                            <li class="breadcrumb-item"><a href="{{ route('users.index') }}">Colaboradores</a></li>
+                        @endif
+                        
                         <li class="breadcrumb-item active">{{ $userId ? 'Editar' : 'Cadastrar' }}</li>
                     </ol>
                 </div>
@@ -18,7 +22,7 @@
     </div>
 
     <form wire:submit.prevent="save" autocomplete="off">
-        <div class="card card-teal card-outline">            
+        <div class="card card-primary card-outline">            
             <div class="card-body"> 
                 <div class="row">
                     <div class="col-12 col-md-6 col-lg-3">
@@ -107,7 +111,7 @@
                                 <div class="form-group">
                                     <label class="labelforms"><b>RG</b></label>
                                     <input type="text" class="form-control" placeholder="RG do Cliente"
-                                        id="rg" wire:model="rg" />
+                                        id="rg" wire:model="rg" x-mask="99.999.999-9" />
                                 </div>
                             </div>
                             <div class="col-12 col-md-6 col-lg-4 mb-2">
@@ -284,89 +288,91 @@
                     </div>
                 </div>
 
-                <div class="card text-muted">
-                    <div class="card-header">
-                        <h4>
-                            <strong>Permissões & Acesso</strong>
-                        </h4>
-                    </div>                                
-                    <div class="card-body">
-                        <div class="row">   
-                            @role(['super-admin', 'admin'])
+                @if (!auth()->user()->isEmployee())
+                    <div class="card text-muted">
+                        <div class="card-header">
+                            <h4>
+                                <strong>Permissões & Acesso</strong>
+                            </h4>
+                        </div>                                
+                        <div class="card-body">
+                            <div class="row">   
+                                @role(['super-admin', 'admin'])
+                                    <div class="col-12 col-md-6 col-lg-4">
+                                        <div class="form-group">
+                                            <label class="labelforms"><b>Empresa</b></label>
+                                            <select class="form-control" wire:model="company_id">
+                                                <option value="">Selecione</option>
+                                                @foreach ($companies as $company)
+                                                    <option value="{{ $company->id }}">{{ $company->alias_name }}</option>
+                                                @endforeach
+                                            </select>
+                                            @error('company_id') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                                        </div>
+                                    </div>                                
+                                @endrole
                                 <div class="col-12 col-md-6 col-lg-4">
                                     <div class="form-group">
-                                        <label class="labelforms"><b>Empresa</b></label>
-                                        <select class="form-control" wire:model="company_id">
-                                            <option value="">Selecione</option>
-                                            @foreach ($companies as $company)
-                                                <option value="{{ $company->id }}">{{ $company->alias_name }}</option>
-                                            @endforeach
-                                        </select>
-                                        @error('company_id') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                                        <label class="labelforms"><b>Cargo</b></label>
+                                        <input type="text" class="form-control @error('cargo') is-invalid @enderror" id="cargo" placeholder="Cargo" wire:model="cargo">
+                                        @error('cargo')
+                                            <span class="error erro-feedback">{{ $message }}</span>
+                                        @enderror
                                     </div>
-                                </div>                                
-                            @endrole
-                            <div class="col-12 col-md-6 col-lg-4">
-                                <div class="form-group">
-                                    <label class="labelforms"><b>Cargo</b></label>
-                                    <input type="text" class="form-control @error('cargo') is-invalid @enderror" id="cargo" placeholder="Cargo" wire:model="cargo">
-                                    @error('cargo')
-                                        <span class="error erro-feedback">{{ $message }}</span>
-                                    @enderror
                                 </div>
+                                <div class="col-12 mt-3">
+                                    <div class="form-check d-inline mx-2">
+                                        <input id="employee" class="form-check-input" type="radio"
+                                            wire:model="roleSelected" value="employee">
+                                        <label for="employee">Colaborador</label>
+                                    </div>
+
+                                    <div class="form-check d-inline mx-2">
+                                        <input id="manager" class="form-check-input" type="radio"
+                                            wire:model="roleSelected" value="manager">
+                                        <label for="manager">Gerente</label>
+                                    </div>
+
+                                    <div class="form-check d-inline mx-2">
+                                        <input id="admin" class="form-check-input" type="radio"
+                                            wire:model="roleSelected" value="admin">
+                                        <label for="admin">Administrador</label>
+                                    </div>
+
+                                    <div class="form-check d-inline mx-2">
+                                        <input id="superadmin" class="form-check-input" type="radio"
+                                            wire:model="roleSelected" value="super-admin">
+                                        <label for="superadmin">Super Administrador</label>
+                                    </div>
+                                </div>  
+                                
+                                @if (!$userId)
+                                    <div class="col-12 col-md-6 col-lg-4 mt-3">
+                                        <label class="labelforms text-muted"><b>Senha:</b></label>
+                                        <div class="input-group input-group-md">                                    
+                                            <input type="password" id="password" class="form-control @error('password') is-invalid @enderror" wire:model="password">
+                                            <span class="input-group-append">
+                                                <button type="button" onclick="togglePassword('password')" class="btn btn-default btn-flat"><i class="fa fa-eye"></i></button>
+                                            </span>
+                                        </div>
+                                        @error('password') <span class="text-danger text-sm">{{ $message }}</span> @enderror
+                                    </div>
+
+                                    <div class="col-12 col-md-6 col-lg-4 mt-3">
+                                        <label class="labelforms text-muted"><b>Confirmar Senha:</b></label>
+                                        <div class="input-group input-group-md">                                    
+                                            <input type="password" id="password_confirmation" class="form-control @error('password_confirmation') is-invalid @enderror" wire:model.lazy="password_confirmation">
+                                            <span class="input-group-append">
+                                                <button type="button" onclick="togglePassword('password_confirmation')" class="btn btn-default btn-flat"><i class="fa fa-eye"></i></button>
+                                            </span>
+                                        </div>
+                                        @error('password_confirmation') <span class="text-danger text-sm">{{ $message }}</span> @enderror
+                                    </div>
+                                @endif                            
                             </div>
-                            <div class="col-12 mt-3">
-                                <div class="form-check d-inline mx-2">
-                                    <input id="employee" class="form-check-input" type="radio"
-                                        wire:model="roleSelected" value="employee">
-                                    <label for="employee">Colaborador</label>
-                                </div>
-
-                                <div class="form-check d-inline mx-2">
-                                    <input id="manager" class="form-check-input" type="radio"
-                                        wire:model="roleSelected" value="manager">
-                                    <label for="manager">Gerente</label>
-                                </div>
-
-                                <div class="form-check d-inline mx-2">
-                                    <input id="admin" class="form-check-input" type="radio"
-                                        wire:model="roleSelected" value="admin">
-                                    <label for="admin">Administrador</label>
-                                </div>
-
-                                <div class="form-check d-inline mx-2">
-                                    <input id="superadmin" class="form-check-input" type="radio"
-                                        wire:model="roleSelected" value="super-admin">
-                                    <label for="superadmin">Super Administrador</label>
-                                </div>
-                            </div>  
-                             
-                            @if (!$userId)
-                                <div class="col-12 col-md-6 col-lg-4 mt-3">
-                                    <label class="labelforms text-muted"><b>Senha:</b></label>
-                                    <div class="input-group input-group-md">                                    
-                                        <input type="password" id="password" class="form-control @error('password') is-invalid @enderror" wire:model="password">
-                                        <span class="input-group-append">
-                                            <button type="button" onclick="togglePassword('password')" class="btn btn-default btn-flat"><i class="fa fa-eye"></i></button>
-                                        </span>
-                                    </div>
-                                    @error('password') <span class="text-danger text-sm">{{ $message }}</span> @enderror
-                                </div>
-
-                                <div class="col-12 col-md-6 col-lg-4 mt-3">
-                                    <label class="labelforms text-muted"><b>Confirmar Senha:</b></label>
-                                    <div class="input-group input-group-md">                                    
-                                        <input type="password" id="password_confirmation" class="form-control @error('password_confirmation') is-invalid @enderror" wire:model.lazy="password_confirmation">
-                                        <span class="input-group-append">
-                                            <button type="button" onclick="togglePassword('password_confirmation')" class="btn btn-default btn-flat"><i class="fa fa-eye"></i></button>
-                                        </span>
-                                    </div>
-                                    @error('password_confirmation') <span class="text-danger text-sm">{{ $message }}</span> @enderror
-                                </div>
-                            @endif                            
                         </div>
                     </div>
-                </div>
+                @endif
 
                 <div class="row text-right">
                     <div class="col-12 pb-4 mt-3">

@@ -22,6 +22,7 @@ class OcorrenciaForm extends Component
     public $chavesMec = [];
     public $content = '';
     public $title = '';
+    public $company_id;
 
     protected $messages = [
         'destinatario' => 'nome do funcionário que vai assumir o turno',
@@ -538,7 +539,8 @@ class OcorrenciaForm extends Component
             
             // Validação completa quando há tipo selecionado
             $rules = [
-                'type' => 'required|string',                
+                'type' => 'required|string',  
+                'company_id' => 'nullable|exists:companies,id',            
             ];
 
             if($this->type === 'passagem-de-turno') {
@@ -560,9 +562,9 @@ class OcorrenciaForm extends Component
             }
 
             // company_id obrigatório apenas para Manager e Employee
-            if (!auth()->user()->isSuperAdmin() && !auth()->user()->isAdmin()) {
-                $rules['company_id'] = 'required|exists:companies,id';
-            }
+            // if (!auth()->user()->isSuperAdmin() && !auth()->user()->isAdmin()) {
+            //     $rules['company_id'] = 'required|exists:companies,id';
+            // }
             
             // Adiciona regras específicas baseadas no tipo
             $rules = array_merge($rules, $this->getRulesForType($this->type));

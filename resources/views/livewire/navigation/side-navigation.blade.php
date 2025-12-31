@@ -1,4 +1,4 @@
-<aside class="main-sidebar sidebar-light-teal elevation-4">
+<aside class="main-sidebar sidebar-light-primary elevation-4">
     <!-- Brand Logo -->
     <a href="#" class="pt-3 d-flex justify-content-center">
         <img src="{{ $config->getlogoadmin() }}" alt="{{ $config->app_name }}"
@@ -35,34 +35,38 @@
                     </a>
                 </li>
                 @endrole
-                <li class="nav-item {{ Route::is('users.*') ? 'menu-open' : '' }}">
-                    <a href="#" class="nav-link {{ Route::is('users.*') ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-users"></i>
-                        <p> Usuários <i class="fas fa-angle-left right"></i></p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{route('users.index')}}" class="nav-link {{ Route::is('users.index') ? 'active' : '' }}">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Colaboradores <span class="badge badge-info right">{{$clientCount}}</span></p>
-                            </a>
-                        </li>
-                        @role(['super-admin', 'admin'])
+
+                @role(['super-admin', 'admin', 'manager'])
+                    <li class="nav-item {{ Route::is('users.*') ? 'menu-open' : '' }}">
+                        <a href="#" class="nav-link {{ Route::is('users.*') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-users"></i>
+                            <p> Usuários <i class="fas fa-angle-left right"></i></p>
+                        </a>
+                        <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="{{route('users.time')}}" class="nav-link {{ Route::is('users.time') ? 'active' : '' }}">
+                                <a href="{{route('users.index')}}" class="nav-link {{ Route::is('users.index') ? 'active' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
-                                    <p>Time <span class="badge badge-info right">{{$timeCount}}</span></p>
+                                    <p>Colaboradores <span class="badge badge-info right">{{$clientCount}}</span></p>
                                 </a>
                             </li>
-                        @endrole
-                        <li class="nav-item">
-                            <a href="{{route('users.create')}}" class="nav-link {{ Route::is('users.create') ? 'active' : '' }}">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Cadastrar Novo</p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
+                            @role(['super-admin', 'admin'])
+                                <li class="nav-item">
+                                    <a href="{{route('users.time')}}" class="nav-link {{ Route::is('users.time') ? 'active' : '' }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Time <span class="badge badge-info right">{{$timeCount}}</span></p>
+                                    </a>
+                                </li>
+                            @endrole
+                            <li class="nav-item">
+                                <a href="{{route('users.create')}}" class="nav-link {{ Route::is('users.create') ? 'active' : '' }}">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Cadastrar Novo</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                @endrole
+
                 @role(['super-admin', 'admin'])
                     <li class="nav-item">
                         <a href="{{route('companies.index')}}" class="nav-link {{ Route::is('companies.*') ? 'active' : '' }}">
