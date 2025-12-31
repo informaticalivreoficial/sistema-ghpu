@@ -23,6 +23,7 @@ use App\Http\Controllers\Admin\{
     TemplateController,
     UserController
 };
+use App\Http\Controllers\Auth\LoginRgController;
 use App\Http\Controllers\Web\{
     FeedController,
     Webcontroller
@@ -42,6 +43,9 @@ Route::group(['namespace' => 'Web', 'as' => 'web.'], function () {
     //Institucional
     Route::get('/', [WebController::class, 'home'])->name('home');
     Route::get('/politica-de-privacidade', [WebController::class, 'privacy'])->name('privacy');
+
+    Route::get('/login', [LoginRgController::class, 'show'])->name('login');
+    Route::post('/login', [LoginRgController::class, 'login'])->name('login.rg');
 
     // Route::get('/teste-r2', function () {
     //     Storage::disk('s3')->put('example.txt', 'Hello World');
@@ -144,13 +148,7 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], functi
     Route::get('usuarios/time', Time::class)->name('users.time');
     Route::get('usuarios/cadastrar', Form::class)->name('users.create');
     Route::get('usuarios/{userId}/editar', Form::class)->name('users.edit');
-    Route::get('usuarios/{user}/visualizar', ViewUser::class)->name('users.view');  
-
-    //*********************** Email **********************************************/
-    Route::get('email/suporte', [EmailController::class, 'suporte'])->name('email.suporte');
-    Route::match(['post', 'get'], 'email/enviar-email', [EmailController::class, 'send'])->name('email.send');
-    Route::post('email/sendEmail', [EmailController::class, 'sendEmail'])->name('email.sendEmail');
-    Route::match(['post', 'get'], 'email/success', [EmailController::class, 'success'])->name('email.success');
+    Route::get('usuarios/{user}/visualizar', ViewUser::class)->name('users.view');    
 
 });
 
