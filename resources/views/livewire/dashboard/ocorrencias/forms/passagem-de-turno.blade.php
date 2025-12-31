@@ -1,5 +1,5 @@
 <div> 
-    <h1 class="text-xl text-center pb-4">Passagem de Turno Hotel São Charbel</h1> 
+    <h1 class="text-xl text-center pb-4">Passagem de Turno</h1> 
     <div class="card">
         <div class="card-body">
             <div class="row">

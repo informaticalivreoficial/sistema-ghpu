@@ -271,6 +271,10 @@ class OcorrenciaForm extends Component
         
         'form.chaves_mecanicas.*.pessoa.min' => 'O nome deve ter no mínimo 3 caracteres.',
         'form.chaves_mecanicas.*.pessoa.max' => 'O nome deve ter no máximo 100 caracteres.',
+
+        'formVarreduras.horario.required' => 'Informe o horário da varredura.',
+        'formVarreduras.horario.in' => 'O horário deve ser 06h, 14h ou 20h.',
+
     ];
 
     public array $itensChavesFixas = [
@@ -289,6 +293,31 @@ class OcorrenciaForm extends Component
         29 => 'Chave Porta Automática Recepção Entrada',
         30 => 'Chave (Vareta) Abertura do P2',
         31 => 'Chave Cartão Magnético Rouparia 3° Andar',
+    ];
+
+    public array $formVarreduras = [
+        'horario' => null,
+
+        'conferencia_ficha' => [
+            'nome_hospede' => false,
+            'acompanhantes' => false,
+            'data_entrada' => false,
+            'data_saida' => false,
+            'valores_diarias' => false,
+            'consumacao' => false,
+            'comandas' => false,
+            'ficha_assinada' => false,
+            'placa_veiculo' => false,
+            'observacoes' => false,
+            'cnpj_nf' => false,
+        ],
+
+        'conferencia_adicional' => [
+            'chaves_veiculos' => false,
+            'codigo_cores' => false,
+        ],
+
+        'observacoes_turno' => '',
     ];
     
 
@@ -398,6 +427,16 @@ class OcorrenciaForm extends Component
         // SEGUNDO: Se for edição, carrega e SOBRESCREVE os dados
         if ($id) {
             $this->ocorrencia = Ocorrencia::findOrFail($id);
+
+            // 🔹 Preenche formVarreduras se for checklist
+            if ($this->ocorrencia->type === 'varreduras-fichas-sistemas') {
+
+                // Garante estrutura base
+                $this->formVarreduras = array_replace_recursive(
+                    $this->formVarreduras,
+                    $this->ocorrencia->form ?? []
+                );
+            }
             
             $this->type = $this->ocorrencia->type;
             $this->title = $this->ocorrencia->title;
@@ -495,18 +534,15 @@ class OcorrenciaForm extends Component
                     'type.required' => 'Selecione o tipo de ocorrência antes de continuar.',
                 ]);
                 return; 
-            }
-
-            //dd($this->content);
-            
+            }    
             
             // Validação completa quando há tipo selecionado
             $rules = [
-                'type' => 'required|string',
-                'form' => 'required|array',
+                'type' => 'required|string',                
             ];
 
             if($this->type === 'passagem-de-turno') {
+                $rules['form'] = 'required|array';
                 $rules['destinatario'] = 'required|string|min:6|max:100';                
             }
 
@@ -519,6 +555,10 @@ class OcorrenciaForm extends Component
                 $rules['content'] = 'required|string|min:10';
             }
 
+            if ($this->type === 'varreduras-fichas-sistemas') {
+                $rules['formVarreduras.horario'] = 'required|in:06h,14h,20h';
+            }
+
             // company_id obrigatório apenas para Manager e Employee
             if (!auth()->user()->isSuperAdmin() && !auth()->user()->isAdmin()) {
                 $rules['company_id'] = 'required|exists:companies,id';
@@ -528,14 +568,14 @@ class OcorrenciaForm extends Component
             $rules = array_merge($rules, $this->getRulesForType($this->type));
             //dd($rules);
             $this->validate($rules);
-
+            
             $data = [
                 'company_id'   => auth()->user()->company_id,
                 'user_id'      => auth()->id(),
                 'type'         => $this->type,                               
                 'status'       => 1,
             ];
-
+            
             if ($this->type === 'ocorrencias-diarias') {   
                 $data['title']        = $this->titleFromType($this->type);             
                 $data['content']      = $this->content;
@@ -554,6 +594,17 @@ class OcorrenciaForm extends Component
                 $data['destinatario'] = null;
                 $data['content'] = $this->content;
                 $data['form'] = null;
+            }
+
+            if($this->type === 'passagem-de-turno') {
+                $data['form'] = $this->form;
+            }
+
+            if ($this->type === 'varreduras-fichas-sistemas') {
+                $data['title'] = $this->titleFromType($this->type);
+                $data['destinatario'] = null;
+                $data['content'] = null;
+                $data['form'] = $this->formVarreduras;                
             }
 
             // Adiciona company_id e user_id APENAS se for CRIAÇÃO
@@ -603,6 +654,8 @@ class OcorrenciaForm extends Component
             
         } catch (\Illuminate\Validation\ValidationException $e) {
             $errorCount = count($e->validator->errors()->all());
+
+            $this->dispatch('scroll-to-top');
             
             // Só dispara toast se tiver mais de 1 erro
             if ($errorCount > 1) {

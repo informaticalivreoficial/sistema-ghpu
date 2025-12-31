@@ -3,7 +3,7 @@
         <div class="col-12 col-md-6 col-lg-6">   
             <div class="form-group">
                 <label class="labelforms"><b>*Título</b></label>
-                <input type="text" class="form-control @error('title') is-invalid @enderror"  wire:model.defer="title">
+                <input type="text" class="form-control @error('title') is-invalid @enderror"  wire:model.live="title" placeholder="Título da Ocorrência..."/>
                 @error('title')
                     <span class="invalid-feedback d-block">{{ $message }}</span>
                 @enderror

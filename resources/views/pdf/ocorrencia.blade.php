@@ -74,6 +74,97 @@
             z-index: -1;
             white-space: nowrap;
         }
+
+        .section {
+            margin-top: 20px;
+        }
+
+        .section-title {
+            background: #f2f2f2;
+            padding: 6px 8px;
+            font-weight: bold;
+            border-left: 4px solid #000;
+            margin-bottom: 8px;
+        }
+
+        .checklist {
+            margin-top: 5px;
+        }
+
+        .item {
+            display: table;
+            width: 100%;
+            border-bottom: 1px dashed #ccc;
+            padding: 4px 0;
+        }
+
+        .item span {
+            display: table-cell;
+            vertical-align: middle;
+        }
+
+        .item span:first-child {
+            width: 90%;
+        }
+
+        .status {
+            width: 10%;
+            text-align: right;
+            font-weight: bold;
+        }
+
+        .ok {
+            color: #0a7a0a;
+        }
+
+        .no {
+            color: #c40000;
+        }
+
+        .obs {
+            border: 1px solid #ccc;
+            padding: 8px;
+            min-height: 60px;
+            margin-top: 5px;
+        }
+
+        .meta-box {
+            margin: 15px 0 18px 0;
+            border: 1px solid #000;
+            font-size: 11px;
+        }
+
+        .meta-row {
+            display: table;
+            width: 100%;
+            border-bottom: 1px solid #000;
+        }
+
+        .meta-row:last-child {
+            border-bottom: none;
+        }
+
+        .meta-label {
+            display: table-cell;
+            width: 15%;
+            padding: 6px 8px;
+            font-weight: bold;
+            background: #f2f2f2;
+            border-right: 1px solid #000;
+            text-align: right;
+        }
+
+        .meta-value {
+            display: table-cell;
+            width: 35%;
+            padding: 6px 8px;
+            border-right: 1px solid #000;
+        }
+
+        .meta-row .meta-value:last-child {
+            border-right: none;
+        }
+        
     </style>
 </head>
 <body>
@@ -99,17 +190,49 @@
         DOCUMENTO INTERNO
     </div>
 
-    <h1 style="text-align: center;">Ocorrências</h1>
+    <h1 style="text-align: center;">Ocorrência #{{ $ocorrencia->id }}</h1>
 
-    <p>
-        <strong>Tipo de ocorrência:</strong> {{ $ocorrencia->type }}   
-        <span style="margin: 0 10px 0 10px;">-</span>     
-        <strong>Colaborador:</strong> {{ $ocorrencia->user->name }}
-        <span style="margin: 0 10px 0 10px;">-</span> 
-        <strong>Data:</strong> {{ $ocorrencia->created_at->format('d/m/Y H:i') }}
-    </p>
+    <div class="meta-box">
+        <div class="meta-row">
+            <div class="meta-label">Tipo:</div>
+            <div class="meta-value">
+                @switch($ocorrencia->type)
+                    @case('varreduras-fichas-sistemas')
+                        Varredura de Fichas x Sistemas
+                        @break
 
-    <p><strong>Título:</strong> {{ $ocorrencia->title }}</p>    
+                    @case('ocorrencias-diarias')
+                        Ocorrências Diárias
+                        @break
+
+                    @case('passagem-de-turno')
+                        Passagem de Turno
+                        @break
+
+                    @case('branco')
+                        Em Branco
+                        @break
+                @endswitch
+            </div>
+
+            <div class="meta-label">Colaborador:</div>
+            <div class="meta-value">
+                {{ $ocorrencia->user->name }}
+            </div>
+        </div>
+
+        <div class="meta-row">
+            <div class="meta-label">Título:</div>
+            <div class="meta-value">
+                {{ $ocorrencia->title }}
+            </div>
+
+            <div class="meta-label">Data:</div>
+            <div class="meta-value">
+                {{ $ocorrencia->created_at->format('d/m/Y H:i') }}
+            </div>
+        </div>
+    </div>  
         
     @if ($ocorrencia->type === 'passagem-de-turno')     
         <p>       
@@ -194,6 +317,60 @@
         </table>
 
         <h2>Checklist — Chaves Mecânicas dos Apartamentos</h2>
+    @endif
+
+    @if ($ocorrencia->type === 'varreduras-fichas-sistemas')        
+
+        <p style="margin-top: 10px;">
+            <strong>Horário da conferência:</strong>
+            <span style="border-bottom: 1px solid #000; padding: 0 10px;">
+                {{ $data['horario'] ?? '-' }}
+            </span>
+        </p>
+
+        {{-- CONFERÊNCIA DA FICHA --}}
+        @if (!empty($data['conferencia_ficha']))
+            <div class="section">
+                <div class="section-title">1. Conferência da Ficha Física e Sistema</div>
+
+                <div class="checklist">
+                    @foreach ($data['conferencia_ficha'] as $key => $checked)
+                        <div class="item">
+                            <span>{{ $data['labels'][$key] ?? $key }}</span>
+                            <span class="status {{ $checked ? 'ok' : 'no' }}">
+                                {{ $checked ? '✔' : '✖' }}
+                            </span>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        @endif
+
+        {{-- CONFERÊNCIA ADICIONAL --}}
+        @if (!empty($data['conferencia_adicional']))
+            <div class="section">
+                <div class="section-title">2. Conferência Adicional</div>
+
+                <div class="checklist">
+                    @foreach ($data['conferencia_adicional'] as $key => $checked)
+                        <div class="item">
+                            <span>{{ $labelsAdicional[$key] ?? $key }}</span>
+                            <span class="status {{ $checked ? 'ok' : 'no' }}">
+                                {{ $checked ? '✔' : '✖' }}
+                            </span>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        @endif
+
+        {{-- OBSERVAÇÕES --}}
+        <div class="section">
+            <div class="section-title">Observações do Turno</div>
+            <div class="obs">
+                {{ $data['observacoes_turno'] ?? '—' }}
+            </div>
+        </div>
     @endif
 
     <footer>

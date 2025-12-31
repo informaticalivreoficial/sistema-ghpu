@@ -103,18 +103,22 @@
 
         Livewire.on('toast', (event) => {
             toastr[event.type](event.message);
-            
-            // Só faz scroll para o topo se for erro (validação)
-            if (event.type === 'error') {
-                setTimeout(() => {
-                    window.scrollTo({
-                        top: 0,
-                        behavior: 'smooth'
-                    });
-                }, 100);
-            }
         });
         
+    });
+
+    document.addEventListener('livewire:init', () => {
+        Livewire.on('scroll-to-top', () => {
+            const firstError = document.querySelector('.is-invalid, .text-danger');
+            if (firstError) {
+                firstError.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+            } else {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
     });
 
     
