@@ -10,6 +10,8 @@ class NotificationsList extends Component
 {
     use WithPagination;
 
+    protected $paginationTheme = 'bootstrap';
+
     public function markAsRead($notificationId)
     {
         $notification = Auth::user()
@@ -19,6 +21,8 @@ class NotificationsList extends Component
 
         if ($notification) {
             $notification->markAsRead();
+            $this->resetPage();
+
             $this->dispatch('toast', [
                 'type' => 'success',
                 'message' => 'Notificação marcada como lida'
@@ -28,7 +32,10 @@ class NotificationsList extends Component
 
     public function markAllAsRead()
     {
-        Auth::user()->unreadNotifications->markAsRead();
+        foreach (Auth::user()->unreadNotifications as $notification) {
+            $notification->markAsRead();
+        }
+
         $this->dispatch('toast', [
             'type' => 'success',
             'message' => 'Todas marcadas como lidas'
@@ -39,9 +46,10 @@ class NotificationsList extends Component
     {
         $notifications = Auth::user()
             ->notifications()
+            ->latest()
             ->paginate(20);
 
-        return view('livewire.dashboard.notifications-list',[
+        return view('livewire.dashboard.notifications-list', [
             'notifications' => $notifications
         ]);
     }

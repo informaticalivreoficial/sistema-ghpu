@@ -77,17 +77,17 @@ Route::group(['namespace' => 'Web', 'as' => 'web.'], function () {
 
 Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], function () {
 
-    //Somente Gerente e Super Admin
-    Route::middleware('role:super-admin|admin')->group(function () {
+    //Somente Gerente e Super Admin e Admin
+    Route::middleware('role:super-admin|admin|manager')->group(function () {
         Route::get('configuracoes', Settings::class)->name('settings');
-
-        // Companies
+        Route::get('notificacoes', NotificationsList::class)->name('notifications.index'); 
+    });
+    
+    // Somente Super Admin e Admin
+    Route::middleware('role:super-admin|admin')->group(function () {
         Route::get('empresas', Companies::class)->name('companies.index');
         Route::get('empresas/cadastrar-empresa', CompanyForm::class)->name('companies.create');
-        Route::get('empresas/{company}/editar-empresa', CompanyForm::class)->name('companies.edit');
-        Route::get('empresas/{company}/visualizar-empresa', ViewUser::class)->name('companies.view');
-
-        
+        Route::get('empresas/{company}/editar-empresa', CompanyForm::class)->name('companies.edit');       
     });
 
     Route::get('/', Dashboard::class)->name('admin');
@@ -95,7 +95,7 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], functi
     Route::get('ocorrencias/{ocorrencia}/visualizar', [OcorrenciaPdfController::class, 'show'])->name('ocorrencia.pdf');
     Route::get('usuarios/{user}/perfil', [UserPdfController::class, 'profile'])->name('users.profile');    
 
-    Route::get('notificacoes', NotificationsList::class)->name('notifications.index'); 
+    
 
     //*********************** Posts *********************************************/
     Route::get('posts/{post}/editar', PostForm::class)->name('posts.edit');
@@ -118,8 +118,7 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], functi
     Route::get('usuarios/colaboradores', Users::class)->name('users.index');
     Route::get('usuarios/time', Time::class)->name('users.time');
     Route::get('usuarios/cadastrar', Form::class)->name('users.create');
-    Route::get('usuarios/{userId}/editar', Form::class)->name('users.edit');
-    Route::get('usuarios/{user}/visualizar', ViewUser::class)->name('users.view');    
+    Route::get('usuarios/{userId}/editar', Form::class)->name('users.edit');   
 
 });
 

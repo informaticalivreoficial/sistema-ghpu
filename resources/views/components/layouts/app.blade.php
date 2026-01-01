@@ -151,56 +151,56 @@
 
     <script>
         document.addEventListener('alpine:init', () => {
-        Alpine.data('quillEditor', ({ value, model }) => ({
-            quill: null,
+            Alpine.data('quillEditor', ({ value, model }) => ({
+                quill: null,
 
-            init() {
-                if (this.quill) return; // 🔥 evita duplicar editor
+                init() {
+                    if (this.quill) return; // 🔥 evita duplicar editor
 
-                this.quill = new Quill(this.$refs.editor, {
-                    theme: 'snow',
-                    placeholder: 'Digite aqui...',
-                    modules: {
-                        toolbar: [
-                            [{ header: [1, 2, 3, false] }],
-                            [{ font: [] }, { size: ['small', false, 'large', 'huge'] }],
-                            ['bold', 'italic', 'underline', 'strike'],
-                            [{ color: [] }, { background: [] }],
-                            [{ list: 'ordered' }, { list: 'bullet' }],
-                            ['blockquote'],
-                            ['link'],
-                            ['clean'],
-                        ],
-                    },
-                });
+                    this.quill = new Quill(this.$refs.editor, {
+                        theme: 'snow',
+                        placeholder: 'Digite aqui...',
+                        modules: {
+                            toolbar: [
+                                [{ header: [1, 2, 3, false] }],
+                                [{ font: [] }, { size: ['small', false, 'large', 'huge'] }],
+                                ['bold', 'italic', 'underline', 'strike'],
+                                [{ color: [] }, { background: [] }],
+                                [{ list: 'ordered' }, { list: 'bullet' }],
+                                ['blockquote'],
+                                ['link'],
+                                ['clean'],
+                            ],
+                        },
+                    });
 
-                // Conteúdo inicial (edit)
-                if (value) {
-                    this.quill.root.innerHTML = value;
-                }
+                    // Conteúdo inicial (edit)
+                    if (value) {
+                        this.quill.root.innerHTML = value;
+                    }
 
-                // 🔥 SINCRONIZAÇÃO INICIAL (create FIX)
-                this.sync();
-
-                // Atualização ao digitar
-                this.quill.on('text-change', () => {
+                    // 🔥 SINCRONIZAÇÃO INICIAL (create FIX)
                     this.sync();
-                });
-            },
 
-            sync() {
-                const html = this.quill.root.innerHTML;
-                const componentEl = this.$el.closest('[wire\\:id]');
+                    // Atualização ao digitar
+                    this.quill.on('text-change', () => {
+                        this.sync();
+                    });
+                },
 
-                if (!componentEl || typeof Livewire === 'undefined') return;
+                sync() {
+                    const html = this.quill.root.innerHTML;
+                    const componentEl = this.$el.closest('[wire\\:id]');
 
-                const component = Livewire.find(componentEl.getAttribute('wire:id'));
-                if (component) {
-                    component.set(model, html, false);
-                }
-            },
-        }));
-    });
+                    if (!componentEl || typeof Livewire === 'undefined') return;
+
+                    const component = Livewire.find(componentEl.getAttribute('wire:id'));
+                    if (component) {
+                        component.set(model, html, false);
+                    }
+                },
+            }));
+        });        
     </script>
 
     

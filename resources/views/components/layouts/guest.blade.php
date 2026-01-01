@@ -7,6 +7,8 @@
 
     <title>{{ $title ?? 'Page Title' }} | {{ env('APP_NAME') }}</title>
 
+    <link rel="icon" href="{{ asset('theme/images/chave.png')}}" type="image/x-icon">
+
     {{-- Theme style --}}
     <link rel="stylesheet" href="{{ asset('theme/dist/css/adminlte.min.css') }}">
 

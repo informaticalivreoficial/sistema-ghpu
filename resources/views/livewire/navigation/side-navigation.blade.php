@@ -46,7 +46,7 @@
                             <li class="nav-item">
                                 <a href="{{route('users.index')}}" class="nav-link {{ Route::is('users.index') ? 'active' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
-                                    <p>Colaboradores <span class="badge badge-info right">{{$clientCount}}</span></p>
+                                    <p>Colaboradores <span class="badge badge-info right">{{$colaboradoresCount}}</span></p>
                                 </a>
                             </li>
                             @role(['super-admin', 'admin'])

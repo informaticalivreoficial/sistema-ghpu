@@ -27,10 +27,12 @@ class OcorrenciaCriada extends Notification
     public function toDatabase($notifiable)
     {
         return [
-            'message' => 'Nova ocorrência cadastrada: ' . $this->ocorrencia->title,
             'ocorrencia_id' => $this->ocorrencia->id,
+            'message' => 'Ocorrência: ' . $this->ocorrencia->title,
+            'company_id' => $this->ocorrencia->company_id,             
             'type' => $this->ocorrencia->type,
             'user_name' => $this->ocorrencia->user->name ?? 'Desconhecido',
+            'url' => route('ocorrencia.pdf', $this->ocorrencia->id),
             'created_at' => $this->ocorrencia->created_at->format('d/m/Y H:i'),
         ];
     }
@@ -38,22 +40,10 @@ class OcorrenciaCriada extends Notification
     public function toArray($notifiable)
     {
         return [
-            'message' => 'Nova ocorrência cadastrada: ' . $this->ocorrencia->title,
+            'message' => 'Nova ocorrência: ' . $this->ocorrencia->title,
             'ocorrencia_id' => $this->ocorrencia->id,
         ];
     }
-
-    
-
-    // public function toDatabase($notifiable)
-    // {
-    //     return [
-    //         'title' => 'Nova ocorrência criada',
-    //         'message' => 'Uma nova ocorrência foi cadastrada.',
-    //         'ocorrencia_id' => $this->ocorrencia->id,
-    //         'type' => 'ocorrencia',
-    //     ];
-    // }
 
     
     // public function toMail($notifiable)

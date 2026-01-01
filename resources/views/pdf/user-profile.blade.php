@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Ficha do Colaborador</title>
-
+    
     <style>
         body {
             font-family: DejaVu Sans, sans-serif;
