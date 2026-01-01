@@ -58,4 +58,26 @@ class Ocorrencia extends Model
     {
         return $this->belongsTo(User::class, 'update_user_id');
     }
+
+    public function canBeEditedBy(User $user): bool
+    {
+        // Admins sempre podem
+        if ($user->hasRole(['manager', 'admin', 'super-admin'])) {
+            return true;
+        }
+
+        // Só o autor pode editar
+        if ($user->id !== $this->user_id) {
+            return false;
+        }
+
+        // Se for colaborador → só até 6 horas
+        return $this->created_at->diffInMinutes(now()) < 360;
+    }
+
+    public function canBeDeletedBy(User $user): bool
+    {
+        // mesma regra
+        return $this->canBeEditedBy($user);
+    }
 }

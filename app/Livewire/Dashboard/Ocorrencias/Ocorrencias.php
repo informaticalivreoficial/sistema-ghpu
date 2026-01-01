@@ -67,6 +67,12 @@ class Ocorrencias extends Component
     public function delete(): void
     {
         try {
+            $user = auth()->user();
+
+            if (! $this->ocorrencia->canBeDeletedBy($user)) {
+                abort(403, 'Você não pode excluir esta ocorrência após 6 horas.');
+            }
+            
             $ocorrencia = Ocorrencia::findOrFail($this->delete_id);            
 
             $ocorrencia->delete();

@@ -200,7 +200,24 @@
                     }
                 },
             }));
-        });        
+        });   
+        
+        document.addEventListener('livewire:init', () => {
+
+            Livewire.on('swal', (params) => {
+
+                const data = params[0] ?? {};
+
+                Swal.fire({
+                    title: data.title ?? 'Atenção',
+                    text: data.text ?? '',
+                    icon: data.icon ?? 'info',
+                    confirmButtonText: data.confirmButtonText ?? 'OK',
+                });
+
+            });
+
+        });
     </script>
 
     

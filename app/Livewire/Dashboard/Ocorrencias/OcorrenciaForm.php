@@ -526,7 +526,24 @@ class OcorrenciaForm extends Component
 
     public function save()
     {
-        try {
+        try {       
+            
+            // 🔒 BLOQUEIO DE EDIÇÃO APÓS 6 HORAS (SÓ SE FOR EDIÇÃO)
+            if ($this->ocorrencia && $this->ocorrencia->id) {
+
+                $user = auth()->user();
+
+                if (! $this->ocorrencia->canBeEditedBy($user)) {
+                    $this->dispatch('swal', [
+                        'title' => 'Edição bloqueada',
+                        'text'  => 'Após 6 horas, colaboradores não podem mais editar a ocorrência.',
+                        'icon'  => 'warning',
+                    ]);
+
+                    return;
+                }
+            }
+
             // Se não tiver tipo selecionado, valida apenas o tipo
             if (empty($this->type)) {
                 $this->validate([
@@ -560,11 +577,6 @@ class OcorrenciaForm extends Component
             if ($this->type === 'varreduras-fichas-sistemas') {
                 $rules['formVarreduras.horario'] = 'required|in:06h,14h,20h';
             }
-
-            // company_id obrigatório apenas para Manager e Employee
-            // if (!auth()->user()->isSuperAdmin() && !auth()->user()->isAdmin()) {
-            //     $rules['company_id'] = 'required|exists:companies,id';
-            // }
             
             // Adiciona regras específicas baseadas no tipo
             $rules = array_merge($rules, $this->getRulesForType($this->type));
@@ -622,12 +634,7 @@ class OcorrenciaForm extends Component
                 $data['user_id'] = auth()->id();
             }
             //dd($data);
-            // dd([
-            //     'type' => $this->type,
-            //     'content' => $this->content,
-            //     'content_length' => strlen($this->content ?? ''),
-            //     'ocorrencia_exists' => $this->ocorrencia ? $this->ocorrencia->id : 'null',
-            // ]);
+            
             $ocorrencia = Ocorrencia::updateOrCreate(
                 ['id' => $this->ocorrencia->id ?? null],
                 $data

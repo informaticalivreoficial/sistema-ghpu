@@ -60,9 +60,9 @@
                                             <img class="img-circle img-bordered-sm" src="{{$cover}}" alt="{{$ocorrencia->user->name}}">
                                             <span class="username">
                                                 {{$ocorrencia->user->name}}
-                                                @if ($ocorrencia->user_id === auth()->id())
+                                                @if ($ocorrencia->canBeDeletedBy(auth()->user()) && $ocorrencia->user_id === auth()->id())
                                                     <a wire:click="setDeleteId({{ $ocorrencia->id }})" class="float-right btn-tool cursor-pointer" title="Excluir"><i class="fas fa-times"></i></a>
-                                                @endif                                                
+                                                @endif                                                                                               
                                             </span>
                                             <span class="description">
                                                 Data de publicação - {{ \Carbon\Carbon::parse($ocorrencia->created_at)->format('d/m/Y - H:i') }}
@@ -75,7 +75,7 @@
                                             <a href="{{ route('ocorrencia.edit', $ocorrencia->id) }}" target="_blank" class="link-black text-sm mr-2 hover:text-gray-400" title="Visualizar">
                                                 <i class="fas fa-search"></i> Visualizar
                                             </a>
-                                            @if ($ocorrencia->user_id === auth()->id())
+                                            @if ($ocorrencia->user_id === auth()->id() && $ocorrencia->canBeEditedBy(auth()->user()))
                                                 <a href="{{ route('ocorrencia.edit', $ocorrencia->id) }}" class="link-black text-sm hover:text-gray-400" title="Editar">
                                                     <i class="fas fa-pen"></i> Editar
                                                 </a>
