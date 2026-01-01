@@ -642,14 +642,32 @@ class OcorrenciaForm extends Component
 
                 $author = auth()->user();
 
-                // Super Admin e Admin recebem tudo
+                // Super Admin e Admin sempre recebem
                 $superAdmins = User::role('super-admin')->get();
                 $admins      = User::role('admin')->get();
 
-                // Usuários da mesma empresa (manager + employee)
-                $companyUsers = User::where('company_id', $ocorrencia->company_id)
-                    ->role(['manager', 'employee'])
-                    ->get();
+                // Destinatários da empresa (definidos pela role de quem criou)
+                if ($author->hasRole('employee')) {
+
+                    // 🔹 Colaborador → só managers da empresa
+                    $companyUsers = User::role('manager')
+                        ->where('company_id', $ocorrencia->company_id)
+                        ->get();
+
+                } elseif ($author->hasRole('manager')) {
+
+                    // 🔹 Manager → colaboradores da empresa
+                    $companyUsers = User::role('employee')
+                        ->where('company_id', $ocorrencia->company_id)
+                        ->get();
+
+                } else {
+
+                    // 🔹 Admin / Super → managers + colaboradores da empresa
+                    $companyUsers = User::role(['manager', 'employee'])
+                        ->where('company_id', $ocorrencia->company_id)
+                        ->get();
+                }
 
                 // Junta todos
                 $users = $superAdmins
