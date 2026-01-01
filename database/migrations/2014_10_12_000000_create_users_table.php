@@ -48,22 +48,13 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->string('cell_phone')->nullable();
             $table->string('whatsapp')->nullable();
-            $table->string('skype')->nullable();
             $table->string('telegram')->nullable();
 
             /** Redes Sociais */
             $table->string('facebook')->nullable();
             $table->string('twitter')->nullable();            
             $table->string('instagram')->nullable();
-            $table->string('youtube')->nullable();
-            $table->string('fliccr')->nullable();
             $table->string('linkedin')->nullable();
-
-            /** access */
-            // $table->boolean('superadmin')->nullable();
-            // $table->boolean('admin')->nullable();
-            // $table->boolean('client')->nullable();
-            // $table->boolean('editor')->nullable();            
 
             $table->unsignedTinyInteger('status')->default(0);
             $table->longText('information')->nullable();

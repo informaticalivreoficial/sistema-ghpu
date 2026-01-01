@@ -21,7 +21,8 @@ use App\Http\Controllers\Admin\{
     EmailController,
     OcorrenciaPdfController,
     TemplateController,
-    UserController
+    UserController,
+    UserPdfController
 };
 use App\Http\Controllers\Auth\LoginRgController;
 use App\Http\Controllers\Web\{
@@ -47,25 +48,7 @@ Route::group(['namespace' => 'Web', 'as' => 'web.'], function () {
     Route::get('/login', [LoginRgController::class, 'show'])->name('login');
     Route::post('/login', [LoginRgController::class, 'login'])->name('login.rg');
 
-    // Route::get('/teste-r2', function () {
-    //     Storage::disk('s3')->put('example.txt', 'Hello World');
-    //     //return Storage::disk('s3')->url('teste.txt');
-    // });
-
-    // Route::get('/debug-disk', function () {
-    //     return [
-    //         'default_disk' => config('filesystems.default'),
-    //         'disk_exists' => Storage::disk('s3') !== null,
-    //     ];
-    // });
-
-    // Route::get('/debug-r2-list', function () {
-    //     try {
-    //         return Storage::disk('s3')->files('/');
-    //     } catch (\Exception $e) {
-    //         return $e->getMessage();
-    //     }
-    // });
+    
 
 //     /** FEED */
 //     Route::get('feed', [FeedController::class, 'feed'])->name('feed');
@@ -75,19 +58,11 @@ Route::group(['namespace' => 'Web', 'as' => 'web.'], function () {
 //     /** Página de Experiências - Específica de uma categoria */
 //     Route::get('/experiencias/{slug}', [FilterController::class, 'experienceCategory'])->name('experienceCategory');
 
-     //Properties
-     Route::get('pesquisar-imoveis', [WebController::class, 'pesquisaImoveis'])->name('pesquisar-imoveis');
-     Route::get('imoveis/{slug}', [WebController::class, 'Property'])->name('property');
-     Route::get('imoveis/categoria/{type}', [WebController::class, 'propertyList'])->name('propertylist');
-     Route::get('imoveis/bairro/{neighborhood}', [WebController::class, 'propertyNeighborhood'])->name('properties.neighborhood');
-     Route::get('lancamentos', [WebController::class, 'PropertyHighliths'])->name('highliths');
-     Route::get('imoveis', [WebController::class, 'Properties'])->name('properties');
+     
 
      //Client
      Route::get('/atendimento', [WebController::class, 'contact'])->name('contact');
-     Route::get('/simulador-de-credito-imobiliario', [WebController::class, 'creditSimulator'])->name('simulator');
      
-
      //Blog
      Route::get('/blog/artigo/{slug}', [WebController::class, 'artigo'])->name('blog.artigo');
      Route::get('/blog/noticia/{slug}', [WebController::class, 'noticia'])->name('blog.noticia');
@@ -112,19 +87,15 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], functi
         Route::get('empresas/{company}/editar-empresa', CompanyForm::class)->name('companies.edit');
         Route::get('empresas/{company}/visualizar-empresa', ViewUser::class)->name('companies.view');
 
-        Route::get('ocorrencias/{ocorrencia}/visualizar', [OcorrenciaPdfController::class, 'show'])->name('ocorrencia.pdf');
+        
     });
 
     Route::get('/', Dashboard::class)->name('admin');
-    
 
-    Route::get('notificacoes', NotificationsList::class)->name('notifications.index');    
+    Route::get('ocorrencias/{ocorrencia}/visualizar', [OcorrenciaPdfController::class, 'show'])->name('ocorrencia.pdf');
+    Route::get('usuarios/{user}/perfil', [UserPdfController::class, 'profile'])->name('users.profile');    
 
-   
-    //*********************** Slides ********************************************/
-    Route::get('slides/{slide}/editar', SlideForm::class)->name('slides.edit');
-    Route::get('slides/cadastrar', SlideForm::class)->name('slides.create');
-    Route::get('slides', Slides::class)->name('slides.index');
+    Route::get('notificacoes', NotificationsList::class)->name('notifications.index'); 
 
     //*********************** Posts *********************************************/
     Route::get('posts/{post}/editar', PostForm::class)->name('posts.edit');
@@ -144,7 +115,7 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], functi
     Route::get('ocorrencias/{id}/editar', OcorrenciaForm::class)->name('ocorrencia.edit');
     Route::get('ocorrencias/cadastrar', OcorrenciaForm::class)->name('ocorrencia.create');
 
-    Route::get('usuarios/clientes', Users::class)->name('users.index');
+    Route::get('usuarios/colaboradores', Users::class)->name('users.index');
     Route::get('usuarios/time', Time::class)->name('users.time');
     Route::get('usuarios/cadastrar', Form::class)->name('users.create');
     Route::get('usuarios/{userId}/editar', Form::class)->name('users.edit');

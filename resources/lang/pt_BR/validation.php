@@ -192,6 +192,15 @@ return [
         'terms'                 => 'termos',
 
        
+        //Users
+        'cpf'                   => 'CPF',
+        'rg'                    => 'RG',
+        'rg_expedition'         => 'data de expedição do RG',
+        'civil_status'          => 'estado civil',
+        'cell_phone'            => 'celular',
+        'code'                  => 'senha',
+        'code_confirmation'     => 'confirmação de senha',
+        'roleSelected'          => 'cargo',
 
     ],
 ];

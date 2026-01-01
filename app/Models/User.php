@@ -14,7 +14,7 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
     protected $fillable = [
-        'name', 'cargo', 'company_id', 'password', 'remember_token', 'code',
+        'name', 'cargo', 'company_id', 'password', 'remember_token', 
         'gender',
         'cpf',
         'rg',
@@ -26,12 +26,21 @@ class User extends Authenticatable
         //Address      
         'zipcode', 'street', 'number', 'complement', 'neighborhood', 'state', 'city',
         //Contact
-        'phone', 'cell_phone', 'whatsapp', 'skype', 'telegram', 'email', 'additional_email',
+        'phone', 'cell_phone', 'whatsapp', 'telegram', 'email', 'additional_email',
         //Social
-        'facebook', 'twitter', 'instagram', 'youtube', 'fliccr', 'linkedin',
+        'facebook', 'twitter', 'instagram', 'linkedin',
         'status',
         'information'
     ];
+    
+    protected static function booted()
+    {
+        static::deleting(function ($user) {
+            if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
+                Storage::disk('public')->delete($user->avatar);
+            }
+        });
+    }
 
     public function isSuperAdmin(): bool
     {
@@ -99,22 +108,6 @@ class User extends Authenticatable
     /**
      * Accerssors and Mutators
     */
-
-    //Exibe a função do usuário
-    // public function getFuncao() {
-    //     if($this->admin == 1 && $this->client == 0 && $this->superadmin == 0){
-    //         return 'Administrador';
-    //     }elseif($this->admin == 0 && $this->client == 1 && $this->superadmin == 0){
-    //         return 'Cliente';
-    //     }elseif($this->admin == 0 && $this->client == 0 && $this->editor == 1 && $this->superadmin == 0){
-    //         return 'Editor';
-    //     }elseif($this->admin == 1 && $this->client == 1 && $this->superadmin == 0){
-    //         return 'Administrador/Cliente'; 
-    //     }else{
-    //         return 'Super Administrador'; 
-    //     }
-    // }
-
     public function getUrlAvatarAttribute()
     {
         if (!empty($this->avatar)) {
@@ -170,26 +163,6 @@ class User extends Authenticatable
         return \Carbon\Carbon::parse($value)->format('d/m/Y');
     }
 
-    public function setAdminAttribute($value)
-    {
-        $this->attributes['admin'] = ($value === true || $value === 'on' ? 1 : 0);
-    }
-
-    public function setEditorAttribute($value)
-    {
-        $this->attributes['editor'] = ($value === true || $value === 'on' ? 1 : 0);
-    }
-
-    public function setClientAttribute($value)
-    {
-        $this->attributes['client'] = ($value === true || $value === 'on' ? 1 : 0);
-    }
-    
-    public function setSuperAdminAttribute($value)
-    {
-        $this->attributes['superadmin'] = ($value === true || $value === 'on' ? 1 : 0);
-    }
-
     public function setZipcodeAttribute($value)
     {
         $this->attributes['zipcode'] = (!empty($value) ? $this->clearField($value) : null);
@@ -202,6 +175,24 @@ class User extends Authenticatable
         }
 
         return substr($value, 0, 5) . '-' . substr($value, 5, 3);
+    }
+
+    public function setRgAttribute($value)
+    {
+        $this->attributes['rg'] = (!empty($value) ? $this->clearField($value) : null);
+    }
+    
+    public function getRgAttribute($value)
+    {
+        if (empty($value)) {
+            return null;
+        }
+
+        return
+            substr($value, 0, 2) . '.' .
+            substr($value, 2, 3) . '.' .
+            substr($value, 5, 3) . '-' .
+            substr($value, 8, 1);
     }
 
     private function convertStringToDouble(?string $param)

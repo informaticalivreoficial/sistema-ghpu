@@ -8,6 +8,7 @@
         body {
             font-family: DejaVu Sans, sans-serif;
             font-size: 12px;
+            color: #555;
         }
 
         h1 {
@@ -34,7 +35,7 @@
             left: 0;
             right: 0;
             height: 80px;
-            border-bottom: 1px solid #000;
+            border-bottom: 1px solid #555;
             padding-bottom: 10px;
         }
 

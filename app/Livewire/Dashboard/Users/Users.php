@@ -21,7 +21,7 @@ class Users extends Component
 
     public $delete_id;
 
-    public string $sortDirection = 'asc';
+    public string $sortDirection = 'desc';
 
     public bool $active;
 
@@ -92,6 +92,7 @@ class Users extends Component
         $this->delete_id = $id;
         $this->dispatch('delete-prompt');        
     }
+    
     #[On('goOn-Delete')]
     public function delete()
     {
@@ -102,7 +103,7 @@ class Users extends Component
             $this->dispatch('swal', [
                 'title' =>  'Success!',
                 'icon' => 'success',
-                'text' => 'Usuário removido com sucesso!'
+                'text' => 'Colaborador removido com sucesso!'
             ]);
         }
     }

@@ -31,7 +31,7 @@
                       </div>
                 </div>
                 <div class="col-12 col-sm-6 my-2 text-right">
-                    <a wire:navigate href="cadastrar-cliente" class="btn btn-sm btn-default"><i class="fas fa-plus mr-2"></i> Cadastrar Novo</a>
+                    <a href="{{ route('users.create') }}" class="btn btn-sm btn-default"><i class="fas fa-plus mr-2"></i> Cadastrar Novo</a>
                 </div>
             </div>
         </div>        
@@ -43,7 +43,12 @@
                         <tr>
                             <th>Foto</th>
                             <th wire:click="sortBy('name')">Nome <i class="expandable-table-caret fas fa-caret-down fa-fw"></i></th>
-                            <th>Empresa</th>
+                            @if (auth()->user()->isSuperAdmin() || auth()->user()->isAdmin())
+                                <th>Empresa</th>                                
+                            @endif     
+                            @if (auth()->user()->isManager())
+                                <th>RG</th>
+                            @endif                       
                             <th>Cargo</th>
                             <th>Ações</th>
                         </tr>
@@ -52,8 +57,8 @@
                         @foreach($users as $user)                    
                         <tr style="{{ ($user->status == true ? '' : 'background: #fffed8 !important;')  }}">
                             @php
-                                if(!empty($user->avatar) && \Illuminate\Support\Facades\Storage::exists($user->avatar)){
-                                    $cover = \Illuminate\Support\Facades\Storage::url($user->avatar);
+                                if(!empty($user->avatar) && Storage::exists($user->avatar)){
+                                    $cover = Storage::url($user->avatar);
                                 } else {
                                     if($user->gender == 'masculino'){
                                         $cover = url(asset('theme/images/avatar5.png'));
@@ -73,10 +78,15 @@
                                 >
                             </td>                            
                             <td>{{$user->name}}</td>
-                            <td>{{$user->company->alias_name}}</td>
+                            @if (auth()->user()->isSuperAdmin() || auth()->user()->isAdmin())
+                                <td>{{$user->company->alias_name}}</td>
+                            @endif                            
+                            @if (auth()->user()->isManager())
+                                <td>{{$user->rg}}</td>
+                            @endif                            
                             <td>{{$user->cargo}}</td>
                             <td>
-                                <label class="switch flex-shrink-0">
+                                <label class="switch flex-shrink-0" wire:model="active">
                                     <input type="checkbox" 
                                         value="{{ $user->status }}"  
                                         wire:change="toggleStatus({{ $user->id }})" 
@@ -84,12 +94,11 @@
                                         {{ $user->status ? 'checked' : '' }}>
                                     <span class="slider round"></span>
                                 </label> 
-                                <button 
-                                    class="action-btn btn-view" 
-                                    data-tooltip="Visualizar"
-                                    wire:click="#">
+                                <a class="action-btn btn-view" 
+                                    href="{{ route('users.profile', ['user' => $user->id]) }}" 
+                                    target="_blank" title="Visualizar Perfil">
                                     <i class="fas fa-search"></i>
-                                </button>                                    
+                                </a>                                                                   
                                 <a href="{{ route('users.edit', [ 'userId' => $user->id ]) }}" 
                                     class="action-btn btn-edit" 
                                     data-tooltip="Editar">
@@ -165,7 +174,7 @@
             swal.fire({
                 icon: 'warning',
                 title: 'Atenção',
-                text: 'Você tem certeza que deseja excluir este Usuário?',
+                text: 'Você tem certeza que deseja excluir este Colaborador?',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',

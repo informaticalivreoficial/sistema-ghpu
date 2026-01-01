@@ -81,3 +81,21 @@
     .mapa-google iframe{
       width: 100% !important;
     }
+
+    .photo-wrapper {
+        width: 260px;
+        height: 260px;
+        display: inline-block;
+        border-radius: 8px;
+        overflow: hidden;
+        cursor: pointer;
+        background-color: #f2f2f2;
+    }
+
+    .photo-preview {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;      /* 🔑 padroniza sem distorcer */
+        object-position: center;
+        display: block;
+    }
