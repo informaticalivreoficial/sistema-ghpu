@@ -639,18 +639,33 @@ class OcorrenciaForm extends Component
 
             // Envia notificação APENAS para criação
             if ($foiCriacao) {
+
+                $author = auth()->user();
+
+                // Super Admin e Admin recebem tudo
                 $superAdmins = User::role('super-admin')->get();
                 $admins      = User::role('admin')->get();
 
-                // Gerentes da mesma empresa da ocorrência
-                $managers = User::role('manager')
-                    ->where('company_id', $ocorrencia->company_id)
+                // Usuários da mesma empresa (manager + employee)
+                $companyUsers = User::where('company_id', $ocorrencia->company_id)
+                    ->role(['manager', 'employee'])
                     ->get();
 
-                // Junta todos os usuários que devem receber a notificação
-                $users = $superAdmins->concat($admins)->concat($managers);
+                // Junta todos
+                $users = $superAdmins
+                    ->concat($admins)
+                    ->concat($companyUsers)
 
-                Notification::send($users, new OcorrenciaCriada($ocorrencia));
+                    // ❌ remove quem criou
+                    ->reject(fn ($user) => $user->id === $author->id)
+
+                    // ❌ evita duplicados
+                    ->unique('id');
+
+                Notification::send(
+                    $users,
+                    new OcorrenciaCriada($ocorrencia, $author)
+                );
             }            
 
             $mensagem = $foiCriacao 

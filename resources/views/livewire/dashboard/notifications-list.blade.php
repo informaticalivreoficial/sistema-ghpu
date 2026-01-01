@@ -1,4 +1,4 @@
-<div>
+<div wire:poll.30s="refreshNotifications">
     <div class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
@@ -23,9 +23,9 @@
                         <button
                             wire:click="markAllAsRead"
                             class="btn btn-sm btn-outline-success"
+                            title="Marcar todas como lidas"
                         >
-                            <i class="fas fa-check-double mr-1"></i>
-                            Marcar todas como lidas
+                            <i class="fas fa-check-double"></i>                            
                         </button>
                     @endif
                 </div>
@@ -35,12 +35,20 @@
         <div class="card-body">
             @forelse($notifications as $notification)
                 <div
-                    class="d-flex align-items-start p-3 border-bottom
-                    {{ is_null($notification->read_at) ? 'bg-light' : '' }}"
+                    class="group d-flex align-items-start p-3 border-bottom
+                    transition-all duration-200 ease-in-out
+                    hover:bg-slate-50 hover:shadow-sm
+                    {{ is_null($notification->read_at) ? 'bg-slate-100' : 'bg-white' }}"
                 >
                     {{-- Ícone --}}
-                    <div class="mr-3">
-                        <span class="badge badge-warning p-2">
+                    <div class="mr-3 mt-1">
+                        <span class="
+                            inline-flex items-center justify-center
+                            rounded-full bg-yellow-100 text-yellow-600
+                            p-2
+                            transition-transform duration-200
+                            group-hover:scale-110
+                        ">
                             <i class="fas fa-bell"></i>
                         </span>
                     </div>
@@ -52,7 +60,7 @@
                         </p>
 
                         <small class="text-muted d-block">
-                            Por <strong>{{ $notification->data['user_name'] ?? 'Sistema' }}</strong>
+                            Colaborador: <strong>{{ $notification->data['user_name'] ?? 'Sistema' }} - {{ $notification->data['cargo'] ?? '' }}</strong>
                         </small>
 
                         <small class="text-muted">
@@ -68,18 +76,20 @@
                                 href="{{ $notification->data['url'] }}"
                                 target="_blank"
                                 wire:click="markAsRead('{{ $notification->id }}')"
-                                class="btn btn-sm btn-outline-primary mb-1"
+                                class="btn btn-sm btn-outline-primary"
+                                title="Visualizar"
                             >
-                                Visualizar
+                                <i class="fas fa-search "></i>
                             </a>
                         @endif
 
                         @if(is_null($notification->read_at))
                             <button
                                 wire:click="markAsRead('{{ $notification->id }}')"
-                                class="btn btn-sm btn-link text-success p-0"
+                                class="btn btn-sm btn-outline-success"
+                                title="Marcar como Lida"
                             >
-                                Marcar como lida
+                                <i class="fas fa-check "></i>
                             </button>
                         @endif
                     </div>
@@ -92,21 +102,12 @@
             @endforelse
         </div>
 
-    </div>
-
-    
-
-    {{-- Lista --}}
-    <div class="card shadow-sm">
-        <div class="card-body p-0">
-            
-        </div>
-
         {{-- Paginação --}}
         @if($notifications->hasPages())
             <div class="card-footer">
                 {{ $notifications->links() }}
             </div>
         @endif
-    </div>
+
+    </div>    
 </div>

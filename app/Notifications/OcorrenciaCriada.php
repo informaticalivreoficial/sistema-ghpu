@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Models\Ocorrencia;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -13,10 +14,12 @@ class OcorrenciaCriada extends Notification
     use Queueable;
 
     public $ocorrencia;
+    public $author;
 
-    public function __construct(Ocorrencia $ocorrencia)
+    public function __construct(Ocorrencia $ocorrencia, User $author)
     {
         $this->ocorrencia = $ocorrencia;
+        $this->author = $author;
     }
 
     public function via($notifiable)
@@ -29,9 +32,14 @@ class OcorrenciaCriada extends Notification
         return [
             'ocorrencia_id' => $this->ocorrencia->id,
             'message' => 'Ocorrência: ' . $this->ocorrencia->title,
-            'company_id' => $this->ocorrencia->company_id,             
+
+            // 🔑 FUNDAMENTAL
+            'author_id' => $this->author->id,
+            'company_id' => $this->author->company_id,  
+
             'type' => $this->ocorrencia->type,
-            'user_name' => $this->ocorrencia->user->name ?? 'Desconhecido',
+            'user_name' => $this->author->name,
+            'cargo' => $this->author->cargo ?? '',
             'url' => route('ocorrencia.pdf', $this->ocorrencia->id),
             'created_at' => $this->ocorrencia->created_at->format('d/m/Y H:i'),
         ];
@@ -40,11 +48,11 @@ class OcorrenciaCriada extends Notification
     public function toArray($notifiable)
     {
         return [
-            'message' => 'Nova ocorrência: ' . $this->ocorrencia->title,
             'ocorrencia_id' => $this->ocorrencia->id,
+            'author_id' => $this->author->id,
+            'message' => 'Nova ocorrência: ' . $this->ocorrencia->title,
         ];
     }
-
     
     // public function toMail($notifiable)
     // {
@@ -52,13 +60,5 @@ class OcorrenciaCriada extends Notification
     //         ->subject('Nova ocorrência cadastrada')
     //         ->line('Uma nova ocorrência foi criada.')
     //         ->action('Ver ocorrência', url('/admin/ocorrencias/ocorrencia/'.$this->ocorrencia->id));
-    // }
-
-   
-    // public function toArray(object $notifiable): array
-    // {
-    //     return [
-    //         //
-    //     ];
     // }
 }

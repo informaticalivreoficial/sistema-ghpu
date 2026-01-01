@@ -42,6 +42,12 @@ class NotificationsList extends Component
         ]);
     }
 
+    public function refreshNotifications()
+    {
+        // Método vazio mesmo
+        // Serve apenas para forçar o re-render via poll
+    }
+
     public function render()
     {
         $notifications = Auth::user()

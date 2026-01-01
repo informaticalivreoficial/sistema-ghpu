@@ -79,10 +79,9 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], functi
 
     //Somente Gerente e Super Admin e Admin
     Route::middleware('role:super-admin|admin|manager')->group(function () {
-        Route::get('configuracoes', Settings::class)->name('settings');
-        Route::get('notificacoes', NotificationsList::class)->name('notifications.index'); 
+        Route::get('configuracoes', Settings::class)->name('settings');        
     });
-    
+
     // Somente Super Admin e Admin
     Route::middleware('role:super-admin|admin')->group(function () {
         Route::get('empresas', Companies::class)->name('companies.index');
@@ -91,6 +90,7 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], functi
     });
 
     Route::get('/', Dashboard::class)->name('admin');
+    Route::get('notificacoes', NotificationsList::class)->name('notifications.index'); 
 
     Route::get('ocorrencias/{ocorrencia}/visualizar', [OcorrenciaPdfController::class, 'show'])->name('ocorrencia.pdf');
     Route::get('usuarios/{user}/perfil', [UserPdfController::class, 'profile'])->name('users.profile');    
