@@ -229,7 +229,7 @@ class Settings extends Component
             //->format('png')
             ->color(0, 0, 255)
             //->merge($this->configData['favicon'] ? : asset('theme/images/chave.png'), 0.3)
-            ->generate($this->configData['domain'] ?? env('DESENVOLVEDOR_URL'));
+            ->generate($this->configData['domain'] ?? config('app.desenvolvedor_url'));
     }
 
     #[On('updatePrivacyPolicy')]
