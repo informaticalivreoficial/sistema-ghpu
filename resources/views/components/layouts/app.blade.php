@@ -88,6 +88,9 @@
         <livewire:navigation.footer />
     </div>
 
+    {{-- Componente Toastr Global --}}
+    <livewire:components.toastr-notification />
+
     {{-- jQuery --}}
     <script src="{{ asset('theme/plugins/jquery/jquery.min.js') }}"></script> 
 
@@ -202,8 +205,6 @@
 
         });
     </script>
-
-    
 
     @stack('scripts') 
     

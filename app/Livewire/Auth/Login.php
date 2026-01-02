@@ -50,6 +50,19 @@ class Login extends Component
             throw ValidationException::withMessages(['login_failed' => 'Invalid email or password. Please try again.']);
         }
 
+        // ✅ Verificar status
+        if ($user->status != 1) {
+            $this->dispatch('toastr-show', [
+                'type' => 'error',
+                'message' => 'Seu usuário está inativo. Entre em contato com o administrador!',
+                'title' => 'Login realizado'
+            ]);
+            // Impede login
+            throw ValidationException::withMessages([
+                'login_failed' => 'Seu usuário está inativo. Entre em contato com o administrador.'
+            ]);
+        }
+
         // Clear login attempts
         RateLimiter::clear(request()->ip());
 

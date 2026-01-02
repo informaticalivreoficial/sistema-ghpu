@@ -15,11 +15,20 @@
     {{-- General Styles --}}
     <link rel="stylesheet" href="{{ asset('theme/dist/css/styles.css') }}">
 
+    {{-- Toastr --}}
+    <link rel="stylesheet" href="{{ asset('theme/plugins/toastr/toastr.min.css') }}">
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
 <body class="login-body bg-cover bg-center bg-fixed" style="background-image: url({{url(asset('theme/images/login-bg.jpg'))}});">
     {{ $slot }}
+
+    {{-- Componente Toastr Global --}}
+    <livewire:components.toastr-notification />
+
+    {{-- Toastr --}}
+    <script src="{{ asset('theme/plugins/toastr/toastr.min.js') }}"></script>
 </body>
 
 </html>
