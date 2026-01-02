@@ -45,7 +45,10 @@ use App\Livewire\Dashboard\Slides\Slides;
 
 Route::group(['namespace' => 'Web', 'as' => 'web.'], function () {
     //Institucional
-    Route::get('/', [WebController::class, 'home'])->name('home');
+    //Route::get('/', [WebController::class, 'home'])->name('home');
+    Route::get('/', function () {
+        return redirect()->route('web.login'); // Redireciona para a rota de login
+    });
     Route::get('/politica-de-privacidade', [WebController::class, 'privacy'])->name('privacy');
 
     Route::get('/login', [LoginRgController::class, 'show'])->name('login');

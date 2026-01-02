@@ -112,6 +112,9 @@
                 <i class="fas fa-expand-arrows-alt"></i>
             </a>
         </li>
+
+        <li class="nav-item dropdown">
+            <a data-id="1" data-toggle="modal" data-target="#modal-suporte" href="javascript:void(0)" aria-selected="false" title="Suporte" class="nav-link j_modal_suporte"><i class="fas fa-life-ring" style="color: rgb(223, 87, 87);"></i></a></li>
         
         @auth
             <livewire:auth.button-logout />
