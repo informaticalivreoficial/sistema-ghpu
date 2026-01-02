@@ -48,7 +48,7 @@ Route::group(['namespace' => 'Web', 'as' => 'web.'], function () {
     //Route::get('/', [WebController::class, 'home'])->name('home');
     Route::get('/', function () {
         return redirect()->route('web.login'); // Redireciona para a rota de login
-    });
+    })->name('home');
     Route::get('/politica-de-privacidade', [WebController::class, 'privacy'])->name('privacy');
 
     Route::get('/login', [LoginRgController::class, 'show'])->name('login');
