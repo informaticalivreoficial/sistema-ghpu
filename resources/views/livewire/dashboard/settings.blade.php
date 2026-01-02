@@ -82,33 +82,19 @@
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-6 col-sm-6 col-lg-6 mb-2">
-                                    @if(\Illuminate\Support\Facades\Auth::user()->superadmin == 1)
-                                        <div class="form-group">
-                                            <label class="labelforms"><b>URL do site</b></label>
-                                            <div class="input-group">
-                                                <input type="text" class="form-control" placeholder="URL do site"  wire:model="configData.domain"/>
-                                                <div class="input-group-append">
-                                                    <div class="input-group-text">
-                                                        <a href="#" @click.prevent="open = true" title="QrCode"><i class="fa fa-qrcode"></i></a>
-                                                    </div>                                                            
-                                                </div>
+                                    <div class="form-group">
+                                        <label class="labelforms"><b>URL do site</b></label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" placeholder="URL do site" wire:model="configData.domain" {{(auth()->user()->hasRole(['admin'])) ? 'disabled' : ''}}>
+                                            <div class="input-group-append">
+                                                <div class="input-group-text">
+                                                    <a href="#" @click.prevent="open = true" title="QrCode">
+                                                        <i class="fa fa-qrcode"></i>
+                                                    </a>
+                                                </div>                                                            
                                             </div>
                                         </div>
-                                    @else
-                                        <div class="form-group">
-                                            <label class="labelforms"><b>URL do site</b></label>
-                                            <div class="input-group">
-                                                <input type="text" class="form-control" placeholder="URL do site" wire:model="configData.domain" disabled>
-                                                <div class="input-group-append">
-                                                    <div class="input-group-text">
-                                                        <a href="#" @click.prevent="open = true" title="QrCode">
-                                                            <i class="fa fa-qrcode"></i>
-                                                        </a>
-                                                    </div>                                                            
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @endif                                                    
+                                    </div>                                                    
                                 </div>                                         
                             </div>                                           
                         </div>

@@ -84,7 +84,7 @@
                         </p>
                     </a>
                 </li> 
-                @role(['super-admin', 'admin'])
+                @role(['super-admin'])
                     <li class="nav-item {{ Route::is('posts.*') ? 'menu-open' : '' }}">
                         <a href="#" class="nav-link {{ Route::is('posts.*') ? 'active' : '' }}">
                             <i class="nav-icon fas fa-pencil-alt"></i>
@@ -111,38 +111,26 @@
                 @endrole
 
                 @role(['super-admin', 'admin', 'manager'])
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon fas fa-chart-bar"></i>
-                        <p> Relatórios <i class="fas fa-angle-left right"></i></p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Relatório de Viagens</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{--route('manifestReport.index')--}}" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Relatório de Manifestos</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Relatório de Clientes</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{--route('companyReport.index')--}}" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Relatório de Empresas</p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fas fa-chart-bar"></i>
+                            <p> Relatórios <i class="fas fa-angle-left right"></i></p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="#" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Relatório de Ocorrências</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{--route('manifestReport.index')--}}" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Relatório de colaboradores</p>
+                                </a>
+                            </li>                        
+                        </ul>
+                    </li>
                 @endrole
                 {{-- Segurança 
                 <li class="nav-item">

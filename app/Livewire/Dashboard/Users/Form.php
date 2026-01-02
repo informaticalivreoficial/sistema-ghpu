@@ -17,6 +17,8 @@ class Form extends Component
 {
     use WithFileUploads;
 
+    public User $user;
+
     public $userId;
 
     public $foto; // Propriedade para armazenar a foto temporariamente
@@ -99,49 +101,56 @@ class Form extends Component
 
     public function mount($userId = null)
     {
-        
-    
+        if ($userId) {
+            // 🔎 Carrega o usuário PRIMEIRO
+            $user = User::findOrFail($userId);
+
+            // 🔐 Autoriza DEPOIS
+            $this->authorize('update', $user);
+
+            // Guarda referência se precisar
+            $this->userId = $user->id;
+
+            // Preenche os campos
+            $this->company_id = $user->company_id;
+            $this->name = $user->name;
+            $this->cargo = $user->cargo;
+            $this->code = $user->code;
+            $this->avatar = $user->avatar;
+            $this->birthday = $user->birthday;
+            $this->gender = $user->gender ?? 'masculino';
+            $this->naturalness = $user->naturalness;
+            $this->civil_status = $user->civil_status;
+            $this->rg = $user->rg;
+            $this->rg_expedition = $user->rg_expedition;
+            $this->cpf = $user->cpf;
+            $this->email = $user->email;
+            $this->phone = $user->phone;
+            $this->cell_phone = $user->cell_phone;
+            $this->whatsapp = $user->whatsapp;
+            $this->additional_email = $user->additional_email;
+            $this->telegram = $user->telegram;
+            $this->number = $user->number;
+            $this->zipcode = $user->zipcode;
+            $this->street = $user->street;
+            $this->neighborhood = $user->neighborhood;
+            $this->city = $user->city;
+            $this->state = $user->state;
+            $this->complement = $user->complement;
+            $this->facebook = $user->facebook;
+            $this->instagram = $user->instagram;
+            $this->linkedin = $user->linkedin;
+            $this->information = $user->information;
+
+            // Role
+            $this->roleSelected = $user->roles->pluck('name')->first();
+            $this->role = $this->roleSelected;
+        }
+
+        // 🔹 Carrega empresas APÓS autorização
         if (auth()->user()->hasAnyRole(['super-admin', 'admin'])) {
             $this->companies = Company::orderBy('alias_name')->get();
         }
-
-        if ($userId) {
-            $user = User::findOrFail($userId);            
-                $this->userId = $user->id;
-                $this->company_id = $user->company_id;
-                $this->name = $user->name;  
-                $this->cargo = $user->cargo;              
-                $this->code = $user->code;       
-                $this->avatar = $user->avatar;                
-                $this->birthday = $user->birthday;
-                $this->gender = $user->gender ?? 'masculino';
-                $this->naturalness = $user->naturalness;
-                $this->civil_status = $user->civil_status;
-                $this->rg = $user->rg;
-                $this->rg_expedition = $user->rg_expedition;
-                $this->cpf = $user->cpf;
-                $this->email = $user->email;
-                $this->phone = $user->phone;
-                $this->cell_phone = $user->cell_phone;
-                $this->whatsapp = $user->whatsapp;
-                $this->additional_email = $user->additional_email;
-                $this->telegram = $user->telegram;
-                $this->number = $user->number;
-                $this->zipcode = $user->zipcode;
-                $this->street = $user->street;
-                $this->neighborhood = $user->neighborhood;
-                $this->city = $user->city;
-                $this->state = $user->state;
-                $this->complement = $user->complement;
-                $this->facebook = $user->facebook;
-                $this->instagram = $user->instagram;
-                $this->linkedin = $user->linkedin; 
-                $this->information = $user->information;
-
-                // Carrega a role do usuário
-                $this->roleSelected = $user->roles->pluck('name')->first();
-                $this->role = $user->roles->pluck('name')->first();
-        }        
     }
 
     public function render()
@@ -225,9 +234,12 @@ class Form extends Component
     public function update()
     {    
         try {
+            
             $validated = $this->validate($this->rulesUpdate());
         
             $user = User::findOrFail($this->userId);
+
+            //$this->authorize('update', $user);
 
             if ($this->foto) {
                 if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {

@@ -83,12 +83,14 @@
                                         data-tooltip="Editar">
                                         <i class="fas fa-pen"></i>
                                     </a>
-                                    <button type="button" 
-                                        class="action-btn btn-delete" 
-                                        data-tooltip="Excluir"
-                                        wire:click="setDeleteId({{ $company->id }})">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
+                                    @if (auth()->user()->isSuperAdmin())
+                                        <button type="button" 
+                                            class="action-btn btn-delete" 
+                                            data-tooltip="Excluir"
+                                            wire:click="setDeleteId({{ $company->id }})">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    @endif
                                 </td>
                             </tr>
                             @endforeach

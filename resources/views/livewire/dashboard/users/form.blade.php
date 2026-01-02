@@ -351,13 +351,14 @@
                                             wire:model.live="roleSelected" value="manager">
                                         <label for="manager">Gerente</label>
                                     </div>
-                                    @if (auth()->user()->isSuperAdmin())
+                                    @if (auth()->user()->isSuperAdmin() || auth()->user()->isAdmin())
                                         <div class="form-check d-inline mx-2">
                                             <input id="admin" class="form-check-input" type="radio"
                                                 wire:model.live="roleSelected" value="admin">
                                             <label for="admin">Administrador</label>
                                         </div>
-
+                                    @endif
+                                    @if (auth()->user()->isSuperAdmin()) 
                                         <div class="form-check d-inline mx-2">
                                             <input id="superadmin" class="form-check-input" type="radio"
                                                 wire:model.live="roleSelected" value="super-admin">

@@ -33,7 +33,7 @@ class Ocorrencia extends Model
         static::addGlobalScope('company', function ($query) {
             $user = auth()->user();
 
-            if (!$user || $user->isSuperAdmin()) {
+            if (!$user || $user->isSuperAdmin() || $user->isAdmin()) {
                 return;
             }
 
@@ -61,23 +61,28 @@ class Ocorrencia extends Model
 
     public function canBeEditedBy(User $user): bool
     {
-        // Admins sempre podem
-        if ($user->hasRole(['manager', 'admin', 'super-admin'])) {
+        // Super-admins e Admins sempre podem
+        if ($user->hasRole(['admin', 'super-admin'])) {
             return true;
         }
 
-        // Só o autor pode editar
+        // Managers só podem editar ocorrências da própria empresa
+        if ($user->hasRole('manager')) {
+            return $this->company_id === $user->company_id;
+        }
+
+        // Usuários comuns só podem editar as próprias ocorrências
         if ($user->id !== $this->user_id) {
             return false;
         }
 
-        // Se for colaborador → só até 6 horas
+        // Colaboradores só podem editar até 6 horas após a criação
         return $this->created_at->diffInMinutes(now()) < 360;
     }
 
     public function canBeDeletedBy(User $user): bool
     {
-        // mesma regra
+        // Mesma regra de edição
         return $this->canBeEditedBy($user);
     }
 }

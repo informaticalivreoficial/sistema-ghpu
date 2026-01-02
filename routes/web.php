@@ -29,6 +29,9 @@ use App\Http\Controllers\Web\{
     FeedController,
     Webcontroller
 };
+use App\Livewire\Auth\ChangePassword;
+use App\Livewire\Auth\ForgotPassword;
+use App\Livewire\Auth\ResetPassword;
 use App\Livewire\Dashboard\Companies\Companies;
 use App\Livewire\Dashboard\Companies\CompanyForm;
 use App\Livewire\Dashboard\Ocorrencias\OcorrenciaForm;
@@ -79,14 +82,20 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], functi
 
     //Somente Gerente e Super Admin e Admin
     Route::middleware('role:super-admin|admin|manager')->group(function () {
-        Route::get('configuracoes', Settings::class)->name('settings');        
+        Route::get('configuracoes', Settings::class)->name('settings');   
+        
+        Route::get('usuarios/colaboradores', Users::class)->name('users.index');        
+        Route::get('usuarios/cadastrar', Form::class)->name('users.create');
+         
     });
 
     // Somente Super Admin e Admin
     Route::middleware('role:super-admin|admin')->group(function () {
         Route::get('empresas', Companies::class)->name('companies.index');
         Route::get('empresas/cadastrar-empresa', CompanyForm::class)->name('companies.create');
-        Route::get('empresas/{company}/editar-empresa', CompanyForm::class)->name('companies.edit');       
+        Route::get('empresas/{company}/editar-empresa', CompanyForm::class)->name('companies.edit'); 
+        
+        Route::get('usuarios/time', Time::class)->name('users.time');
     });
 
     Route::get('/', Dashboard::class)->name('admin');
@@ -95,6 +104,7 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], functi
     Route::get('ocorrencias/{ocorrencia}/visualizar', [OcorrenciaPdfController::class, 'show'])->name('ocorrencia.pdf');
     Route::get('usuarios/{user}/perfil', [UserPdfController::class, 'profile'])->name('users.profile');    
 
+    Route::get('usuarios/{userId}/editar', Form::class)->name('users.edit');
     
 
     //*********************** Posts *********************************************/
@@ -115,16 +125,19 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], functi
     Route::get('ocorrencias/{id}/editar', OcorrenciaForm::class)->name('ocorrencia.edit');
     Route::get('ocorrencias/cadastrar', OcorrenciaForm::class)->name('ocorrencia.create');
 
-    Route::get('usuarios/colaboradores', Users::class)->name('users.index');
-    Route::get('usuarios/time', Time::class)->name('users.time');
-    Route::get('usuarios/cadastrar', Form::class)->name('users.create');
-    Route::get('usuarios/{userId}/editar', Form::class)->name('users.edit');   
+      
 
 });
 
+// Rotas de recuperação de senha (guest)
+Route::middleware('guest')->group(function () {
+    Route::get('forgot-password', ForgotPassword::class)->name('password.request');
+    Route::get('reset-password/{token}', ResetPassword::class)->name('password.reset');
+});
 
 // Authentication routes
 Route::group(['prefix' => 'auth'], function () {
     Route::get('login', Login::class)->name('login');
-    Route::get('register', Register::class)->name('register');
+    //Route::get('register', Register::class)->name('register');
+    Route::get('change-password', ChangePassword::class)->name('password.change');
 });

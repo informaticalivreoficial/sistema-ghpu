@@ -2,39 +2,82 @@
 
 namespace App\Livewire\Dashboard;
 
+use App\Models\Ocorrencia;
 use App\Models\Post;
-use App\Models\Property;
 use Livewire\Component;
 
 class Dashboard extends Component
 {
-    //public $topproperties = [];
-    public $topposts = [];
+    public array $topposts = [];
+    public int $postsCount = 0;
+    public int $postsYearCount = 0;
+    public array $lastOcorrencias = [];
+
+    public function mount()
+    {
+        $user = auth()->user();
+
+        // 🧑‍💼 Manager / Admin / Super
+        if (! $user->isEmployee()) {
+            $this->postsCount = Post::count();
+            $this->postsYearCount = Post::whereYear('created_at', now()->year)->count();
+
+            $this->topposts = Post::orderByDesc('views')->limit(5)->get()->toArray();
+        }        
+
+        // Colaborador → só vê as dele
+        if ($user->isEmployee()) {
+            $this->lastOcorrencias = Ocorrencia::where('company_id', $user->company_id)
+                ->latest()
+                ->limit(5)
+                ->with('user:id,name,avatar')
+                ->get()
+                ->toArray();
+            return;
+        }
+
+        // Manager / Admin / Super
+        $query = Ocorrencia::latest()->limit(5)->with('user:id,name,avatar');
+
+        // Manager → apenas da empresa
+        if ($user->isManager()) {
+            $query->where('company_id', $user->company_id);
+        }
+
+        $this->lastOcorrencias = $query->get()->toArray();
+    }
+
+    public function refreshOcorrencias()
+    {
+        $user = auth()->user();
+
+        // Employees não usam polling
+        if ($user->isEmployee()) {
+            return;
+        }
+
+        $query = Ocorrencia::latest()->limit(5)->with('user:id,name,avatar');
+
+        // Manager → apenas da empresa
+        if ($user->isManager()) {
+            $query->where('company_id', $user->company_id);
+        }
+
+        $this->lastOcorrencias = $query->get()->toArray();
+    }
 
     public function render()
     {
-        // $propertyCount = Property::count();
-        // $propertyYearCount = Property::whereYear('created_at', now()->year)->count();
+        $user = auth()->user();
 
-        $postsCount = Post::count();
-        $postsYearCount = Post::whereYear('created_at', now()->year)->count();
+        if ($user->isEmployee()) {
+            return view('livewire.dashboard.dashboard-employee', [
+                'title' => 'Meu Painel - ' . config('app.name'),
+            ]);
+        }
 
-        // $this->topproperties = Property::orderBy('views', 'desc')
-        //     ->take(6)
-        //     ->get();
-        $this->topposts = Post::orderBy('views', 'desc')
-            ->take(5)
-            ->get();
-        
-        $title = 'Painel de Controle - '.config('app.name');
-        return view('livewire.dashboard.dashboard',[            
-            // 'propertyCount' => $propertyCount,
-            // 'propertyYearCount' => $propertyYearCount,
-            'postsCount' => $postsCount,
-            'postsYearCount' => $postsYearCount,
-            'title' => $title,
-            //'topproperties' => $this->topproperties,
-            'topposts' => $this->topposts,
+        return view('livewire.dashboard.dashboard', [
+            'title' => 'Painel de Controle - ' . config('app.name'),
         ]);
     }
 }

@@ -37,5 +37,10 @@
                     <span wire:loading wire:target="login" class="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></span>
             </button>            
         </form>
-    </div>
+        <div class="text-center mt-4">
+            <a href="{{ route('password.request') }}" class="text-sm text-indigo-600 hover:text-indigo-500">
+                Esqueci minha senha
+            </a>
+        </div>
+    </div>    
 </div>

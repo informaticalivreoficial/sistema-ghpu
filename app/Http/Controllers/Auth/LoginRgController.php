@@ -25,7 +25,10 @@ class LoginRgController extends Controller
             'rg.required' => 'Informe o RG.',
         ]);
 
-        $user = User::where('rg', $request->rg)->first();
+        // Remove pontos, traços e espaços - mantém só números
+        $rgLimpo = preg_replace('/[^0-9]/', '', $request->rg);
+
+        $user = User::where('rg', $rgLimpo)->first();
 
         if (! $user) {
             return back()

@@ -69,22 +69,48 @@ class Ocorrencias extends Component
         try {
             $user = auth()->user();
 
-            if (! $this->ocorrencia->canBeDeletedBy($user)) {
-                abort(403, 'Você não pode excluir esta ocorrência após 6 horas.');
+            // Busca a ocorrência PRIMEIRO
+            $ocorrencia = Ocorrencia::findOrFail($this->delete_id);
+
+            // Verifica permissão
+            if (!$ocorrencia->canBeDeletedBy($user)) {
+                $this->dispatch('swal', [
+                    'title' => 'Acesso Negado',
+                    'icon'  => 'error',
+                    'text'  => 'Você não tem permissão para excluir esta ocorrência.',
+                ]);
+                return;
             }
             
-            $ocorrencia = Ocorrencia::findOrFail($this->delete_id);            
-
+            // Deleta
             $ocorrencia->delete();
 
+            // Limpa o ID
             $this->delete_id = null;
+
+            // Recarrega a lista (se tiver)
+            // $this->loadOcorrencias(); // descomente se necessário
 
             $this->dispatch('swal', [
                 'title' => 'Sucesso!',
                 'icon'  => 'success',
                 'text'  => 'Ocorrência removida!',
             ]);
+            
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            $this->dispatch('swal', [
+                'title' => 'Erro!',
+                'icon'  => 'error',
+                'text'  => 'Ocorrência não encontrada.',
+            ]);
+            
         } catch (\Exception $e) {
+            \Log::error('Erro ao excluir ocorrência', [
+                'delete_id' => $this->delete_id,
+                'user_id' => $user->id,
+                'error' => $e->getMessage()
+            ]);
+            
             $this->dispatch('swal', [
                 'title' => 'Erro!',
                 'icon'  => 'error',
@@ -96,37 +122,43 @@ class Ocorrencias extends Component
     public function render()
     {
         $title = 'Ocorrências';
-
-        $searchableFields = ['title','content'];
+        $user = auth()->user();
+        $searchableFields = ['title', 'content'];
         
         $ocorrencias = Ocorrencia::query()
-        ->when($this->search, function ($query) use ($searchableFields) {
-            $query->where(function ($q) use ($searchableFields) {
-                // Busca nos campos do modelo
-                foreach ($searchableFields as $field) {
-                    $q->orWhere($field, 'LIKE', "%{$this->search}%");
-                }
-
-                // Busca pelo nome do colaborador relacionado
-                $q->orWhereHas('user', function ($qUser) {
-                    $qUser->where('name', 'LIKE', "%{$this->search}%");
+            // Filtro por empresa (exceto para Super Admin e Admin)
+            ->when(!$user->isSuperAdmin() && !$user->isAdmin(), function($query) use ($user) {
+                $query->where('company_id', $user->company_id);
+            })
+            // Colaborador NÃO vê ocorrências com status null ou 0
+            ->when($user->isEmployee(), function($query) {
+                $query->where(function($q) {
+                    $q->whereNotNull('status')
+                    ->where('status', '!=', 0);
                 });
-            });
-        })
-        ->orderBy($this->sortField, $this->sortDirection)
-        ->paginate($this->perPage);
+            })
+            // Busca
+            ->when($this->search, function ($query) use ($searchableFields) {
+                $query->where(function ($q) use ($searchableFields) {
+                    foreach ($searchableFields as $field) {
+                        $q->orWhere($field, 'LIKE', "%{$this->search}%");
+                    }
 
-        $view = auth()->user()->hasRole('employee')
-        ? 'livewire.dashboard.ocorrencias.ocorrencias-colaborador'
-        : 'livewire.dashboard.ocorrencias.ocorrencias';
+                    $q->orWhereHas('user', function ($qUser) {
+                        $qUser->where('name', 'LIKE', "%{$this->search}%");
+                    });
+                });
+            })
+            ->orderBy($this->sortField, $this->sortDirection)
+            ->paginate($this->perPage);
+
+        $view = $user->isEmployee()
+            ? 'livewire.dashboard.ocorrencias.ocorrencias-colaborador'
+            : 'livewire.dashboard.ocorrencias.ocorrencias';
 
         return view($view, [
             'ocorrencias' => $ocorrencias,
             'title' => $title,
-        ]);    
-
-        // return view('livewire.dashboard.ocorrencias.ocorrencias',[
-        //     'ocorrencias' => $ocorrencias,
-        // ])->with('title', $title);
+        ]); 
     }
 }
