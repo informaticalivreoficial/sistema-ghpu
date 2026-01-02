@@ -44,9 +44,11 @@
                             <select name="type" class="form-control @error('type') is-invalid @enderror" wire:model.live="type">
                                 <option value="">Selecione...</option>
                                 <option value="branco">Em Branco</option>
-                                <option value="varreduras-fichas-sistemas">Varreduras de fichas x sistemas</option>
-                                <option value="ocorrencias-diarias">Ocorrências Diárias</option>
-                                <option value="passagem-de-turno">Passagem de Turno</option>
+                                @if (auth()->user()->company_id === 18)
+                                    <option value="varreduras-fichas-sistemas">Varreduras de fichas x sistemas</option>
+                                    <option value="ocorrencias-diarias">Ocorrências Diárias</option>
+                                    <option value="passagem-de-turno">Passagem de Turno</option>
+                                @endif                                
                             </select>    
                             @error('type')
                                 <span class="error erro-feedback">{{ $message }}</span>
@@ -57,7 +59,7 @@
             @endif
             
             {{-- Renderização dinâmica --}}
-            <form wire:submit.prevent="save" autocomplete="off">
+            <form wire:submit.prevent="save" autocomplete="off">                
                 @if($type === 'branco')
                     @include('livewire.dashboard.ocorrencias.forms.branco')
 
