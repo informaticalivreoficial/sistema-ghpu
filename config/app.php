@@ -18,6 +18,8 @@ return [
 
     'name' => env('APP_NAME', 'Laravel'),
 
+    'desenvolvedor_url' => env('DESENVOLVEDOR_URL', 'https://informaticalivre.com.br')
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment

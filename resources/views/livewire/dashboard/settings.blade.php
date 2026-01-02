@@ -788,7 +788,7 @@
             <div class="text-center">
                 <p class="mb-2 text-gray-600">Este QrCode direciona para:</p>
                 <p class="text-sm font-semibold text-blue-600 mb-4">
-                    {{ $this->configData['domain'] ?? env('DESENVOLVEDOR_URL') }}
+                    {{ $this->configData['domain'] ?? config('app.desenvolvedor_url') }}
                 </p>
                 <div class="flex justify-center">
                     <img src="data:image/svg+xml;utf8,{{ rawurlencode($this->qrCodeSvg) }}">
