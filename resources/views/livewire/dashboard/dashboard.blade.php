@@ -163,6 +163,7 @@
     
 </div>
 
+{{--
 @push('scripts')  
     @if(session()->has('toastr'))
         <script>
@@ -179,3 +180,4 @@
         </script>
     @endif
 @endpush
+--}}
