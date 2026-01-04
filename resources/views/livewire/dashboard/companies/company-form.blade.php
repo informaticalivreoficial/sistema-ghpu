@@ -25,30 +25,23 @@
                 <div class="col-12 col-md-6 col-lg-4">
                     <div class="col-12">
                         <div class="form-group">
-                            <input type="file" id="logo" wire:model="logo" style="display: none;">
+                            <input 
+                                type="file"
+                                id="logo"
+                                wire:model="logo" 
+                                accept="image/png,image/jpeg,image/webp"
+                                class="hidden"
+                            >
                             @error('logo')
                                 <span class="error">{{ $message }}</span>
                             @enderror
-                            @php
-                                if (
-                                    !empty($logo) && \Illuminate\Support\Facades\Storage::exists($logo)
-                                ) {
-                                    $cover = \Illuminate\Support\Facades\Storage::url($logo);
-                                } else {
-                                    $cover = asset('theme/images/image.jpg');
-                                }
-                            @endphp
-                            @if ($logoUrl)
-                                <label for="logo">
-                                    <img class="file-input-container" src="{{ $logoUrl }}"
-                                        alt="{{ $alias_name }}" style="max-width: 262px;">
-                                </label>
-                            @else
-                                <label for="logo">
-                                    <img class="file-input-container" src="{{ $cover }}"
-                                        alt="{{ $alias_name }}" style="max-width: 262px;">
-                                </label>
-                            @endif
+                            <label for="logo">
+                                <img
+                                    src="{{ $this->logoUrl }}"
+                                    alt="{{ $alias_name }}"
+                                    class="file-input-container max-w-[262px]"
+                                >
+                            </label>
                         </div>
                     </div>
                 </div>

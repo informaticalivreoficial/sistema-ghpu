@@ -22,31 +22,56 @@
 
             @php
             $itensFicha = [
-                'nome_hospede' => 'Nome do hóspede confere com o sistema',
-                'acompanhantes' => 'Acompanhantes corretamente registrados',
-                'data_entrada' => 'Data de entrada correta',
-                'data_saida' => 'Data de saída prevista correta',
-                'valores_diarias' => 'Valores das diárias conferidos com o sistema',
-                'consumacao' => 'Lançamentos de consumação (frigobar e outros) realizados',
-                'comandas' => 'Comandas lançadas no sistema e carimbadas na ficha',
-                'ficha_assinada' => 'Ficha assinada pelo hóspede na saída',
-                'placa_veiculo' => 'Placa do veículo registrada corretamente',
-                'observacoes' => 'Observações da ficha conferidas com o sistema',
-                'cnpj_nf' => 'CNPJ informado para emissão de Nota Fiscal',
+                'nome_hospede' => 'Nome do hóspede confere com o sistema?',
+                'acompanhantes' => 'Acompanhantes corretamente registrados?',
+                'data_entrada' => 'Data de entrada correta?',
+                'data_saida' => 'Data de saída prevista correta?',
+                'valores_diarias' => 'Valores das diárias conferidos com o sistema?',
+                'consumacao' => 'Lançamentos de consumação (frigobar e outros) realizados?',
+                'comandas' => 'Comandas lançadas no sistema e carimbadas na ficha?',
+                'ficha_assinada' => 'Ficha assinada pelo hóspede na saída?',
+                'placa_veiculo' => 'Placa do veículo registrada corretamente?',
+                'observacoes' => 'Observações da ficha conferidas com o sistema?',
+                'cnpj_nf' => 'CNPJ informado para emissão de Nota Fiscal?',
             ];
             @endphp
 
             @foreach ($itensFicha as $key => $label)
-                <div class="form-check mb-1">
-                    <input
-                        type="checkbox"
-                        class="form-check-input"
-                        wire:model.live="formVarreduras.conferencia_ficha.{{ $key }}"
-                        id="ficha_{{ $key }}"
-                    >
-                    <label class="form-check-label" for="ficha_{{ $key }}">
-                        {{ $label }}
+                <div class="mb-2 p-2 border rounded">
+
+                    <div class="fw-semibold mb-1">{{ $label }}</div>
+
+                    <label class="me-3">
+                        <input
+                            type="radio"
+                            wire:model.live="formVarreduras.conferencia_ficha.{{ $key }}.status"
+                            value="sim"
+                        >
+                        Sim
                     </label>
+
+                    <label>
+                        <input
+                            type="radio"
+                            wire:model.live="formVarreduras.conferencia_ficha.{{ $key }}.status"
+                            value="nao"
+                        >
+                        Não
+                    </label>
+
+                    @if (
+                        data_get($formVarreduras, "conferencia_ficha.$key.status") === 'nao'
+                    )
+                        <div class="mt-2">
+                            <input
+                                type="text"
+                                class="form-control"
+                                placeholder="Informe o motivo"
+                                wire:model.blur="formVarreduras.conferencia_ficha.{{ $key }}.motivo"
+                            >
+                        </div>
+                    @endif
+
                 </div>
             @endforeach
 
@@ -54,22 +79,47 @@
 
             @php
             $itensAdicionais = [
-                'chaves_veiculos' => 'Chaves dos veículos etiquetadas corretamente',
-                'codigo_cores' => 'Códigos de cores conferem com o padrão',
+                'chaves_veiculos' => 'Chaves dos veículos etiquetadas corretamente?',
+                'codigo_cores' => 'Códigos de cores conferem com o padrão?',
             ];
             @endphp
 
             @foreach ($itensAdicionais as $key => $label)
-                <div class="form-check mb-1">
-                    <input
-                        type="checkbox"
-                        class="form-check-input"
-                        wire:model.live="formVarreduras.conferencia_adicional.{{ $key }}"
-                        id="adicional_{{ $key }}"
-                    >
-                    <label class="form-check-label" for="adicional_{{ $key }}">
-                        {{ $label }}
+                <div class="mb-2 p-2 border rounded">
+
+                    <div class="fw-semibold mb-1">{{ $label }}</div>
+
+                    <label class="me-3">
+                        <input
+                            type="radio"
+                            wire:model.live="formVarreduras.conferencia_adicional.{{ $key }}.status"
+                            value="sim"
+                        >
+                        Sim
                     </label>
+
+                    <label>
+                        <input
+                            type="radio"
+                            wire:model.live="formVarreduras.conferencia_adicional.{{ $key }}.status"
+                            value="nao"
+                        >
+                        Não
+                    </label>
+
+                    @if (
+                        data_get($formVarreduras, "conferencia_adicional.$key.status") === 'nao'
+                    )
+                        <div class="mt-2">
+                            <input
+                                type="text"
+                                class="form-control"
+                                placeholder="Informe o motivo"
+                                wire:model.blur="formVarreduras.conferencia_adicional.{{ $key }}.motivo"
+                            >
+                        </div>
+                    @endif
+
                 </div>
             @endforeach
 

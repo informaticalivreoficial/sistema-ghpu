@@ -90,6 +90,41 @@ class User extends Authenticatable
         return $this->belongsTo(Company::class);
     }
 
+    public function conversations()
+    {
+        return Message::forCompany($this->company_id)
+            ->forUser($this->id)
+            ->latest('updated_at');
+    }
+
+    public function sentMessageItems()
+    {
+        return $this->hasMany(MessageItem::class, 'sender_id');
+    }
+
+    /* ==========================
+    | PERMISSÃO
+    ========================== */
+
+    public function canMessage(User $user): bool
+    {
+        return $this->company_id === $user->company_id;
+    }
+
+    /* ==========================
+    | NÃO LIDAS
+    ========================== */
+
+    public function unreadMessagesCount(): int
+    {
+        return Message::forCompany($this->company_id)
+            ->forUser($this->id)
+            ->whereHas('items', function ($q) {
+                $q->where('sender_id', '!=', $this->id);
+            })
+            ->count();
+    }
+
     
 
     /**
@@ -108,12 +143,19 @@ class User extends Authenticatable
     /**
      * Accerssors and Mutators
     */
-    public function getUrlAvatarAttribute()
+    public function avatarUrl(): string
     {
-        if (!empty($this->avatar)) {
+        // 1️⃣ Se tem foto do usuário
+        if ($this->avatar && Storage::disk('public')->exists($this->avatar)) {
             return Storage::url($this->avatar);
         }
-        return '';
+
+        // 2️⃣ Fallback por gênero
+        return match ($this->gender) {
+            'feminino', 'F' => asset('theme/images/avatar3.png'),
+            'masculino', 'M'   => asset('theme/images/avatar5.png'),
+            default       => asset('theme/images/image.jpg'),
+        };
     }
 
     public function setCellPhoneAttribute($value)

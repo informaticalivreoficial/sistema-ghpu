@@ -34,6 +34,10 @@ use App\Livewire\Auth\ForgotPassword;
 use App\Livewire\Auth\ResetPassword;
 use App\Livewire\Dashboard\Companies\Companies;
 use App\Livewire\Dashboard\Companies\CompanyForm;
+use App\Livewire\Dashboard\Messages\ComposeMessage;
+use App\Livewire\Dashboard\Messages\Inbox;
+use App\Livewire\Dashboard\Messages\MessagesList;
+use App\Livewire\Dashboard\Messages\MessageThread;
 use App\Livewire\Dashboard\Ocorrencias\OcorrenciaForm;
 use App\Livewire\Dashboard\Ocorrencias\Ocorrencias;
 use App\Livewire\Dashboard\Posts\CatPosts;
@@ -105,9 +109,14 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], functi
     Route::get('notificacoes', NotificationsList::class)->name('notifications.index'); 
 
     Route::get('ocorrencias/{ocorrencia}/visualizar', [OcorrenciaPdfController::class, 'show'])->name('ocorrencia.pdf');
-    Route::get('usuarios/{user}/perfil', [UserPdfController::class, 'profile'])->name('users.profile');    
+    Route::get('usuarios/{user}/perfil', [UserPdfController::class, 'profile'])->name('users.profile');   
 
     Route::get('usuarios/{userId}/editar', Form::class)->name('users.edit');
+
+    Route::get('/mensagens', Inbox::class)->name('messages.inbox');
+    Route::get('/mensagens/compose', ComposeMessage::class)->name('messages.compose');
+    Route::get('/mensagens/{message}', MessageThread::class)->name('messages.thread');
+    
     
 
     //*********************** Posts *********************************************/

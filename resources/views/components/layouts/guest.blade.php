@@ -15,8 +15,7 @@
     {{-- General Styles --}}
     <link rel="stylesheet" href="{{ asset('theme/dist/css/styles.css') }}">
 
-    {{-- Toastr --}}
-    <link rel="stylesheet" href="{{ asset('theme/plugins/toastr/toastr.min.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -25,10 +24,10 @@
     {{ $slot }}
 
     {{-- Componente Toastr Global --}}
-    <livewire:components.toastr-notification />
+    <livewire:components.toastr-notification />    
 
-    {{-- Toastr --}}
-    <script src="{{ asset('theme/plugins/toastr/toastr.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>   
+    
 </body>
 
 </html>

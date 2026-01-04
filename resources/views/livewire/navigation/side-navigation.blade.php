@@ -84,6 +84,17 @@
                         </p>
                     </a>
                 </li> 
+
+                <li class="nav-item">
+                    <a href="{{ route('messages.inbox') }}" class="nav-link {{ Route::is('messages.*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-comments"></i>
+                        <p>
+                            Mensagens
+                            <span class="badge badge-info right">{{ $unreadMessagesCount }}</span>
+                        </p>
+                    </a>
+                </li>
+
                 @role(['super-admin'])
                     <li class="nav-item {{ Route::is('posts.*') ? 'menu-open' : '' }}">
                         <a href="#" class="nav-link {{ Route::is('posts.*') ? 'active' : '' }}">

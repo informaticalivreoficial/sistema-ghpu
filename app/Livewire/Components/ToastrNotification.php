@@ -3,25 +3,17 @@
 namespace App\Livewire\Components;
 
 use Livewire\Component;
-use Livewire\Attributes\On;
 
 class ToastrNotification extends Component
 {
-    public $message = '';
-    public $type = 'info';
-    public $title = '';
+    protected $listeners = ['showToastr'];
 
-    #[On('toastr')]
-    public function show($type = 'info', $message = '', $title = '')
+    public function showToastr($type, $message, $title = null)
     {
-        $this->type = $type;
-        $this->message = $message;
-        $this->title = $title;
-
-        $this->dispatch('toastr-show', [
+        $this->dispatch('toastr', [
             'type' => $type,
             'message' => $message,
-            'title' => $title
+            'title' => $title,
         ]);
     }
 

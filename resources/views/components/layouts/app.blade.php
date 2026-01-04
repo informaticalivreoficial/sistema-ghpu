@@ -31,7 +31,7 @@
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
     
     {{-- Toastr --}}
-    <link rel="stylesheet" href="{{ asset('theme/plugins/toastr/toastr.min.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
@@ -69,6 +69,8 @@
     {{-- Livewire Styles --}}
     
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    @stack('styles') 
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed text-sm {{ auth()->user()->isEmployee() ? 'sidebar-closed sidebar-collapse' : '' }}">
@@ -127,7 +129,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     {{-- Toastr --}}
-    <script src="{{ asset('theme/plugins/toastr/toastr.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/basiclightbox@5/dist/basicLightbox.min.js"></script>
 
@@ -204,6 +206,42 @@
             });
 
         });
+
+        function showToast(type, message) {
+            const colors = {
+                success: '#16a34a',
+                error: '#dc2626',
+                warning: '#f59e0b',
+                info: '#2563eb',
+            };
+
+            Toastify({
+                text: message,
+                duration: 4000,
+                gravity: "top",
+                position: "right",
+                close: true,
+                style: {
+                    background: colors[type] ?? '#2563eb',
+                },
+            }).showToast();
+        }
+
+        // 🔥 Toast via Livewire
+        window.addEventListener('toast', event => {
+            const { type, message } = event.detail[0];
+            showToast(type, message);
+        });
+
+        // 🔥 Toast via session (redirect)
+        @if (session()->has('toast'))
+            document.addEventListener('DOMContentLoaded', () => {
+                showToast(
+                    "{{ session('toast.type') }}",
+                    "{{ session('toast.message') }}"
+                );
+            });
+        @endif
     </script>
 
     @stack('scripts') 

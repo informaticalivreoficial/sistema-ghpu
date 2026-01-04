@@ -14,9 +14,11 @@ class CompanyForm extends Component
     use WithFileUploads;
 
     public ?Company $company = null;
-    
+
     public $logo;
-    public $logoUrl; 
+    public ?string $logoPath = null;
+
+    
 
     public ?string $social_name = null;
     public ?string $alias_name = null;
@@ -37,6 +39,7 @@ class CompanyForm extends Component
             'zipcode' => 'required|min:8|max:10',
             'email' => ['required', 'email', Rule::unique('companies', 'email')->ignore($companyId)],
             'cell_phone' => 'required|string|min:15',
+            'logo' => 'nullable|image|max:1024',
         ];
     }
 
@@ -47,10 +50,11 @@ class CompanyForm extends Component
     }
 
     public function mount(Company $company)
-    { 
+    {
         $this->company = $company;
-        
+
         if ($company->exists) {
+            $this->logoPath = $company->logo; // 👈 essencial
             $this->fillFromCompany($company);
         }
     }
@@ -59,17 +63,19 @@ class CompanyForm extends Component
     {
         $validated = $this->validate();
 
-        if($this->logo){
-            $this->validate([
-                'logo' => 'image|max:1024'
-            ]);
-            $caminhoLogo = $this->logo->store('company', 'public');
-        }else{
-            $caminhoLogo = null;
+        if ($this->logo) {
+
+            // 🗑 Apaga logo antigo (se existir)
+            if ($this->company->exists && $this->logoPath) {
+                Storage::disk('public')->delete($this->logoPath);
+            }
+
+            // 📦 Salva novo logo
+            $this->logoPath = $this->logo->store('company', 'public');
         }
 
         $data = [
-            'logo' => $caminhoLogo, 
+            'logo' => $this->logoPath,
             'social_name' => $this->social_name,
             'alias_name' => $this->alias_name,
             'zipcode' => $this->zipcode,
@@ -79,7 +85,7 @@ class CompanyForm extends Component
             'state' => $this->state,
             'complement' => $this->complement,
             'number' => $this->number,
-            'email' =>$validated['email'],
+            'email' => $validated['email'],
             'additional_email' => $this->additional_email,
             'document_company' => $this->document_company,
             'document_company_secondary' => $this->document_company_secondary,
@@ -89,16 +95,16 @@ class CompanyForm extends Component
             'whatsapp' => $this->whatsapp,
             'telegram' => $this->telegram,
             'cell_phone' => $this->cell_phone,
-        ];        
+        ];
 
         if ($this->company->exists) {
             $this->company->update($data);
-            $this->dispatch(['empresa-atualizada']);
+            $this->dispatch('empresa-atualizada');
         } else {
             $this->company = Company::create($data);
-            $this->company->save();
-            $this->dispatch(['empresa-cadastrada']);
-            return redirect()->route('companies.edit', ['company' => $this->company->id]);
+            $this->dispatch('empresa-cadastrada');
+
+            return redirect()->route('companies.edit', $this->company);
         }
     }
 
@@ -144,11 +150,16 @@ class CompanyForm extends Component
         $this->telegram = $company->telegram;
     }
 
-    public function updatedLogo()
+    public function getLogoUrlProperty()
     {
-        $this->validate([
-            'logo' => 'image|max:1024'
-        ]);
-        $this->logoUrl = $this->logo->temporaryUrl(); // Gera a URL temporária da foto
+        if ($this->logo instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
+            return $this->logo->temporaryUrl();
+        }
+
+        if ($this->logoPath && Storage::disk('public')->exists($this->logoPath)) {
+            return Storage::disk('public')->url($this->logoPath);
+        }
+
+        return asset('theme/images/image.jpg');
     }
 }

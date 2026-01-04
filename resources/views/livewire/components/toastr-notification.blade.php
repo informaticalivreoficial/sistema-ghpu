@@ -1,41 +1,39 @@
 <div></div>
 
-@script
 <script>
-document.addEventListener('livewire:load', function () {
-    // Configurações globais do Toastr
-    toastr.options = {
-        "closeButton": true,
-        "debug": false,
-        "newestOnTop": true,
-        "progressBar": true,
-        "positionClass": "toast-top-right",
-        "preventDuplicates": false,
-        "onclick": null,
-        "showDuration": "300",
-        "hideDuration": "1000",
-        "timeOut": "5000",
-        "extendedTimeOut": "1000",
-        "showEasing": "swing",
-        "hideEasing": "linear",
-        "showMethod": "fadeIn",
-        "hideMethod": "fadeOut"
-    };
+    document.addEventListener('DOMContentLoaded', () => {
+        // Toast via Livewire
+        window.addEventListener('toast', event => {
+            const { type, message } = event.detail[0];
+            showToast(type, message);
+        });
 
-    Livewire.on('toastr', event => {
-        const { type, message, title } = event;
-        toastr[type](message, title);
+        // Toast via session (redirect)
+        @if (session()->has('toast'))
+            showToast(
+                "{{ session('toast.type') }}",
+                "{{ session('toast.message') }}"
+            );
+        @endif
+
+        function showToast(type, message) {
+            const colors = {
+                success: '#16a34a',
+                error: '#dc2626',
+                warning: '#f59e0b',
+                info: '#2563eb',
+            };
+
+            Toastify({
+                text: message,
+                duration: 4000,
+                gravity: "top",
+                position: "right",
+                close: true,
+                style: {
+                    background: colors[type] ?? '#2563eb',
+                },
+            }).showToast();
+        }
     });
-});
 </script>
-@endscript
-
-{{-- Listener para session flash --}}
-@if(session()->has('toastr'))
-    @script
-    <script>
-        const toastrData = @json(session('toastr'));
-        toastr[toastrData.type](toastrData.message, toastrData.title);
-    </script>
-    @endscript
-@endif

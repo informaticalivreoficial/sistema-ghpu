@@ -300,22 +300,61 @@ class OcorrenciaForm extends Component
         'horario' => null,
 
         'conferencia_ficha' => [
-            'nome_hospede' => false,
-            'acompanhantes' => false,
-            'data_entrada' => false,
-            'data_saida' => false,
-            'valores_diarias' => false,
-            'consumacao' => false,
-            'comandas' => false,
-            'ficha_assinada' => false,
-            'placa_veiculo' => false,
-            'observacoes' => false,
-            'cnpj_nf' => false,
+            'nome_hospede' => [
+                'status' => null, // sim | nao
+                'motivo' => '',
+            ],
+            'acompanhantes' => [
+                'status' => null,
+                'motivo' => '',
+            ],
+            'data_entrada' => [
+                'status' => null,
+                'motivo' => '',
+            ],
+            'data_saida' => [
+                'status' => null,
+                'motivo' => '',
+            ],
+            'valores_diarias' => [
+                'status' => null,
+                'motivo' => '',
+            ],
+            'consumacao' => [
+                'status' => null,
+                'motivo' => '',
+            ],
+            'comandas' => [
+                'status' => null,
+                'motivo' => '',
+            ],
+            'ficha_assinada' => [
+                'status' => null,
+                'motivo' => '',
+            ],
+            'placa_veiculo' => [
+                'status' => null,
+                'motivo' => '',
+            ],
+            'observacoes' => [
+                'status' => null,
+                'motivo' => '',
+            ],
+            'cnpj_nf' => [
+                'status' => null,
+                'motivo' => '',
+            ],
         ],
 
         'conferencia_adicional' => [
-            'chaves_veiculos' => false,
-            'codigo_cores' => false,
+            'chaves_veiculos' => [
+                'status' => null,
+                'motivo' => '',
+            ],
+            'codigo_cores' => [
+                'status' => null,
+                'motivo' => '',
+            ],
         ],
 
         'observacoes_turno' => '',
@@ -572,11 +611,7 @@ class OcorrenciaForm extends Component
             if ($this->type === 'branco') {
                 $rules['title'] = 'required|string|min:3|max:255';
                 $rules['content'] = 'required|string|min:10';
-            }
-
-            if ($this->type === 'varreduras-fichas-sistemas') {
-                $rules['formVarreduras.horario'] = 'required|in:06h,14h,20h';
-            }
+            }            
             
             // Adiciona regras específicas baseadas no tipo
             $rules = array_merge($rules, $this->getRulesForType($this->type));
@@ -710,11 +745,12 @@ class OcorrenciaForm extends Component
             $this->dispatch('scroll-to-top');
             
             // Só dispara toast se tiver mais de 1 erro
-            if ($errorCount > 1) {
-                $this->dispatch('toast', 
-                    type: 'error', 
-                    message: "Por favor, preencha os {$errorCount} campos destacados no formulário."
-                );
+            if ($errorCount > 1) {                
+                $this->dispatch('toast', [
+                    'type' => 'error',
+                    'message' => "Por favor, preencha os {$errorCount} campos destacados no formulário.",
+                    'title' => 'Login realizado'
+                ]);
             }
             
             throw $e;
@@ -849,7 +885,23 @@ class OcorrenciaForm extends Component
                 //'form.content' => 'required|string|min:10',
             ],
             'varreduras-fichas-sistemas' => [
-                // Regras específicas para varreduras
+                // Horário da conferência
+                'formVarreduras.horario' => 'required|in:06h,14h,20h',
+
+                // Conferência da ficha
+                'formVarreduras.conferencia_ficha' => 'required|array',
+                'formVarreduras.conferencia_ficha.*.status' => 'required|in:sim,nao',
+                'formVarreduras.conferencia_ficha.*.motivo' =>
+                    'required_if:formVarreduras.conferencia_ficha.*.status,nao',
+
+                // Conferência adicional
+                'formVarreduras.conferencia_adicional' => 'required|array',
+                'formVarreduras.conferencia_adicional.*.status' => 'required|in:sim,nao',
+                'formVarreduras.conferencia_adicional.*.motivo' =>
+                    'required_if:formVarreduras.conferencia_adicional.*.status,nao',
+
+                // Observações do turno
+                'formVarreduras.observacoes_turno' => 'nullable|string|max:1000',
             ],
             'branco' => [
                 // Regras específicas para formulário em branco                
