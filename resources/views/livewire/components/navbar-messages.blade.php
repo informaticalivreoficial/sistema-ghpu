@@ -23,9 +23,7 @@
                 class="dropdown-item">
 
                     <div class="media">
-                        <img src="{{ $other->avatar
-                            ? asset('storage/'.$other->avatar)
-                            : asset('theme/images/image.jpg') }}"
+                        <img src="{{ $other->avatarUrl() }}" alt="{{ $other->name }}"
                             class="img-size-50 mr-3 img-circle">
 
                         <div class="media-body">

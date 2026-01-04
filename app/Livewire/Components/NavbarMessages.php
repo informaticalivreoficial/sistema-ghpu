@@ -16,8 +16,8 @@ class NavbarMessages extends Component
         $conversations = Message::forCompany($user->company_id)
             ->forUser($user->id)
             ->with([
-                'userOne:id,name,avatar',
-                'userTwo:id,name,avatar',
+                'userOne:id,name,avatar,gender',
+                'userTwo:id,name,avatar,gender',
                 'lastItem.sender',
             ])
             ->latest('updated_at')
