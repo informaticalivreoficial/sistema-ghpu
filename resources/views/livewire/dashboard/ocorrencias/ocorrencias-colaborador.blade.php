@@ -72,7 +72,7 @@
                                         <p>{{ $ocorrencia->title }}</p>
 
                                         <p class="mt-3">
-                                            <a href="{{ route('ocorrencia.edit', $ocorrencia->id) }}" target="_blank" class="link-black text-sm mr-2 hover:text-gray-400" title="Visualizar">
+                                            <a href="{{ route('ocorrencia.pdf', $ocorrencia->id) }}" target="_blank" class="link-black text-sm mr-2 hover:text-gray-400" title="Visualizar">
                                                 <i class="fas fa-search"></i> Visualizar
                                             </a>
                                             @if ($ocorrencia->user_id === auth()->id() && $ocorrencia->canBeEditedBy(auth()->user()))

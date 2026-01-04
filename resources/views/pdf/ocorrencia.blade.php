@@ -320,7 +320,7 @@
         <h2>Checklist — Chaves Mecânicas dos Apartamentos</h2>
     @endif
 
-    @if ($ocorrencia->type === 'varreduras-fichas-sistemas')        
+    @if ($ocorrencia->type === 'varreduras-fichas-sistemas')
 
         <p style="margin-top: 10px;">
             <strong>Horário da conferência:</strong>
@@ -335,12 +335,26 @@
                 <div class="section-title">1. Conferência da Ficha Física e Sistema</div>
 
                 <div class="checklist">
-                    @foreach ($data['conferencia_ficha'] as $key => $checked)
+                    @foreach ($data['conferencia_ficha'] as $key => $item)
+                        @php
+                            // Extrai o status e o motivo da nova estrutura de dados
+                            $status = $item['status'] ?? null;
+                            $motivo = $item['motivo'] ?? '';
+                            $is_ok = $status === 'sim';
+                            $status_class = $is_ok ? 'ok' : 'no';
+                            $status_icon = $is_ok ? '✔' : '✖';
+                        @endphp
                         <div class="item">
                             <span>{{ $data['labels'][$key] ?? $key }}</span>
-                            <span class="status {{ $checked ? 'ok' : 'no' }}">
-                                {{ $checked ? '✔' : '✖' }}
+                            <span class="status {{ $status_class }}">
+                                {{ $status_icon }}
                             </span>
+                            {{-- Exibe o motivo se o status não for 'sim' e o motivo não estiver vazio --}}
+                            @if (!$is_ok && !empty($motivo))
+                                <span class="motivo" style="font-size: 0.9em; color: #555; margin-left: 10px;">
+                                    (Motivo: {{ $motivo }})
+                                </span>
+                            @endif
                         </div>
                     @endforeach
                 </div>
@@ -353,12 +367,26 @@
                 <div class="section-title">2. Conferência Adicional</div>
 
                 <div class="checklist">
-                    @foreach ($data['conferencia_adicional'] as $key => $checked)
+                    @foreach ($data['conferencia_adicional'] as $key => $item)
+                        @php
+                            // Extrai o status e o motivo da nova estrutura de dados
+                            $status = $item['status'] ?? null;
+                            $motivo = $item['motivo'] ?? '';
+                            $is_ok = $status === 'sim';
+                            $status_class = $is_ok ? 'ok' : 'no';
+                            $status_icon = $is_ok ? '✔' : '✖';
+                        @endphp
                         <div class="item">
                             <span>{{ $labelsAdicional[$key] ?? $key }}</span>
-                            <span class="status {{ $checked ? 'ok' : 'no' }}">
-                                {{ $checked ? '✔' : '✖' }}
+                            <span class="status {{ $status_class }}">
+                                {{ $status_icon }}
                             </span>
+                            {{-- Exibe o motivo se o status não for 'sim' e o motivo não estiver vazio --}}
+                            @if (!$is_ok && !empty($motivo))
+                                <span class="motivo" style="font-size: 0.9em; color: #555; margin-left: 10px;">
+                                    (Motivo: {{ $motivo }})
+                                </span>
+                            @endif
                         </div>
                     @endforeach
                 </div>
