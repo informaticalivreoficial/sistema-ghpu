@@ -201,6 +201,12 @@ return [
         'code'                  => 'senha',
         'code_confirmation'     => 'confirmação de senha',
         'roleSelected'          => 'cargo',
+        'permissionSelected'    => 'permissão',
+        'companySelected'       => 'empresa',
+        //Companies
+        'subject'               => 'assunto',   
+        'recipients'            => 'destinatários',
+        'body'                  => 'conteúdo da mensagem',
 
     ],
 ];

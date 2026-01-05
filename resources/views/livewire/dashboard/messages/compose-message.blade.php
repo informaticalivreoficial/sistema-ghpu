@@ -37,7 +37,7 @@
                     type="text"
                     wire:model.defer="subject"
                     placeholder="Ex: Solicitação, Aviso importante..."
-                    class="w-full rounded-lg border-gray-300
+                    class="w-full rounded-lg border border-gray-300
                         px-4 py-3
                         text-base
                         focus:ring-2 focus:ring-green-500 focus:border-green-500">
@@ -46,24 +46,21 @@
 
             <!-- Destinatários -->
             <div>
-                <label class="block text-sm font-semibold mb-1">Destinatários</label>
+            <label class="block text-sm font-semibold mb-2">Destinatários</label>
 
-                <select wire:model.defer="recipients" multiple
-                    class="w-full rounded-lg border-gray-300
-                        px-3 py-3
-                        text-base
-                        focus:ring-2 focus:ring-green-500 focus:border-green-500
-                        h-44">
+                <div class="space-y-2 max-h-44 overflow-y-auto border rounded-lg p-3">
                     @foreach($availableUsers as $user)
-                        <option value="{{ $user->id }}">{{ $user->name }}</option>
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" value="{{ $user->id }}" wire:model.defer="recipients"
+                                class="h-4 w-4 text-green-500 border-gray-300 rounded">
+                            <span class="text-sm">{{ $user->name }}</span>
+                        </label>
                     @endforeach
-                </select>
+                </div>
 
-                <p class="text-xs text-gray-500 mt-1">
-                    Segure <kbd class="px-1 border rounded">Ctrl</kbd> para selecionar vários
-                </p>
-
-                @error('recipients') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                @error('recipients') 
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p> 
+                @enderror
             </div>
 
             <!-- Mensagem -->
@@ -75,11 +72,11 @@
                         wire:model.defer="body"
                         rows="6"
                         placeholder="Digite sua mensagem..."
-                        class="w-full rounded-xl border-gray-300
+                        class="w-full rounded-xl border border-gray-300
                             px-4 py-4
                             text-base
                             resize-none
-                            focus:ring-2 focus:ring-green-500 focus:border-green-500"></textarea>
+                            "></textarea>
 
                     <!-- Botão de envio flutuante -->
                     <button wire:click="send"

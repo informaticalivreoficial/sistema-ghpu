@@ -30,39 +30,41 @@
                         </a>
                     </div>
 
-                    @foreach($threads as $thread)
-                        @php
-                            $other = $thread->otherUser(auth()->id());
-                            $last  = $thread->lastItem;
-                        @endphp
+                    <div wire:poll.5s="refreshThreads">
+                        @foreach($threads as $thread)
+                            @php
+                                $other = $thread['model']->otherUser(auth()->id());
+                                $last  = $thread['lastItem'];
+                            @endphp
 
-                        <button
-                            wire:click="openThread({{ $thread->id }})"
-                            class="w-full flex gap-3 px-4 py-3 text-left hover:bg-gray-100
-                                {{ $activeThreadId === $thread->id ? 'bg-gray-100' : '' }}">
+                            <button
+                                wire:click="openThread({{ $thread['id'] }})"
+                                class="w-full flex gap-3 px-4 py-2 text-left hover:bg-gray-100
+                                    {{ $activeThreadId === $thread['id'] ? 'bg-gray-100' : '' }}">
 
-                            <img
-                                src="{{ $other->avatarUrl() }}"
-                                class="w-12 h-12 rounded-full object-cover"
-                            >
+                                <img src="{{ $other->avatarUrl() }}" class="w-10 h-10 rounded-full object-cover">
 
-                            <div class="flex-1 min-w-0">
-                                <div class="flex justify-between">
-                                    <span class="font-semibold truncate">
-                                        {{ $other->name }}
-                                    </span>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex justify-between">
+                                        <span class="font-semibold truncate flex items-center gap-2">
+                                            {{ $other->name }}
+                                            @if($thread['hasNewMessages'])
+                                                <span class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></span>
+                                            @endif
+                                        </span>
 
-                                    <span class="text-xs text-gray-500">
-                                        {{ $last?->created_at?->diffForHumans() }}
-                                    </span>
+                                        <span class="text-xs text-gray-500">
+                                            {{ $last?->created_at?->diffForHumans() }}
+                                        </span>
+                                    </div>
+
+                                    <p class="text-sm text-gray-500 truncate">
+                                        {{ $last?->body }}
+                                    </p>
                                 </div>
-
-                                <p class="text-sm text-gray-500 truncate">
-                                    {{ $last?->body }}
-                                </p>
-                            </div>
-                        </button>
-                    @endforeach
+                            </button>
+                        @endforeach
+                    </div>
 
                 </div>
 

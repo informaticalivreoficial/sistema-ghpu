@@ -60,4 +60,12 @@ class Message extends Model
             ? $this->userTwo
             : $this->userOne;
     }
+
+    public function hasNewMessagesFor(int $userId): bool
+    {
+        $last = $this->lastItem;
+        return $last
+            && $last->sender_id !== $userId  // veio de outro usuário
+            && !$last->isReadFor($userId);   // ainda não foi lida
+    }
 }

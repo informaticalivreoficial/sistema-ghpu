@@ -32,4 +32,19 @@ class MessageItem extends Model
     {
         return $this->hasMany(MessageRead::class);
     }
+
+    public function isReadFor(int $userId): bool
+    {
+        return $this->reads()->where('user_id', $userId)->exists();
+    }
+
+    public function markAsRead(int $userId)
+    {
+        if (!$this->isReadFor($userId)) {
+            $this->reads()->create([
+                'user_id' => $userId,
+                'read_at' => now(),
+            ]);
+        }
+    }
 }

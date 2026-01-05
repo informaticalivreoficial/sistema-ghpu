@@ -3,6 +3,7 @@
 namespace App\Livewire\Navigation;
 
 use App\Models\Config;
+use App\Models\Message;
 use App\Models\MessageItem;
 use App\Models\Ocorrencia;
 use App\Models\Post;
@@ -31,13 +32,16 @@ class SideNavigation extends Component
         $ocorrenciaCount = Ocorrencia::count();
 
         // Contagem de mensagens não lidas
-        $unreadMessagesCount = MessageItem::whereHas('message', function ($q) use ($user) {
-                $q->where('company_id', $user->company_id);
-            })
+        $unreadMessagesCount = Message::query()
+        ->forCompany($user->company_id)
+        ->forUser($user->id)
+        ->whereHas('lastItem', function ($q) use ($user) {
+            $q->where('sender_id', '!=', $user->id)
             ->whereDoesntHave('reads', function ($q) use ($user) {
                 $q->where('user_id', $user->id);
-            })
-            ->count();
+            });
+        })
+        ->count();
 
         
         $config = Config::first();

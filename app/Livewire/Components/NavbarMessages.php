@@ -13,6 +13,7 @@ class NavbarMessages extends Component
     {
         $user = auth()->user();
 
+        // Últimas conversas (dropdown)
         $conversations = Message::forCompany($user->company_id)
             ->forUser($user->id)
             ->with([
@@ -24,13 +25,15 @@ class NavbarMessages extends Component
             ->limit(5)
             ->get();
 
-        $unreadCount = MessageItem::whereHas('message', function ($q) use ($user) {
-                $q->forCompany($user->company_id)
-                ->forUser($user->id);
-            })
-            ->where('sender_id', '!=', $user->id) // ✅ quem enviou
-            ->whereDoesntHave('reads', function ($q) use ($user) {
-                $q->where('user_id', $user->id);
+        // ✅ Contagem correta (threads com mensagem não lida)
+        $unreadCount = Message::query()
+            ->forCompany($user->company_id)
+            ->forUser($user->id)
+            ->whereHas('lastItem', function ($q) use ($user) {
+                $q->where('sender_id', '!=', $user->id)
+                  ->whereDoesntHave('reads', fn ($q) =>
+                        $q->where('user_id', $user->id)
+                  );
             })
             ->count();
 

@@ -124,6 +124,8 @@ class OcorrenciaPdfData
                 'pessoa' => $item['pessoa'] ?? '-',
             ])
             ->toArray(),
+            //'item1_status' => $form['item1_status'] ?? null,
+            //'item1_apto' => $form['item1_apto'] ?? '',
         ];
     }
 

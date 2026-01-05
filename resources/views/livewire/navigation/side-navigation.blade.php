@@ -75,6 +75,7 @@
                         </a>
                     </li>
                 @endrole
+                
                 <li class="nav-item">
                     <a href="{{ route('ocorrencias.index') }}" class="nav-link {{ Route::is('ocorrencias.*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-file"></i>

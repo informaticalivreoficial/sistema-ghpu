@@ -19,7 +19,7 @@
                     $last = $conversation->items->first();
                 @endphp
 
-                <a href="{{ route('messages.thread', $conversation->id) }}"
+                <a href="{{ route('messages.inbox') }}"
                 class="dropdown-item">
 
                     <div class="media">
