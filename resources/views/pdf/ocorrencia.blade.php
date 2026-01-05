@@ -165,6 +165,10 @@
         .meta-row .meta-value:last-child {
             border-right: none;
         }
+
+        .page-break {
+            page-break-after: always;
+        }
         
     </style>
 </head>
@@ -282,29 +286,191 @@
             @endforeach
         </table>
 
+        {{-- QUEBRA DE PÁGINA MANUAL --}}
+        <div class="page-break"></div>
+
         <h2>Checklist — Chaves de Serviço Diário — Estoque Fixo (15 unidades)</h2>
 
-        <table width="100%" cellspacing="0" cellpadding="6" border="1">
-            <tr>
-                <th>ID</th>
-                <th>Status</th>
-                <th>Com quem</th>
-            </tr>
+        @php
+            $itens = [
+                17 => 'Chave Mestra Elevador',
+                18 => 'Molho de Chave Mestra de Todos os Aptos',
+                19 => 'Cartão TAG - Sala de Eventos Ibrain',
+                20 => 'Chave da Porta de Vidro da Recepção',
+                21 => 'Chave da Lixeira (2)',
+                22 => 'Chave Porta Sauna',
+                23 => 'Chave Porta Manutenção',
+                24 => 'Controle Remoto P1',
+                25 => 'Controle Remoto P2',
+                26 => 'Chave Cadeado Bike Roxa',
+                27 => 'Chave Cadeado Bike Vermelha',
+                28 => 'Chave HUB 3° Andar',
+                29 => 'Chave Porta Automática Recepção Entrada',
+                30 => 'Chave (Vareta) Abertura do P2',
+                31 => 'Chave Cartão Magnético Rouparia 3° Andar',
+            ];
+        @endphp
 
-            @foreach($data['chaves_servico'] as $id => $item)
+        <table width="100%" cellspacing="0" cellpadding="6" border="1">
+            <thead>
                 <tr>
-                    <td>{{ $id }}</td>
-                    <td>{{ $item['status'] }}</td>
-                    <td>{{ $item['pessoa'] }}</td>
+                    <th>Item / Descrição</th> {{-- Alterado de ID para Descrição --}}
+                    <th>Status</th>
+                    <th>Com quem</th>
                 </tr>
-            @endforeach
+            </thead>
+            <tbody>
+                @foreach($data['chaves_servico'] as $id => $item)
+                    <tr>
+                        <td>
+                            {{-- Busca o nome no array $itens usando o $id. Se não existir, mostra o ID --}}
+                            {{ $itens[$id] ?? "Item ID: $id" }}
+                        </td>
+                        <td>{{ $item['status'] }}</td>
+                        <td>{{ $item['pessoa'] }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
         </table> 
 
         <h2>Checklist — Controles de TV Box (Estoque fixo: 7 unidades)</h2>
+
+        <table width="100%" cellspacing="0" cellpadding="6" border="1">            
+            <tr>
+                <td><strong>Apto 103</strong></td>
+                <td>{{ $data['tvbox_103'] ?? '-' }}</td>
+            </tr>
+            <tr>
+                <td><strong>Apto 201</strong></td>
+                <td>{{ $data['tvbox_201'] ?? '-' }}</td>
+            </tr>
+            <tr>
+                <td><strong>Apto 203</strong></td>
+                <td>{{ $data['tvbox_203'] ?? '-' }}</td>
+            </tr>
+            <tr>
+                <td><strong>Apto 204</strong></td>
+                <td>{{ $data['tvbox_204'] ?? '-' }}</td>
+            </tr>            
+        </table>
+
+        {{-- QUEBRA DE PÁGINA MANUAL --}}
+        <div class="page-break"></div>
+
         <h2>Checklist — Secador de Cabelo (Estoque Fixo: 5 unidades)</h2>
+
+        <table width="100%" cellspacing="0" cellpadding="6" border="1">
+            <thead>
+                <tr style="background-color: #f2f2f2;">
+                    <th align="left">Equipamento</th>
+                    <th align="left">Status / Localização</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{-- Percorremos o array de secadores --}}
+                @foreach($data['secadores'] as $secador)
+                    <tr>
+                        <td>Secador Nº {{ $secador['numero'] }}</td>
+                        <td>
+                            @if($secador['status'] === 'gaveta')
+                                <span style="color: green;">✔ Está na gaveta</span>
+                            @else
+                                <span style="color: #d9534f;">
+                                    ✖ Emprestado — Apto: <strong>{{ $secador['apto'] ?? 'N/A' }}</strong>
+                                </span>
+                            @endif
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+
         <h2>Checklist — Rádios Comunicadores de Serviços (7 unidades)</h2>
+
+        <table width="100%" cellspacing="0" cellpadding="6" border="1">
+            <thead>
+                <tr style="background-color: #f2f2f2;">
+                    <th align="left">Rádio</th>
+                    <th align="left">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($data['radios'] as $radio)
+                    <tr>
+                        <td>Rádio Nº {{ $radio['numero'] }}</td>
+                        <td>
+                            @if($radio['status'] === 'base')
+                                <span style="color: green;">✔ Está na base</span>
+                            @elseif($radio['status'] === 'funcionario')
+                                <span style="color: #d9534f;">
+                                    ✖ Com funcionário — {{ $radio['funcionario'] ?? 'N/A' }}
+                                </span>
+                            @else
+                                <span>{{ $radio['status'] ?? '-' }}</span>
+                            @endif
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+
+
         <h2>Checklist — Celulares de Serviço (8 unidades)</h2>
+
+        <table width="100%" cellspacing="0" cellpadding="6" border="1">
+            <thead>
+                <tr style="background-color: #f2f2f2;">
+                    <th align="left">Celular</th>
+                    <th align="left">Bateria</th>
+                    <th align="left">Usuário</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($data['celulares'] as $celular)
+                    <tr>
+                        <td>Celular Nº {{ $celular['numero'] }}</td>
+                        <td>{{ $celular['bateria'] ?? '-' }}%</td>
+                        <td>
+                            @if(!empty($celular['funcionario']) && $celular['funcionario'] !== '-')
+                                {{ $celular['funcionario'] }}
+                            @else
+                                <span style="color: green;">✔ Livre</span>
+                            @endif
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+
+        {{-- QUEBRA DE PÁGINA MANUAL --}}
+        <div class="page-break"></div>
+
         <h2>Checklist — Gavetas de Jogos e Controles do 3° e Ar Cond.</h2>
+
+        <table width="100%" cellspacing="0" cellpadding="6" border="1">
+            <thead>
+                <tr style="background-color: #f2f2f2;">
+                    <th align="left">Gaveta</th>
+                    <th align="left">Status / Apto</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($data['gavetas'] as $gaveta)
+                    <tr>
+                        <td>Gaveta Nº {{ $gaveta['numero'] }}</td>
+                        <td>
+                            @if($gaveta['status'] === 'gaveta')
+                                <span style="color: green;">✔ Está na gaveta</span>
+                            @else
+                                <span style="color: #d9534f;">
+                                    ✖ Emprestada — Apto: <strong>{{ $gaveta['apto_emprestado'] ?? 'N/A' }}</strong>
+                                </span>
+                            @endif
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
         
         <h2>Checklist — Dados do Turno</h2>
 
@@ -318,6 +484,33 @@
         </table>
 
         <h2>Checklist — Chaves Mecânicas dos Apartamentos</h2>
+
+        <table width="100%" cellspacing="0" cellpadding="6" border="1">
+            <thead>
+                <tr style="background-color: #f2f2f2;">
+                    <th align="left">Chave Mecânica</th>
+                    <th align="left">Status / Pessoa</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($data['chaves_mecanicas'] as $chave)
+                    <tr>
+                        <td>Chave Nº {{ $chave['numero'] }}</td>
+                        <td>
+                            @if($chave['status'] === 'recepcao')
+                                <span style="color: green;">✔ Está na recepção</span>
+                            @elseif($chave['status'] === 'pessoa')
+                                <span style="color: #d9534f;">
+                                    ✖ Com: <strong>{{ $chave['pessoa'] ?? 'N/A' }}</strong>
+                                </span>
+                            @else
+                                <span>{{ $chave['status'] ?? '-' }}</span>
+                            @endif
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
     @endif
 
     @if ($ocorrencia->type === 'varreduras-fichas-sistemas')
