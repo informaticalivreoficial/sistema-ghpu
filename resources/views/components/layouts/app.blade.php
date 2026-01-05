@@ -93,6 +93,10 @@
     {{-- Componente Toastr Global --}}
     <livewire:components.toastr-notification />
 
+    @auth
+        <livewire:components.global-message-notifier />
+    @endauth
+
     {{-- jQuery --}}
     <script src="{{ asset('theme/plugins/jquery/jquery.min.js') }}"></script> 
 
