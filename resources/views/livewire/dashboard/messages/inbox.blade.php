@@ -37,32 +37,48 @@
                                 $last  = $thread['lastItem'];
                             @endphp
 
-                            <button
+                            <div
                                 wire:click="openThread({{ $thread['id'] }})"
-                                class="w-full flex gap-3 px-4 py-2 text-left hover:bg-gray-100
+                                role="button"
+                                class="group w-full flex gap-3 px-4 py-2 cursor-pointer
+                                    hover:bg-gray-100
                                     {{ $activeThreadId === $thread['id'] ? 'bg-gray-100' : '' }}">
 
-                                <img src="{{ $other->avatarUrl() }}" class="w-10 h-10 rounded-full object-cover">
+                                <img src="{{ $other->avatarUrl() }}"
+                                    class="w-10 h-10 rounded-full object-cover flex-shrink-0">
 
                                 <div class="flex-1 min-w-0">
-                                    <div class="flex justify-between">
+                                    <div class="flex items-center justify-between gap-2">
                                         <span class="font-semibold truncate flex items-center gap-2">
                                             {{ $other->name }}
+
                                             @if($thread['hasNewMessages'])
-                                                <span class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></span>
+                                                <span class="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse"></span>
                                             @endif
                                         </span>
 
-                                        <span class="text-xs text-gray-500">
+                                        <span class="text-xs text-gray-500 flex-shrink-0">
                                             {{ $last?->created_at?->diffForHumans() }}
                                         </span>
                                     </div>
 
-                                    <p class="text-sm text-gray-500 truncate">
-                                        {{ $last?->body }}
-                                    </p>
+                                    <div class="flex items-center gap-2">
+                                        <p class="text-sm text-gray-500 truncate flex-1">
+                                            {{ $last?->body }}
+                                        </p>
+
+                                        @if(auth()->user()->canDeleteMessages())
+                                            <button
+                                                wire:click.stop="confirmDelete({{ $thread['id'] }})"
+                                                class="ml-2 text-red-500 hover:text-red-700 text-sm opacity-0 group-hover:opacity-100 transition"
+                                                title="Excluir conversa"
+                                            >
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        @endif
+                                    </div>
                                 </div>
-                            </button>
+                            </div>
                         @endforeach
                     </div>
 
@@ -146,5 +162,36 @@
         } else {
             initChatScroll();
         }
+
+        
+        document.addEventListener('livewire:initialized', () => {
+
+            @this.on('delete-prompt', () => {
+                swal.fire({
+                    icon: 'warning',
+                    title: 'Atenção',
+                    text: 'Você tem certeza que deseja excluir esta conversa?',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sim, excluir!',
+                    cancelButtonText: 'Cancelar',
+                    confirmButtonColor: '#d33',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        @this.dispatch('goOn-Delete')
+                    }
+                })
+            })
+
+        })
+
+        window.addEventListener('thread-deleted', () => {
+            Swal.fire({
+                icon: 'success',
+                title: 'Conversa excluída',
+                timer: 1500,
+                showConfirmButton: false,
+            });
+        });
+    
     </script>
 @endpush

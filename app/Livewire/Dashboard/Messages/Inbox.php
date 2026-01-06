@@ -5,8 +5,8 @@ namespace App\Livewire\Dashboard\Messages;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
+use Livewire\Attributes\On;
 use App\Models\Message;
-use App\Models\MessageRead;
 
 #[Layout('components.layouts.app')]
 #[Title('Mensagens')]
@@ -14,6 +14,7 @@ class Inbox extends Component
 {
     public $threads = [];
     public ?int $activeThreadId = null;
+    public ?int $deleteThreadId = null;
 
     public function mount()
     {
@@ -98,10 +99,40 @@ class Inbox extends Component
             ->toArray();
     }
 
-    // public function openThread(int $threadId)
-    // {
-    //     $this->activeThreadId = $threadId;
-    // }
+    public function confirmDelete(int $threadId)
+    {
+        $this->authorizeDelete();
+
+        $this->deleteThreadId = $threadId;
+
+        $this->dispatch('delete-prompt');
+    }
+
+    private function authorizeDelete()
+    {
+        if (!auth()->user()->canDeleteMessages()) {
+            abort(403);
+        }
+    }
+
+    #[On('goOn-Delete')]
+    public function deleteThread()
+    {
+        $this->authorizeDelete();
+
+        if (!$this->deleteThreadId) {
+            return;
+        }
+
+        Message::findOrFail($this->deleteThreadId)->delete();
+
+        $this->threads = collect($this->threads)
+            ->reject(fn ($thread) => $thread['id'] === $this->deleteThreadId)
+            ->values()
+            ->toArray();
+
+        $this->deleteThreadId = null;
+    }
 
     public function render()
     {

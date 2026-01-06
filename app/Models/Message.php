@@ -17,6 +17,16 @@ class Message extends Model
         'user_two_id',
     ];
 
+    protected static function booted()
+    {
+        static::deleting(function ($message) {
+            $message->items()->each(function ($item) {
+                $item->reads()->delete();
+                $item->delete();
+            });
+        });
+    }
+
     public function userOne()
     {
         return $this->belongsTo(User::class, 'user_one_id');

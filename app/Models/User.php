@@ -158,6 +158,11 @@ class User extends Authenticatable
         };
     }
 
+    public function canDeleteMessages(): bool
+    {
+        return $this->hasAnyRole(['admin', 'manager', 'super-admin']);
+    }
+
     public function setCellPhoneAttribute($value)
     {
         $this->attributes['cell_phone'] = (!empty($value) ? $this->clearField($value) : null);
