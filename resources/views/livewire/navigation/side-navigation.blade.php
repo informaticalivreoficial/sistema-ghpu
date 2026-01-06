@@ -123,14 +123,14 @@
                 @endrole
 
                 @role(['super-admin', 'admin', 'manager'])
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
+                    <li class="nav-item {{ Route::is('reports.*') ? 'menu-open' : '' }}">
+                        <a href="#" class="nav-link {{ Route::is('reports.*') ? 'active' : '' }}">
                             <i class="nav-icon fas fa-chart-bar"></i>
                             <p> Relatórios <i class="fas fa-angle-left right"></i></p>
                         </a>
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="#" class="nav-link">
+                                <a href="{{route('reports.occurrences')}}" class="nav-link {{ Route::is('reports.occurrences') ? 'active' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
                                     <p>Relatório de Ocorrências</p>
                                 </a>

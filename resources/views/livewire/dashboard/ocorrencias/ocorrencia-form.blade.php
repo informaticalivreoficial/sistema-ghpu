@@ -88,29 +88,7 @@
 
 
 @push('scripts')
-<script>
-    // document.addEventListener('livewire:init', () => {
-    //     // Configurações do Toastr
-    //     toastr.options = {
-    //         "closeButton": true,
-    //         "progressBar": true,
-    //         "positionClass": "toast-top-right",
-    //         "timeOut": "4000",
-    //         "extendedTimeOut": "1000",
-    //         "showEasing": "swing",
-    //         "hideEasing": "linear",
-    //         "showMethod": "fadeIn",
-    //         "hideMethod": "fadeOut",
-    //         "preventDuplicates": false,
-    //         "newestOnTop": true
-    //     };
-
-    //     Livewire.on('toast', (event) => {
-    //         toastr[event.type](event.message);
-    //     });
-        
-    // });
-
+<script>  
     document.addEventListener('livewire:init', () => {
         Livewire.on('scroll-to-top', () => {
             const firstError = document.querySelector('.is-invalid, .text-danger');
@@ -124,7 +102,6 @@
             }
         });
     });
-
     
     document.addEventListener('swal-redirect', function(event) {
         const data = Array.isArray(event.detail) ? event.detail[0] : event.detail;

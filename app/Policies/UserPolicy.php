@@ -32,17 +32,19 @@ class UserPolicy
             return true;
         }
 
-        // 🛡 Admin pode todos, menos Super Admin e ele mesmo
+        // 🛡 Admin pode todos, menos Super Admin
         if ($user->isAdmin()) {
-            return
-                ! $model->isSuperAdmin();
+            return ! $model->isSuperAdmin();
         }
 
-        // 🧑‍💼 Manager → apenas employees da mesma empresa
+        // 🧑‍💼 Manager
         if ($user->isManager()) {
             return
-                $model->isEmployee()
-                && $user->company_id === $model->company_id;
+                (
+                    $model->isEmployee()
+                    && $user->company_id === $model->company_id
+                )
+                || $user->id === $model->id;
         }
 
         // 👷 Employee → somente o próprio perfil
