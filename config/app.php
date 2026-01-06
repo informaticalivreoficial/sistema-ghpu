@@ -19,6 +19,8 @@ return [
     'name' => env('APP_NAME', 'Laravel'),
 
     'desenvolvedor_url' => env('DESENVOLVEDOR_URL', 'https://informaticalivre.com.br'),
+    'desenvolvedor_email' => env('DESENVOLVEDOR_EMAIL', 'suporte@informaticalivre.com.br'),
+    'desenvolvedor_nome' => env('DESENVOLVEDOR', 'Informática Livre'),
 
     /*
     |--------------------------------------------------------------------------

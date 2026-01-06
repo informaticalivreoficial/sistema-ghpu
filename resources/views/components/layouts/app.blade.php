@@ -64,6 +64,9 @@
             font-size: 16px;        /* texto maior */
             line-height: 1.6;
         }
+        .modal-backdrop {
+            display: none !important;
+        }
     </style>
 
     {{-- Livewire Styles --}}
@@ -90,12 +93,11 @@
         <livewire:navigation.footer />
     </div>
 
-    {{-- Componente Toastr Global --}}
-    <livewire:components.toastr-notification />
-
     @auth
         <livewire:components.global-message-notifier />
-    @endauth
+        <livewire:components.support-modal />
+        <livewire:components.toastr-notification />
+    @endauth    
 
     {{-- jQuery --}}
     <script src="{{ asset('theme/plugins/jquery/jquery.min.js') }}"></script> 
