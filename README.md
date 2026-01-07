@@ -1,20 +1,216 @@
 <p align="center">
-	<a href="http://imobiliariaubatuba.com"  target="_blank" title="Sistema Imobiliário Imóveis em Ubatuba">
-		<img src="public/images/brand.png" alt="Sistema Imobiliário Imóveis em Ubatuba" width="280px">
+	<a href="https://sistema.ghpu.com.br"  target="_blank" title="Sistema de ocorrências para hoteis e pousadas">
+		<img src="public/images/brand.png" alt="Sistema de ocorrências para hoteis e pousadas" width="255px">
 	</a>
 </p>
 
 <br>
 <p align="center">
 	<img src="https://img.shields.io/badge/version project-1.0-brightgreen" alt="version project">
-    <img src="https://img.shields.io/badge/Php-8.1-informational" alt="stack php">
+    <img src="https://img.shields.io/badge/Php-8.3-informational" alt="stack php">
     <img src="https://img.shields.io/badge/Laravel-10.10-informational&color=brightgreen" alt="stack laravel">
-    <img src="https://img.shields.io/badge/Livewire-3.0-informational" alt="stack Livewire">
-    <img src="https://img.shields.io/badge/TailwindCss-3.1-informational" alt="stack Tailwind">
+    <img src="https://img.shields.io/badge/Livewire-3.5-informational" alt="stack Livewire">
+    <img src="https://img.shields.io/badge/TailwindCss-3.4-informational" alt="stack Tailwind">
 	<a href="https://opensource.org/licenses/GPL-3.0">
 		<img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="GPLv3 License">
 	</a>
 </p>
+
+🏨 Sistema de Ocorrências para Hotéis e Pousadas
+
+Sistema web desenvolvido para controle, registro e acompanhamento de ocorrências operacionais em hotéis, pousadas e empreendimentos de hospedagem, com foco em organização, rastreabilidade e gestão em tempo real.
+
+✨ Principais Funcionalidades
+📋 Registro de Ocorrências
+
+Ocorrências categorizadas por tipo:
+
+Passagem de Turno
+
+Ocorrências Diárias
+
+Varreduras de Fichas x Sistemas
+
+Campos dinâmicos por tipo de ocorrência
+
+Armazenamento estruturado via JSON, permitindo flexibilidade e evolução do formulário
+
+🔄 Passagem de Turno Inteligente
+
+Registro completo da operação do turno, incluindo:
+
+Número de hóspedes
+
+Apartamentos ocupados
+
+Reservas e check-outs
+
+Controle de chaves, cartões, rádios e equipamentos
+
+Caixa:
+
+💰 Dinheiro
+
+💳 Cartão
+
+📊 Total consolidado
+
+Responsáveis e status operacionais
+
+📊 Relatórios e Indicadores
+
+Quantidade de ocorrências:
+
+Na semana
+
+No último mês
+
+No último ano
+
+Gráficos utilizando Chart.js (AdminLTE)
+
+Visualização clara para tomada de decisão
+
+🕒 Últimas Ocorrências (Dashboard)
+
+Lista em tempo real com:
+
+Avatar do colaborador
+
+Tipo e título da ocorrência
+
+Data e hora
+
+Indicador visual de nova ocorrência
+
+Atualização automática via Livewire (wire:poll)
+
+👥 Controle de Usuários e Permissões
+
+Sistema robusto de permissões baseado em perfis:
+
+Super Admin
+
+Admin
+
+Manager
+
+Employee
+
+Permissões por perfil:
+
+Visualizar
+
+Criar
+
+Editar
+
+Excluir ocorrências
+
+Ações sensíveis protegidas por Policies (Laravel)
+
+📄 Exportação em PDF
+
+Geração de PDF das ocorrências
+
+Ideal para:
+
+Auditorias
+
+Impressão
+
+Arquivamento
+
+Envio por e-mail
+
+🔔 Atualizações em Tempo Real
+
+Notificações visuais para novas ocorrências
+
+Integração com Livewire + Alpine.js
+
+Feedback imediato para gestores
+
+🧱 Tecnologias Utilizadas
+
+Laravel (Backend)
+
+Livewire (Componentes reativos)
+
+Tailwind CSS (UI moderna)
+
+AdminLTE (Layout administrativo)
+
+Chart.js (Gráficos e indicadores)
+
+Alpine.js (Interações frontend)
+
+MySQL / MariaDB
+
+SweetAlert2 (Confirmações e alertas)
+
+Carbon (Datas e períodos)
+
+🗂 Estrutura de Dados (Ocorrências)
+
+As ocorrências utilizam um campo form em JSON, permitindo:
+
+{
+  "turno": {
+    "hospedes": "120",
+    "aptos_ocupados": "85",
+    "reservas": "10",
+    "checkouts": "7",
+    "caixa_dinheiro": "1500",
+    "caixa_cartoes": "3200"
+  }
+}
+
+
+➡️ Isso garante flexibilidade, escalabilidade e baixo impacto em futuras mudanças.
+
+🔐 Segurança
+
+Autorização baseada em Policies
+
+Controle por empresa (company_id)
+
+Usuários só acessam dados da própria unidade
+
+Ações críticas protegidas por confirmação
+
+🚀 Objetivo do Sistema
+
+Centralizar e padronizar o registro das ocorrências operacionais,
+reduzindo falhas de comunicação entre turnos e
+aumentando a confiabilidade das informações para a gestão.
+
+📦 Instalação (Resumo)
+git clone https://github.com/seu-repositorio/sistema-ocorrencias.git
+cd sistema-ocorrencias
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate
+php artisan serve
+
+📌 Roadmap (Próximas Melhorias)
+
+🔔 Notificações por e-mail
+
+📱 Versão mobile (PWA)
+
+📈 Relatórios avançados por período
+
+📊 Comparativos entre unidades
+
+🧾 Assinatura digital na passagem de turno
+
+🧑‍💻 Autor
+
+Desenvolvido por Renato Montanari
+Sistema voltado para operações reais de hotelaria, com foco em produtividade e clareza.
+
 ### :sparkles: Colaboradores
 <table>
   <tr>
