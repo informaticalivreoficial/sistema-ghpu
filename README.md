@@ -115,27 +115,50 @@ Permissões por perfil:
 
 ---
 
-## 🗂 Estrutura de Dados (Ocorrências)
+## 🔐 Segurança
 
-As ocorrências utilizam um campo `form` em **JSON**, permitindo:
-
-```json
-{
-  "turno": {
-    "hospedes": "120",
-    "aptos_ocupados": "85",
-    "reservas": "10",
-    "checkouts": "7",
-    "caixa_dinheiro": "1500",
-    "caixa_cartoes": "3200"
-  }
-}
+- Autorização baseada em Policies
+- Controle por empresa (company_id)
+- Usuários acessam apenas dados da própria unidade
+- Ações críticas protegidas por confirmação
 
 ---
 
+## 🚀 Objetivo do Sistema
+
+Centralizar e padronizar o registro das ocorrências operacionais,
+reduzindo falhas de comunicação entre turnos e aumentando a confiabilidade das informações para a gestão.
+
+---
+
+## 📦 Instalação
+
+### :books: Como rodar o projeto em novo ambiente `SEM` o `make` utilizando o composer
+
+```bash
+
+# Depois que você realizar o clone faça os seguintes comandos
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate
+php artisan serve
+
+```
+
+---
+
+## 📌 Roadmap
+
+- 🔔 Notificações por e-mail
+- 📱 Versão mobile (PWA)
+- 📈 Relatórios avançados por período
+- 📊 Comparativos entre unidades
+- 🧾 Assinatura digital na passagem de turno
+
 ### 🧑‍💻 Autor
 
-Desenvolvido por Renato Montanari
+Desenvolvido por <b>Renato Montanari</b>
 Sistema voltado para operações reais de hotelaria, com foco em produtividade e clareza.
 
 ---
