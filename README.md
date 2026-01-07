@@ -16,145 +16,110 @@
 	</a>
 </p>
 
-🏨 Sistema de Ocorrências para Hotéis e Pousadas
+# 🏨 Sistema de Ocorrências para Hotéis e Pousadas
 
-Sistema web desenvolvido para controle, registro e acompanhamento de ocorrências operacionais em hotéis, pousadas e empreendimentos de hospedagem, com foco em organização, rastreabilidade e gestão em tempo real.
+Sistema web desenvolvido para **controle, registro e acompanhamento de ocorrências operacionais** em hotéis, pousadas e empreendimentos de hospedagem, com foco em **organização, rastreabilidade e gestão em tempo real**.
 
-✨ Principais Funcionalidades
-📋 Registro de Ocorrências
+---
 
-Ocorrências categorizadas por tipo:
+## ✨ Principais Funcionalidades
 
-Passagem de Turno
+### 📋 Registro de Ocorrências
+- Ocorrências categorizadas por tipo:
+  - **Passagem de Turno**
+  - **Ocorrências Diárias**
+  - **Varreduras de Fichas x Sistemas**
+- Campos dinâmicos por tipo de ocorrência
+- Armazenamento estruturado via **JSON**, permitindo flexibilidade e evolução do formulário
 
-Ocorrências Diárias
+---
 
-Varreduras de Fichas x Sistemas
-
-Campos dinâmicos por tipo de ocorrência
-
-Armazenamento estruturado via JSON, permitindo flexibilidade e evolução do formulário
-
-🔄 Passagem de Turno Inteligente
-
+### 🔄 Passagem de Turno Inteligente
 Registro completo da operação do turno, incluindo:
+- Número de hóspedes
+- Apartamentos ocupados
+- Reservas e check-outs
+- Controle de chaves, cartões, rádios e equipamentos
+- Caixa:
+  - 💰 Dinheiro
+  - 💳 Cartão
+  - 📊 Total consolidado
+- Responsáveis e status operacionais
 
-Número de hóspedes
+---
 
-Apartamentos ocupados
+### 📊 Relatórios e Indicadores
+- Quantidade de ocorrências:
+  - Na **semana**
+  - No **último mês**
+  - No **último ano**
+- Gráficos utilizando **Chart.js (AdminLTE)**
+- Visualização clara para tomada de decisão
 
-Reservas e check-outs
+---
 
-Controle de chaves, cartões, rádios e equipamentos
+### 🕒 Últimas Ocorrências (Dashboard)
+- Lista em tempo real com:
+  - Avatar do colaborador
+  - Tipo e título da ocorrência
+  - Data e hora
+  - Indicador visual de nova ocorrência
+- Atualização automática via **Livewire (`wire:poll`)**
 
-Caixa:
+---
 
-💰 Dinheiro
-
-💳 Cartão
-
-📊 Total consolidado
-
-Responsáveis e status operacionais
-
-📊 Relatórios e Indicadores
-
-Quantidade de ocorrências:
-
-Na semana
-
-No último mês
-
-No último ano
-
-Gráficos utilizando Chart.js (AdminLTE)
-
-Visualização clara para tomada de decisão
-
-🕒 Últimas Ocorrências (Dashboard)
-
-Lista em tempo real com:
-
-Avatar do colaborador
-
-Tipo e título da ocorrência
-
-Data e hora
-
-Indicador visual de nova ocorrência
-
-Atualização automática via Livewire (wire:poll)
-
-👥 Controle de Usuários e Permissões
-
+### 👥 Controle de Usuários e Permissões
 Sistema robusto de permissões baseado em perfis:
-
-Super Admin
-
-Admin
-
-Manager
-
-Employee
+- **Super Admin**
+- **Admin**
+- **Manager**
+- **Employee**
 
 Permissões por perfil:
+- Visualizar
+- Criar
+- Editar
+- Excluir ocorrências  
+- Ações sensíveis protegidas por **Policies (Laravel)**
 
-Visualizar
+---
 
-Criar
+### 📄 Exportação em PDF
+- Geração de PDF das ocorrências
+- Ideal para:
+  - Auditorias
+  - Impressão
+  - Arquivamento
+  - Envio por e-mail
 
-Editar
+---
 
-Excluir ocorrências
+### 🔔 Atualizações em Tempo Real
+- Notificações visuais para novas ocorrências
+- Integração com **Livewire + Alpine.js**
+- Feedback imediato para gestores
 
-Ações sensíveis protegidas por Policies (Laravel)
+---
 
-📄 Exportação em PDF
+## 🧱 Tecnologias Utilizadas
 
-Geração de PDF das ocorrências
+- **Laravel**
+- **Livewire**
+- **Tailwind CSS**
+- **AdminLTE**
+- **Chart.js**
+- **Alpine.js**
+- **MySQL / MariaDB**
+- **SweetAlert2**
+- **Carbon**
 
-Ideal para:
+---
 
-Auditorias
+## 🗂 Estrutura de Dados (Ocorrências)
 
-Impressão
+As ocorrências utilizam um campo `form` em **JSON**, permitindo:
 
-Arquivamento
-
-Envio por e-mail
-
-🔔 Atualizações em Tempo Real
-
-Notificações visuais para novas ocorrências
-
-Integração com Livewire + Alpine.js
-
-Feedback imediato para gestores
-
-🧱 Tecnologias Utilizadas
-
-Laravel (Backend)
-
-Livewire (Componentes reativos)
-
-Tailwind CSS (UI moderna)
-
-AdminLTE (Layout administrativo)
-
-Chart.js (Gráficos e indicadores)
-
-Alpine.js (Interações frontend)
-
-MySQL / MariaDB
-
-SweetAlert2 (Confirmações e alertas)
-
-Carbon (Datas e períodos)
-
-🗂 Estrutura de Dados (Ocorrências)
-
-As ocorrências utilizam um campo form em JSON, permitindo:
-
+```json
 {
   "turno": {
     "hospedes": "120",
@@ -166,50 +131,14 @@ As ocorrências utilizam um campo form em JSON, permitindo:
   }
 }
 
+---
 
-➡️ Isso garante flexibilidade, escalabilidade e baixo impacto em futuras mudanças.
-
-🔐 Segurança
-
-Autorização baseada em Policies
-
-Controle por empresa (company_id)
-
-Usuários só acessam dados da própria unidade
-
-Ações críticas protegidas por confirmação
-
-🚀 Objetivo do Sistema
-
-Centralizar e padronizar o registro das ocorrências operacionais,
-reduzindo falhas de comunicação entre turnos e
-aumentando a confiabilidade das informações para a gestão.
-
-📦 Instalação (Resumo)
-git clone https://github.com/seu-repositorio/sistema-ocorrencias.git
-cd sistema-ocorrencias
-composer install
-cp .env.example .env
-php artisan key:generate
-php artisan migrate
-php artisan serve
-
-📌 Roadmap (Próximas Melhorias)
-
-🔔 Notificações por e-mail
-
-📱 Versão mobile (PWA)
-
-📈 Relatórios avançados por período
-
-📊 Comparativos entre unidades
-
-🧾 Assinatura digital na passagem de turno
-
-🧑‍💻 Autor
+### 🧑‍💻 Autor
 
 Desenvolvido por Renato Montanari
 Sistema voltado para operações reais de hotelaria, com foco em produtividade e clareza.
+
+---
 
 ### :sparkles: Colaboradores
 <table>
