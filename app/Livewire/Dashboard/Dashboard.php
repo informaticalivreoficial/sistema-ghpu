@@ -68,10 +68,11 @@ class Dashboard extends Component
 
             'caixa_dinheiro' => (float) data_get($turno->form, 'turno.caixa_dinheiro', 0),
             'caixa_cartao' => (float) data_get($turno->form, 'turno.caixa_cartoes', 0),
-            'caixa_total' => (float) data_get($turno->form, 'turno.caixa_faturamento', 0),
+            'caixa_total' => (float) (data_get($turno->form, 'turno.caixa_dinheiro', 0) + data_get($turno->form, 'turno.caixa_cartoes', 0)),
         ];
 
         $this->lastTurnoDate = $turno->created_at->format('d/m/Y H:i');
+
     }
 
     public function refreshOcorrencias()
