@@ -133,8 +133,6 @@ reduzindo falhas de comunicação entre turnos e aumentando a confiabilidade das
 
 ## 📦 Instalação
 
-### :books: Como rodar o projeto em novo ambiente `SEM` o `make` utilizando o composer
-
 ```bash
 
 # Depois que você realizar o clone faça os seguintes comandos
