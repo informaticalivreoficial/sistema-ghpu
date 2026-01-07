@@ -12,6 +12,8 @@ class Dashboard extends Component
     public int $postsCount = 0;
     public int $postsYearCount = 0;
     public array $lastOcorrencias = [];
+    public array $lastTurno = [];
+    public ?string $lastTurnoDate = null;
 
     public function mount()
     {
@@ -45,6 +47,31 @@ class Dashboard extends Component
         }
 
         $this->lastOcorrencias = $query->get()->toArray();
+
+
+        $turno = Ocorrencia::query()
+            ->where('company_id', $user->company_id)
+            ->where('type', 'passagem-de-turno')
+            ->latest('created_at')
+            ->first();
+
+        if (! $turno || ! is_array($turno->form)) {
+            return;
+        }
+
+        $this->lastTurno = [
+            'hospedes' => (int) data_get($turno->form, 'turno.hospedes', 0),
+            'aptos' => (int) data_get($turno->form, 'turno.apto_ocupados', 0),
+            'reservas' => (int) data_get($turno->form, 'turno.reservas', 0),
+            'checkouts' => (int) data_get($turno->form, 'turno.checkouts', 0),
+            'cartoes' => (int) data_get($turno->form, 'turno.cartoes_emprestados', 0),
+
+            'caixa_dinheiro' => (float) data_get($turno->form, 'turno.caixa_dinheiro', 0),
+            'caixa_cartao' => (float) data_get($turno->form, 'turno.caixa_cartoes', 0),
+            'caixa_total' => (float) data_get($turno->form, 'turno.caixa_faturamento', 0),
+        ];
+
+        $this->lastTurnoDate = $turno->created_at->format('d/m/Y H:i');
     }
 
     public function refreshOcorrencias()
