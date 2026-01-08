@@ -76,8 +76,8 @@
                     <div class="col-lg-4 col-12">
                         <div class="small-box bg-secondary">
                             <div class="inner">
-                                <h3>{{ $lastTurno['cartoes'] }}</h3>
-                                <p>Cartões emprestados</p>
+                                <h3>R$ {{ number_format($lastTurno['caixa_cartao'], 2, ',', '.') }}</h3>
+                                <p>Caixa (Cartões)</p>
                             </div>
                             <div class="icon">
                                 <i class="fas fa-id-card"></i>

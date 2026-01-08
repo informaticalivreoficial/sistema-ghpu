@@ -113,7 +113,7 @@
                 @else                    
                     <div class="col-12">                                                        
                         <div class="alert alert-info p-3">
-                            Não foram encontrados registros!
+                            Não foram encontrados registros!  
                         </div>                                                        
                     </div>                    
                 @endif
