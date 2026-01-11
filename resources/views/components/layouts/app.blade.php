@@ -189,113 +189,129 @@
 
     <script>
         document.addEventListener('alpine:init', () => {
-            Alpine.data('quillEditor', ({ value, model }) => ({
-                quill: null,
+    Alpine.data('quillEditor', ({ value, model }) => ({
+        quill: null,
 
-                init() {
-                    if (this.quill) return;
+        init() {
+            if (this.quill) return; // 🔥 evita duplicar editor
 
-                    // 🔥 Registrar módulo de redimensionamento
-                    if (typeof ImageResize !== 'undefined') {
-                        Quill.register('modules/imageResize', ImageResize.default);
+            // 🔥 Registrar módulo de redimensionamento
+            if (typeof ImageResize !== 'undefined') {
+                Quill.register('modules/imageResize', ImageResize.default);
+            }
+
+            this.quill = new Quill(this.$refs.editor, {
+                theme: 'snow',
+                placeholder: 'Digite aqui...',
+                modules: {
+                    toolbar: [
+                        [{ header: [1, 2, 3, false] }],
+                        [{ font: [] }, { size: ['small', false, 'large', 'huge'] }],
+                        ['bold', 'italic', 'underline', 'strike'],
+                        [{ color: [] }, { background: [] }],
+                        [{ align: [] }],
+                        [{ list: 'ordered' }, { list: 'bullet' }],
+                        ['blockquote'],
+                        ['link', 'image'],
+                        ['clean'],
+                    ],
+                    // 🖼️ Módulo de redimensionamento visual
+                    imageResize: {
+                        displaySize: true,
+                        modules: ['Resize', 'DisplaySize']
                     }
+                },
+            });
 
-                    this.quill = new Quill(this.$refs.editor, {
-                        theme: 'snow',
-                        placeholder: 'Digite aqui...',
-                        modules: {
-                            toolbar: {
-                                container: [
-                                    [{ header: [1, 2, 3, false] }],
-                                    [{ font: [] }, { size: ['small', false, 'large', 'huge'] }],
-                                    ['bold', 'italic', 'underline', 'strike'],
-                                    [{ align: [] }], // ✅ ALINHAMENTO ADICIONADO
-                                    [{ color: [] }, { background: [] }],
-                                    [{ list: 'ordered' }, { list: 'bullet' }],
-                                    ['blockquote'],
-                                    ['link', 'image'],
-                                    ['clean'],
-                                ],
-                                handlers: {
-                                    image: () => this.imageHandler()
-                                }
-                            },
-                            // 🖼️ Módulo de redimensionamento
-                            imageResize: {
-                                displaySize: true,
-                                modules: ['Resize', 'DisplaySize']
+            // Conteúdo inicial (edit)
+            if (value) {
+                this.quill.root.innerHTML = value;
+            }
+
+            // 🔥 SINCRONIZAÇÃO INICIAL (create FIX)
+            this.sync();
+
+            // Atualização ao digitar
+            this.quill.on('text-change', () => {
+                this.sync();
+            });
+
+            // Adicionar suporte a alinhamento de imagens
+            this.addImageAlignmentSupport();
+        },
+
+        sync() {
+            const html = this.quill.root.innerHTML;
+            const componentEl = this.$el.closest('[wire\\:id]');
+
+            if (!componentEl || typeof Livewire === 'undefined') return;
+
+            const component = Livewire.find(componentEl.getAttribute('wire:id'));
+            if (component) {
+                component.set(model, html, false);
+            }
+        },
+
+        addImageAlignmentSupport() {
+            this.quill.root.addEventListener('click', (e) => {
+                if (e.target.tagName === 'IMG') {
+                    const parent = e.target.closest('p');
+                    if (parent) {
+                        const alignment = parent.className.match(/ql-align-(\w+)/);
+                        if (alignment) {
+                            const alignType = alignment[1];
+                            this.applyImageAlignment(e.target, alignType);
+                        }
+                    }
+                }
+            });
+
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                        const target = mutation.target;
+                        const img = target.querySelector('img');
+                        if (img) {
+                            const alignment = target.className.match(/ql-align-(\w+)/);
+                            if (alignment) {
+                                this.applyImageAlignment(img, alignment[1]);
                             }
-                        },
-                    });
-
-                    if (value) {
-                        this.quill.root.innerHTML = value;
-                    }
-
-                    this.sync();
-
-                    this.quill.on('text-change', () => {
-                        this.sync();
-                    });
-                },
-
-                sync() {
-                    const html = this.quill.root.innerHTML;
-                    const componentEl = this.$el.closest('[wire\\:id]');
-
-                    if (!componentEl || typeof Livewire === 'undefined') return;
-
-                    const component = Livewire.find(componentEl.getAttribute('wire:id'));
-                    if (component) {
-                        component.set(model, html, false);
-                    }
-                },
-
-                imageHandler() {
-                    const input = document.createElement('input');
-                    input.setAttribute('type', 'file');
-                    input.setAttribute('accept', 'image/*');
-                    input.click();
-
-                    input.onchange = async () => {
-                        const file = input.files[0];
-                        if (file) {
-                            await this.uploadImage(file);
                         }
-                    };
-                },
-
-                async uploadImage(file) {
-                    const formData = new FormData();
-                    formData.append('image', file);
-
-                    try {
-                        const range = this.quill.getSelection(true);
-                        this.quill.insertText(range.index, 'Carregando...');
-
-                        const response = await fetch('/livewire/upload-image', {
-                            method: 'POST',
-                            headers: {
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                            },
-                            body: formData
-                        });
-
-                        const data = await response.json();
-
-                        if (data.url) {
-                            this.quill.deleteText(range.index, 'Carregando...'.length);
-                            this.quill.insertEmbed(range.index, 'image', data.url);
-                            this.quill.setSelection(range.index + 1);
-                            this.sync();
-                        }
-                    } catch (error) {
-                        console.error('Erro:', error);
-                        alert('Erro ao fazer upload');
                     }
-                },
-            }));
-        });  
+                });
+            });
+
+            observer.observe(this.quill.root, {
+                attributes: true,
+                attributeFilter: ['class'],
+                subtree: true
+            });
+        },
+
+        applyImageAlignment(img, alignment) {
+            img.style.marginLeft = '';
+            img.style.marginRight = '';
+            img.style.display = 'block';
+
+            switch(alignment) {
+                case 'center':
+                    img.style.marginLeft = 'auto';
+                    img.style.marginRight = 'auto';
+                    break;
+                case 'right':
+                    img.style.marginLeft = 'auto';
+                    img.style.marginRight = '0';
+                    break;
+                case 'left':
+                    img.style.marginLeft = '0';
+                    img.style.marginRight = 'auto';
+                    break;
+            }
+
+            this.sync();
+        },
+    }));
+});
         
         document.addEventListener('livewire:init', () => {
 
