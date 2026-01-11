@@ -54,6 +54,62 @@
         .modal-backdrop {
             display: none !important;
         }
+
+        /* Alinhamento de imagens no editor */
+        .ql-editor img {
+            display: inline-block;
+            max-width: 100%;
+            height: auto;
+        }
+        
+        /* Imagem alinhada à esquerda */
+        .ql-editor .ql-align-left img,
+        .ql-editor p.ql-align-left img {
+            display: block;
+            margin-left: 0;
+            margin-right: auto;
+        }
+        
+        /* Imagem centralizada */
+        .ql-editor .ql-align-center img,
+        .ql-editor p.ql-align-center img {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Imagem alinhada à direita */
+        .ql-editor .ql-align-right img,
+        .ql-editor p.ql-align-right img {
+            display: block;
+            margin-left: auto;
+            margin-right: 0;
+        }
+        
+        /* Imagem justificada */
+        .ql-editor .ql-align-justify img,
+        .ql-editor p.ql-align-justify img {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Estilos para visualização fora do editor */
+        .ql-align-center {
+            text-align: center;
+        }
+        
+        .ql-align-right {
+            text-align: right;
+        }
+        
+        .ql-align-left {
+            text-align: left;
+        }
+        
+        .ql-align-justify {
+            text-align: justify;
+        }
     </style>
 
     {{-- Livewire Styles --}}
@@ -128,6 +184,7 @@
 
     <!-- Quill Editor CSS -->
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/quill-image-resize-module@3.0.0/image-resize.min.js"></script>
     {{-- Livewire Scripts --}}
 
     <script>
@@ -136,34 +193,47 @@
                 quill: null,
 
                 init() {
-                    if (this.quill) return; // 🔥 evita duplicar editor
+                    if (this.quill) return;
+
+                    // 🔥 Registrar módulo de redimensionamento
+                    if (typeof ImageResize !== 'undefined') {
+                        Quill.register('modules/imageResize', ImageResize.default);
+                    }
 
                     this.quill = new Quill(this.$refs.editor, {
                         theme: 'snow',
                         placeholder: 'Digite aqui...',
                         modules: {
-                            toolbar: [
-                                [{ header: [1, 2, 3, false] }],
-                                [{ font: [] }, { size: ['small', false, 'large', 'huge'] }],
-                                ['bold', 'italic', 'underline', 'strike'],
-                                [{ color: [] }, { background: [] }],
-                                [{ list: 'ordered' }, { list: 'bullet' }],
-                                ['blockquote'],
-                                ['link' , 'image'],
-                                ['clean'],
-                            ],
+                            toolbar: {
+                                container: [
+                                    [{ header: [1, 2, 3, false] }],
+                                    [{ font: [] }, { size: ['small', false, 'large', 'huge'] }],
+                                    ['bold', 'italic', 'underline', 'strike'],
+                                    [{ align: [] }], // ✅ ALINHAMENTO ADICIONADO
+                                    [{ color: [] }, { background: [] }],
+                                    [{ list: 'ordered' }, { list: 'bullet' }],
+                                    ['blockquote'],
+                                    ['link', 'image'],
+                                    ['clean'],
+                                ],
+                                handlers: {
+                                    image: () => this.imageHandler()
+                                }
+                            },
+                            // 🖼️ Módulo de redimensionamento
+                            imageResize: {
+                                displaySize: true,
+                                modules: ['Resize', 'DisplaySize']
+                            }
                         },
                     });
 
-                    // Conteúdo inicial (edit)
                     if (value) {
                         this.quill.root.innerHTML = value;
                     }
 
-                    // 🔥 SINCRONIZAÇÃO INICIAL (create FIX)
                     this.sync();
 
-                    // Atualização ao digitar
                     this.quill.on('text-change', () => {
                         this.sync();
                     });
@@ -180,8 +250,52 @@
                         component.set(model, html, false);
                     }
                 },
+
+                imageHandler() {
+                    const input = document.createElement('input');
+                    input.setAttribute('type', 'file');
+                    input.setAttribute('accept', 'image/*');
+                    input.click();
+
+                    input.onchange = async () => {
+                        const file = input.files[0];
+                        if (file) {
+                            await this.uploadImage(file);
+                        }
+                    };
+                },
+
+                async uploadImage(file) {
+                    const formData = new FormData();
+                    formData.append('image', file);
+
+                    try {
+                        const range = this.quill.getSelection(true);
+                        this.quill.insertText(range.index, 'Carregando...');
+
+                        const response = await fetch('/livewire/upload-image', {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                            },
+                            body: formData
+                        });
+
+                        const data = await response.json();
+
+                        if (data.url) {
+                            this.quill.deleteText(range.index, 'Carregando...'.length);
+                            this.quill.insertEmbed(range.index, 'image', data.url);
+                            this.quill.setSelection(range.index + 1);
+                            this.sync();
+                        }
+                    } catch (error) {
+                        console.error('Erro:', error);
+                        alert('Erro ao fazer upload');
+                    }
+                },
             }));
-        });   
+        });  
         
         document.addEventListener('livewire:init', () => {
 
