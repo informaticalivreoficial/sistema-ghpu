@@ -50,20 +50,7 @@
 
         .basicLightbox__placeholder {
             z-index: 9999 !important;
-        }
-        trix-editor:not([data-trix-placeholder]):empty::before,
-        trix-editor[data-placeholder]:not(:focus):empty::before,
-        trix-editor[data-placeholder]:not(:focus) div:only-child:where(:not([data-trix-placeholder])):where(:not([data-trix-attachment])):where(:not(:has(*)))::before {
-            content: attr(data-placeholder);
-            color: #999;
-            font-style: italic;
-        }
-        trix-editor {
-            min-height: 300px !important;
-            padding: 15px;          /* deixa mais confortável para digitar */
-            font-size: 16px;        /* texto maior */
-            line-height: 1.6;
-        }
+        }                
         .modal-backdrop {
             display: none !important;
         }
@@ -162,7 +149,7 @@
                                 [{ color: [] }, { background: [] }],
                                 [{ list: 'ordered' }, { list: 'bullet' }],
                                 ['blockquote'],
-                                ['link'],
+                                ['link' , 'image'],
                                 ['clean'],
                             ],
                         },
