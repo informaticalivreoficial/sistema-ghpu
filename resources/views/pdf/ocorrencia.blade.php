@@ -289,7 +289,7 @@
         {{-- QUEBRA DE PÁGINA MANUAL --}}
         <div class="page-break"></div>
 
-        <h2>Checklist — Chaves de Serviço Diário — Estoque Fixo (15 unidades)</h2>
+        <h2>Checklist — Chaves de Serviço Diário — Estoque Fixo (13 unidades)</h2>
 
         @php
             $itens = [
@@ -300,8 +300,8 @@
                 21 => 'Chave da Lixeira (2)',
                 22 => 'Chave Porta Sauna',
                 23 => 'Chave Porta Manutenção',
-                24 => 'Controle Remoto P1',
-                25 => 'Controle Remoto P2',
+                //24 => 'Controle Remoto P1',
+                //25 => 'Controle Remoto P2',
                 26 => 'Chave Cadeado Bike Roxa',
                 27 => 'Chave Cadeado Bike Vermelha',
                 28 => 'Chave HUB 3° Andar',
@@ -333,6 +333,7 @@
             </tbody>
         </table> 
 
+        {{--  
         <h2>Checklist — Controles de TV Box (Estoque fixo: 7 unidades)</h2>
 
         <table width="100%" cellspacing="0" cellpadding="6" border="1">            
@@ -353,9 +354,7 @@
                 <td>{{ $data['tvbox_204'] ?? '-' }}</td>
             </tr>            
         </table>
-
-        {{-- QUEBRA DE PÁGINA MANUAL --}}
-        <div class="page-break"></div>
+        --}}        
 
         <h2>Checklist — Secador de Cabelo (Estoque Fixo: 5 unidades)</h2>
 
@@ -384,6 +383,9 @@
                 @endforeach
             </tbody>
         </table>
+
+        {{-- QUEBRA DE PÁGINA MANUAL --}}
+        <div class="page-break"></div>
 
         <h2>Checklist — Rádios Comunicadores de Serviços (7 unidades)</h2>
 

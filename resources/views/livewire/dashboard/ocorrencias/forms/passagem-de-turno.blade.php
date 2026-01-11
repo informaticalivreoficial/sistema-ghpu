@@ -329,7 +329,7 @@
                 <div class="col-md-4">
                     <input type="number" class="form-control @error('form.maquina_safra_1') is-invalid @enderror"
                         wire:model="form.maquina_safra_1"
-                        min="2" max="10"
+                        min="1" max="100"
                         placeholder="Informe %">
                     @error('form.maquina_safra_1') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
@@ -348,7 +348,7 @@
                 <div class="col-md-4">
                     <input type="number" class="form-control @error('form.maquina_safra_2') is-invalid @enderror"
                         wire:model="form.maquina_safra_2"
-                        min="2" max="10"
+                        min="1" max="100"
                         placeholder="Informe %">
                     @error('form.maquina_safra_2') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
@@ -367,7 +367,7 @@
                 <div class="col-md-4">
                     <input type="number" class="form-control @error('form.celular_1') is-invalid @enderror"
                         wire:model="form.celular_1"
-                        min="2" max="10"
+                        min="1" max="100"
                         placeholder="Informe %">
                     @error('form.celular_1') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
@@ -386,7 +386,7 @@
                 <div class="col-md-4">
                     <input type="number" class="form-control @error('form.celular_2') is-invalid @enderror"
                         wire:model="form.celular_2"
-                        min="2" max="10"
+                        min="1" max="100"
                         placeholder="Informe %">
                     @error('form.celular_2') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
@@ -398,7 +398,7 @@
 
     <div class="card mt-4">
         <div class="card-header bg-primary">
-            <h3 class="card-title">Checklist — Chaves de Serviço Diário — Estoque Fixo (15 unidades)::</h3>
+            <h3 class="card-title">Checklist — Chaves de Serviço Diário — Estoque Fixo (13 unidades)::</h3>
             <div class="card-tools">
                 <button type="button" class="btn btn-tool text-white" data-card-widget="collapse">
                 <i class="fas fa-minus"></i>
@@ -416,8 +416,8 @@
                     21 => 'Chave da Lixeira (2)',
                     22 => 'Chave Porta Sauna',
                     23 => 'Chave Porta Manutenção',
-                    24 => 'Controle Remoto P1',
-                    25 => 'Controle Remoto P2',
+                    //24 => 'Controle Remoto P1',
+                    //25 => 'Controle Remoto P2',
                     26 => 'Chave Cadeado Bike Roxa',
                     27 => 'Chave Cadeado Bike Vermelha',
                     28 => 'Chave HUB 3° Andar',
@@ -485,7 +485,7 @@
         </div>
     </div>
 
-
+    {{--  
     <div class="card">
         <div class="card-header bg-primary">
             <h3 class="card-title">Checklist — Controles de TV Box (Estoque fixo: 7 unidades)::</h3>
@@ -619,7 +619,7 @@
 
         </div>
     </div>
-
+    --}}
 
     <div class="card">
         <div class="card-header bg-primary">

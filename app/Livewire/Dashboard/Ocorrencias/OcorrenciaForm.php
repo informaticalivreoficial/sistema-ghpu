@@ -76,10 +76,10 @@ class OcorrenciaForm extends Component
         'form.celular_2.min' => 'A bateria mínima é 0%.',
         'form.celular_2.max' => 'A bateria máxima é 100%.',
         
-        'form.tvbox_103.required' => 'Informe o status do TV Box do apto 103.',
-        'form.tvbox_201.required' => 'Informe o status do TV Box do apto 201.',
-        'form.tvbox_203.required' => 'Informe o status do TV Box do apto 203.',
-        'form.tvbox_204.required' => 'Informe o status do TV Box do apto 204.',
+        //'form.tvbox_103.required' => 'Informe o status do TV Box do apto 103.',
+        //'form.tvbox_201.required' => 'Informe o status do TV Box do apto 201.',
+        //'form.tvbox_203.required' => 'Informe o status do TV Box do apto 203.',
+        //'form.tvbox_204.required' => 'Informe o status do TV Box do apto 204.',
 
         // Chaves fixas
         'form.chaves.*.status.required' => 'Selecione o status da chave.',
@@ -286,8 +286,8 @@ class OcorrenciaForm extends Component
         21 => 'Chave da Lixeira (2)',
         22 => 'Chave Porta Sauna',
         23 => 'Chave Porta Manutenção',
-        24 => 'Controle Remoto P1',
-        25 => 'Controle Remoto P2',
+        //24 => 'Controle Remoto P1',
+        //25 => 'Controle Remoto P2',
         26 => 'Chave Cadeado Bike Roxa',
         27 => 'Chave Cadeado Bike Vermelha',
         28 => 'Chave HUB 3° Andar',
@@ -388,10 +388,10 @@ class OcorrenciaForm extends Component
         'chaves' => [],
 
         //Seção 5
-        'tvbox_103' => null,
-        'tvbox_201' => null,
-        'tvbox_203' => null,
-        'tvbox_204' => null,
+        //'tvbox_103' => null,
+        //'tvbox_201' => null,
+        //'tvbox_203' => null,
+        //'tvbox_204' => null,
 
         //Seção 6
         'secadores' => [
@@ -786,10 +786,10 @@ class OcorrenciaForm extends Component
                 'form.celular_2' => 'required|numeric|min:1|max:100',
 
                 //Seção 5
-                'form.tvbox_103' => 'required|in:pote,uso',
-                'form.tvbox_201' => 'required|in:pote,uso',
-                'form.tvbox_203' => 'required|in:pote,uso',
-                'form.tvbox_204' => 'required|in:pote,uso',
+                //'form.tvbox_103' => 'required|in:pote,uso',
+                //'form.tvbox_201' => 'required|in:pote,uso',
+                //'form.tvbox_203' => 'required|in:pote,uso',
+                //'form.tvbox_204' => 'required|in:pote,uso',
 
                 //Seção 6
                 'form.secadores.1' => 'required|in:gaveta,emprestado',

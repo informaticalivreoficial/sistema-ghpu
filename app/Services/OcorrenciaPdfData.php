@@ -78,10 +78,10 @@ class OcorrenciaPdfData
                 'Movimento do caixa agora cartão:' => \App\Helpers\Renato::formatCurrency($form['turno']['caixa_cartoes'] ?? 0) ?? '-',
                 'Movimento do caixa agora Total:' => \App\Helpers\Renato::formatCurrency($form['turno']['caixa_faturamento'] ?? 0) ?? '-',
             ],
-            'tvbox_103' => $form['tvbox_103'] ?? '-',
-            'tvbox_201' => $form['tvbox_201'] ?? '-',
-            'tvbox_203' => $form['tvbox_203'] ?? '-',
-            'tvbox_204' => $form['tvbox_204'] ?? '-',
+            //'tvbox_103' => $form['tvbox_103'] ?? '-',
+            //'tvbox_201' => $form['tvbox_201'] ?? '-',
+            //'tvbox_203' => $form['tvbox_203'] ?? '-',
+            //'tvbox_204' => $form['tvbox_204'] ?? '-',
 
             'secadores' => collect($form['secadores'] ?? [])
             ->map(fn ($status, $numero) => [
