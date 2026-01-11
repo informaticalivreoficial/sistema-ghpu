@@ -146,6 +146,7 @@
                                         >
 
                                         <span class="text-gray-800 font-medium truncate">
+                                            <strong>{{ $ocorrencia['user']['name'] }}</strong> -> 
                                             {{ $ocorrencia['title'] ?? 'Ocorrência' }}
                                         </span>
                                     </div>
