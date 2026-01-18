@@ -1,0 +1,844 @@
+<div>
+    <h1 class="text-xl text-center pb-4">Passagem de Turno</h1> 
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-group">
+                        <label class="labelforms">De => {{ auth()->user()->name }} para:</label>
+                        <input type="text"  wire:model.live="destinatario" class="form-control w-50 @error('destinatario') is-invalid @enderror" placeholder="Nome do funcionário que está assumindo o turno">
+                        @error('destinatario')
+                            <span class="error erro-feedback">{{ $message }}</span>
+                        @enderror
+                    </div>
+                </div>                     
+            </div>
+        </div>            
+    </div>
+
+    <div class="card">
+        <div class="border rounded p-4 space-y-3">
+            <h2 class="font-semibold">📌 Políticas Importantes</h2>
+
+            <ul class="list-disc list-inside text-sm space-y-1">
+                <li>Finais de semana: mínimo de <strong>2 diárias</strong></li>
+                <li>Descontos não são cumulativos</li>
+                <li>Parcela mínima: <strong>R$ 250,00</strong></li>
+                <li>Final de ano (dezembro, janeiro e carnaval): sem desconto fidelidade</li>
+                <li>Comprovantes de cartão: envio exclusivo à <strong>gerência</strong></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header bg-primary">
+            <h3 class="card-title">Checklist — Dados do Turno::</h3>
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool text-white" data-card-widget="collapse">
+                <i class="fas fa-minus"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+                <!-- Hóspedes -->
+                <div class="col-md-6">
+                    <label class="font-weight-bold">Quantos hóspedes na pousada agora?</label>
+                    <input type="number" 
+                        class="form-control @error('form.turno.hospedes') is-invalid @enderror"
+                        wire:model.live="form.turno.hospedes"
+                        placeholder="Informe o total de pessoas"
+                        min="0">
+                    @error('form.turno.hospedes')
+                        <small class="text-danger d-block mt-1">{{ $message }}</small>
+                    @enderror
+                </div>
+
+                <!-- Apos ocupados -->
+                <div class="col-md-6">
+                    <label class="font-weight-bold">Quantos quartos ocupados agora?</label>
+                    <input type="number" 
+                        class="form-control @error('form.turno.apto_ocupados') is-invalid @enderror"
+                        wire:model.live="form.turno.apto_ocupados"
+                        placeholder="Informe o total de apartamentos"
+                        min="0">
+                    @error('form.turno.apto_ocupados')
+                        <small class="text-danger d-block mt-1">{{ $message }}</small>
+                    @enderror
+                </div>
+            </div>
+
+            <div class="row mt-3">
+                <!-- Reservas -->
+                <div class="col-md-6">
+                    <label class="font-weight-bold">Quantos Check-ins Previstos?</label>
+                    <input type="number" 
+                        class="form-control @error('form.turno.reservas') is-invalid @enderror"
+                        wire:model.live="form.turno.reservas"
+                        placeholder="Informe o total"
+                        min="0">
+                    @error('form.turno.reservas')
+                        <small class="text-danger d-block mt-1">{{ $message }}</small>
+                    @enderror
+                </div>
+
+                <!-- Check out -->
+                <div class="col-md-6">
+                    <label class="font-weight-bold">Quantos Check-outs à fazer?</label>
+                    <input type="number" 
+                        class="form-control @error('form.turno.checkouts') is-invalid @enderror"
+                        wire:model.live="form.turno.checkouts"
+                        placeholder="Informe o total"
+                        min="0">
+                    @error('form.turno.checkouts')
+                        <small class="text-danger d-block mt-1">{{ $message }}</small>
+                    @enderror
+                </div>
+            </div>
+
+            <div class="row mt-3">
+                <!-- Interditados -->
+                <div class="col-md-6">
+                    <label class="font-weight-bold">Late Check-out?</label>
+                    <input type="number" 
+                        class="form-control @error('form.turno.interditados') is-invalid @enderror"
+                        wire:model.live="form.turno.interditados"
+                        placeholder="Informe o total"
+                        min="0">
+                    @error('form.turno.interditados')
+                        <small class="text-danger d-block mt-1">{{ $message }}</small>
+                    @enderror
+                </div>                
+            </div>
+
+            <div class="row mt-3">               
+
+                <!-- Luzes da calçada -->
+                <div class="col-md-6">
+                    <label class="font-weight-bold">As luzes?</label>
+                    <div class="d-flex gap-3 mt-2">
+                        <div class="form-check mr-3">
+                            <input type="radio" 
+                                class="form-check-input"
+                                id="luz_ligada"
+                                wire:model.live="form.turno.luzes_calcada"
+                                value="ligada">
+                            <label class="form-check-label" for="luz_ligada">conforme</label>
+                        </div>
+
+                        <div class="form-check">
+                            <input type="radio" 
+                                class="form-check-input"
+                                id="luz_desligada"
+                                wire:model.live="form.turno.luzes_calcada"
+                                value="desligada">
+                            <label class="form-check-label" for="luz_desligada">Não conforme</label>
+                        </div>
+                    </div>
+                    <small class="text-info">
+                        * ⏰ Acender todas às 18h<br>
+                        * 🌙 Apagar todas às 22h (exceto recepção)<br>
+                        * 🕛 Se necessário, manter acesas até no máximo 00h
+                    </small>
+                    @error('form.turno.luzes_calcada')
+                        <small class="text-danger d-block mt-1">{{ $message }}</small>
+                    @enderror
+                </div>
+            </div>
+
+            <hr class="mt-4">
+           
+            <!-- Código de cores -->
+            <div class="form-group mt-3">
+                <label class="font-weight-bold">Foi batido o código de cores antes de passar o turno?</label>
+                <div class="d-flex gap-3 mt-2">
+                    <div class="form-check mr-3">
+                        <input type="radio" 
+                            class="form-check-input"
+                            id="cores_sim"
+                            wire:model.live="form.turno.codigo_cores"
+                            value="sim">
+                        <label class="form-check-label" for="cores_sim">Sim</label>
+                    </div>
+
+                    <div class="form-check">
+                        <input type="radio" 
+                            class="form-check-input"
+                            id="cores_nao"
+                            wire:model.live="form.turno.codigo_cores"
+                            value="nao">
+                        <label class="form-check-label" for="cores_nao">Não</label>
+                    </div>
+                </div>
+                @error('form.turno.codigo_cores')
+                    <small class="text-danger d-block mt-1">{{ $message }}</small>
+                @enderror
+            </div>
+            
+
+            <!-- Movimento do caixa -->
+            <label class="font-weight-bold">O movimento do caixa agora é:</label>
+
+            <div class="row mt-2">
+                <div class="col-md-4">
+                    <input type="number" 
+                        class="form-control"
+                        placeholder="Valor em dinheiro"
+                        wire:model.live="form.turno.caixa_dinheiro"
+                        step="0.01"
+                        min="0">
+                    @error('form.turno.caixa_dinheiro')
+                        <small class="text-danger d-block mt-1">{{ $message }}</small>
+                    @enderror
+                </div>
+
+                <div class="col-md-4">
+                    <input type="number" 
+                        class="form-control"
+                        placeholder="Valor em cartões"
+                        wire:model.live="form.turno.caixa_cartoes"
+                        step="0.01"
+                        min="0">
+                    @error('form.turno.caixa_cartoes')
+                        <small class="text-danger d-block mt-1">{{ $message }}</small>
+                    @enderror
+                </div>
+
+                <div class="col-md-4">
+                    <input type="number" 
+                        class="form-control"
+                        placeholder="Valor faturamento"
+                        wire:model.live="form.turno.caixa_faturamento"
+                        step="0.01"
+                        min="0">
+                    @error('form.turno.caixa_faturamento')
+                        <small class="text-danger d-block mt-1">{{ $message }}</small>
+                    @enderror
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header bg-primary">
+            <h3 class="card-title">Checklist — Aquecedores / Gás / Lixeira::</h3>
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool text-white" data-card-widget="collapse">
+                <i class="fas fa-minus"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="card-body">
+
+            <div class="row mb-3">
+                <div class="col-12 col-sm-6 col-md-6 mb-3">
+                    <div class="form-group">
+                        <label class="labelforms">Como está a temperatura do Aquecedor Bicicletário?</label>
+                        <input type="number" name="form.temperatura_aquecedor" class="form-control w-25"
+                            wire:model.live="form.temperatura_aquecedor"
+                            placeholder="°C">
+                        @error('form.temperatura_aquecedor') <small class="text-danger">{{ $message }}</small> @enderror
+                        <small class="text-info">obs. Se ABAIXO de 56°C, notificar a Manutenção e/ou Gerência IMEDIATAMENTE</small>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-md-6 mb-3">
+                    <div class="form-group">
+                        <label class="labelforms">Aquecedor Ala Praia</label>
+                        <div class="d-flex flex-wrap">
+                            <label class="mr-3">
+                                <input type="radio" value="aberto" wire:model.live="form.chama_aquecedor"> Aberto
+                            </label>
+
+                            <label>
+                                <input type="radio" value="fechado" wire:model.live="form.chama_aquecedor"> Fechado
+                            </label>
+                        </div>
+                        @error('form.chama_aquecedor') <small class="text-danger">{{ $message }}</small> @enderror
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-12 col-sm-6 col-md-6 mb-3">
+                    <div class="form-group">
+                        <label class="labelforms">Aquecedor Ala Rua</label>
+                        <div class="d-flex flex-wrap">
+                            <label class="mr-3">
+                                <input type="radio" value="aberto" wire:model.live="form.motor_piscina"> Aberto
+                            </label>
+
+                            <label>
+                                <input type="radio" value="fechado" wire:model.live="form.motor_piscina"> Fechado
+                            </label>
+                        </div>
+                        @error('form.motor_piscina') <small class="text-danger">{{ $message }}</small> @enderror
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-md-6 mb-3">
+                    <div class="form-group">
+                        <label class="labelforms">Gás</label>
+                        <div class="d-flex flex-wrap">
+                            <input type="text" placeholder="0%"  wire:model.live="gas1" class="form-control w-20 @error('gas1') is-invalid @enderror">
+                            <input type="text" placeholder="0%"  wire:model.live="gas2" class="form-control w-20 @error('gas2') is-invalid @enderror">
+                        </div>
+                        <small class="text-info">
+                            → Manter apenas um cilindro aberto.<br>
+                            → Ao término, fechar o registro e abrir o próximo.<br>
+                            → Caso o nível esteja abaixo de 20%, notificar a gerência.
+                        </small>
+                        @error('form.gas1') <small class="text-danger">{{ $message }}</small> @enderror
+                        @error('form.gas2') <small class="text-danger">{{ $message }}</small> @enderror
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-12 col-sm-6 col-md-6 mb-3">
+                    <div class="form-group">
+                        <label class="labelforms">
+                            Lixeira está vazia?
+                        </label>
+                        <div class="d-flex flex-wrap">
+                            <label class="mr-3">
+                                <input type="radio" value="sim" wire:model.live="form.lixeira_cavalo"> Sim
+                            </label>
+
+                            <label>
+                                <input type="radio" value="nao" wire:model.live="form.lixeira_cavalo"> Não
+                            </label>
+                        </div>
+                        <small class="text-info">
+                            → Esvaziar a lixeira assim que encerrar o movimento da rua (entre 23h e 00h), ou antes caso o caminhão antecipe o trajeto.
+                        </small>
+                        @error('form.lixeira_cavalo') <small class="text-danger">{{ $message }}</small> @enderror
+                    </div>
+                </div>                
+            </div>
+
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header bg-primary">
+            <h3 class="card-title">Checklist — Secador de Cabelo (Estoque Fixo: 2 unidades)::</h3>
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool text-white" data-card-widget="collapse">
+                <i class="fas fa-minus"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="card-body">
+
+            @for($i = 1; $i <= 2; $i++)
+                <div class="form-group mb-4">
+                    <label><strong>Secador {{ $i }}</strong>
+                    @error('form.secadores.'.$i)
+                        <small class="text-danger d-block mt-1">{{ $message }}</small>
+                    @enderror
+                    </label>
+                    <div class="row">
+
+                        <!-- Está na gaveta -->
+                        <div class="col-md-4">
+                            <div class="form-check">
+                                <input type="radio"
+                                    id="secador_{{ $i }}_gaveta"
+                                    class="form-check-input"
+                                    wire:model="form.secadores.{{ $i }}"
+                                    value="gaveta">
+                                <label class="form-check-label" for="secador_{{ $i }}_gaveta">
+                                    Está na gaveta
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Emprestado -->
+                        <div class="col-md-8">
+                            <div class="d-flex align-items-center">
+                                <div class="form-check mr-2">
+                                    <input type="radio"
+                                        id="secador_{{ $i }}_emprestado"
+                                        class="form-check-input"
+                                        wire:model="form.secadores.{{ $i }}"
+                                        value="emprestado">
+                                    <label class="form-check-label" for="secador_{{ $i }}_emprestado">
+                                        Emprestado — Apto:
+                                    </label>
+                                </div>
+
+                                <!-- Campo texto -->
+                                <input type="text"
+                                    class="form-control ml-2"
+                                    placeholder="Nº do Apto"
+                                    wire:model="form.secadores_apto.{{ $i }}"
+                                    style="max-width:160px;">
+                            </div>                                
+                            
+                            @error('form.secadores_apto.'.$i)
+                                <small class="text-danger d-block mt-1">{{ $message }}</small>
+                            @enderror
+                        </div>
+
+                    </div>
+                </div>
+                <hr style="margin-top:5px !important; margin-bottom: 5px !important;">
+            @endfor
+
+        </div>
+    </div>
+
+    <div class="card mt-4">
+        <div class="card-header bg-primary">
+            <h3 class="card-title">Checklist — Chaves de Serviço Diário — Estoque Fixo (15 unidades)::</h3>
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool text-white" data-card-widget="collapse">
+                <i class="fas fa-minus"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="card-body"> 
+            @foreach ($itensChavesFixasCavalo as $key => $label)
+                <div class="border rounded p-3 mb-3" wire:key="chave-{{ $key }}">
+                    <label class="fw-bold">{{ $key }}. {{ $label }}</label>
+
+                    <div class="row mt-2 align-items-center">
+                        <div class="col-md-4">
+                            <div class="form-check">
+                                <input
+                                    type="radio"
+                                    class="form-check-input"
+                                    id="gaveta_{{ $key }}"
+                                    name="chave_status_{{ $key }}"
+                                    wire:model.live="form.chaves.{{ $key }}.status"
+                                    value="gaveta">
+                                <label class="form-check-label" for="gaveta_{{ $key }}">
+                                    Está na gaveta
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-check">
+                                <input
+                                    type="radio"
+                                    class="form-check-input"
+                                    id="com_{{ $key }}"
+                                    name="chave_status_{{ $key }}"
+                                    wire:model.live="form.chaves.{{ $key }}.status"
+                                    value="com">
+                                <label class="form-check-label" for="com_{{ $key }}">
+                                    Está com:
+                                </label>
+                            </div>
+                            
+                        </div>
+
+                        <div class="col-md-4">
+                            @php $status = $form['chaves'][$key]['status'] ?? null; @endphp
+
+                            <input
+                                type="text"
+                                class="form-control"
+                                placeholder="Nome da pessoa"
+                                wire:model.live="form.chaves.{{ $key }}.pessoa"
+                                @if($status !== 'com') disabled @endif>
+                            @error('form.chaves.'.$key.'.pessoa')
+                                <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+                    </div>
+                    @error('form.chaves.'.$key.'.status')
+                        <small class="text-danger d-block mt-2">{{ $message }}</small>
+                    @enderror
+                </div>
+            @endforeach
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header bg-primary">
+            <h3 class="card-title">Checklist — Aberto - Fechado::</h3>
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool text-white" data-card-widget="collapse">
+                <i class="fas fa-minus"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-4 col-sm-6 mb-4">
+                    <div class="form-group">
+                        <label>
+                            <strong>Rouparia</strong>
+                        </label>
+
+                        <div class="d-flex">
+                            <div class="form-check mr-3">
+                                <input type="radio" class="form-check-input"
+                                    id="rouparia_fechado"
+                                    wire:model="form.rouparia"
+                                    value="fechada">
+
+                                <label class="form-check-label" for="rouparia_fechado">
+                                    Fechado
+                                </label>
+                            </div>
+
+                            <div class="form-check">
+                                <input type="radio" class="form-check-input"
+                                    id="rouparia_aberto"
+                                    wire:model="form.rouparia"
+                                    value="aberta">
+
+                                <label class="form-check-label" for="rouparia_aberto">
+                                    Aberto
+                                </label>
+                            </div>
+                        </div>
+                        @error('form.rouparia') <small class="text-danger">{{ $message }}</small> @enderror
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-sm-6 mb-4">
+                    <div class="form-group">
+                        <label>
+                            <strong>Portão Praia</strong>
+                        </label>
+
+                        <div class="d-flex">
+                            <div class="form-check mr-3">
+                                <input type="radio" class="form-check-input"
+                                    id="portao_praia_fechado"
+                                    wire:model="form.portao_praia"
+                                    value="fechada">
+
+                                <label class="form-check-label" for="portao_praia_fechado">
+                                    Fechado
+                                </label>
+                            </div>
+
+                            <div class="form-check">
+                                <input type="radio" class="form-check-input"
+                                    id="portao_praia_aberto"
+                                    wire:model="form.portao_praia"
+                                    value="aberta">
+
+                                <label class="form-check-label" for="portao_praia_aberto">
+                                    Aberto
+                                </label>
+                            </div>
+                        </div>
+                        @error('form.portao_praia') <small class="text-danger">{{ $message }}</small> @enderror
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6 mb-4">
+                    <div class="form-group">
+                        <label>
+                            <strong>Portão Bicicletário</strong>
+                        </label>
+
+                        <div class="d-flex">
+                            <div class="form-check mr-3">
+                                <input type="radio" class="form-check-input"
+                                    id="portao_bicicletario_fechado"
+                                    wire:model="form.portao_bicicletario"
+                                    value="fechado">
+
+                                <label class="form-check-label" for="portao_bicicletario_fechado">
+                                    Fechado
+                                </label>
+                            </div>
+
+                            <div class="form-check">
+                                <input type="radio" class="form-check-input"
+                                    id="portao_bicicletario_aberto"
+                                    wire:model="form.portao_bicicletario"
+                                    value="aberto">
+
+                                <label class="form-check-label" for="portao_bicicletario_aberto">
+                                    Aberto
+                                </label>
+                            </div>
+                        </div>
+                        @error('form.portao_bicicletario') <small class="text-danger">{{ $message }}</small> @enderror
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6 mb-4">
+                    <div class="form-group">
+                        <label>
+                            <strong>Portão Entrega</strong>
+                        </label>
+
+                        <div class="d-flex">
+                            <div class="form-check mr-3">
+                                <input type="radio" class="form-check-input"
+                                    id="portao_entrega_fechado"
+                                    wire:model="form.portao_entrega"
+                                    value="fechado">
+
+                                <label class="form-check-label" for="portao_entrega_fechado">
+                                    Fechado
+                                </label>
+                            </div>
+
+                            <div class="form-check">
+                                <input type="radio" class="form-check-input"
+                                    id="portao_entrega_aberto"
+                                    wire:model="form.portao_entrega"
+                                    value="aberto">
+
+                                <label class="form-check-label" for="portao_entrega_aberto">
+                                    Aberto
+                                </label>
+                            </div>
+                        </div>
+                        @error('form.portao_entrega') <small class="text-danger">{{ $message }}</small> @enderror
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6 mb-4">
+                    <div class="form-group">
+                        <label>
+                            <strong>Porta Recepção</strong>
+                        </label>
+
+                        <div class="d-flex">
+                            <div class="form-check mr-3">
+                                <input type="radio" class="form-check-input"
+                                    id="porta_recepcao_fechado"
+                                    wire:model="form.porta_recepcao"
+                                    value="fechado">
+
+                                <label class="form-check-label" for="porta_recepcao_fechado">
+                                    Fechado
+                                </label>
+                            </div>
+
+                            <div class="form-check">
+                                <input type="radio" class="form-check-input"
+                                    id="porta_recepcao_aberto"
+                                    wire:model="form.porta_recepcao"
+                                    value="aberto">
+
+                                <label class="form-check-label" for="porta_recepcao_aberto">
+                                    Aberto
+                                </label>
+                            </div>
+                        </div>
+                        @error('form.porta_recepcao') <small class="text-danger">{{ $message }}</small> @enderror
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header bg-primary">
+            <h3 class="card-title">Checklist — Rádios Comunicadores de Serviços (7 unidades)::</h3>
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool text-white" data-card-widget="collapse">
+                <i class="fas fa-minus"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="row">
+                @for($i = 1; $i <= 7; $i++)
+                    <div class="col-md-6 mb-4">
+                        <label><strong>{{ $i }}. Rádio Comunicador</strong></label>
+                        <div class="d-flex flex-column">
+
+                            <div class="form-check">
+                                <input type="radio" 
+                                    class="form-check-input"
+                                    id="radio{{ $i }}_recepcao"
+                                    wire:model.live="form.radios.{{ $i }}.status"
+                                    value="recepcao">
+                                <label class="form-check-label" for="radio{{ $i }}_recepcao">Na recepção</label>
+                            </div>
+
+                            <div class="form-check mt-2 d-flex align-items-center">
+                                <input type="radio" 
+                                    class="form-check-input"
+                                    id="radio{{ $i }}_func"
+                                    wire:model.live="form.radios.{{ $i }}.status"
+                                    value="funcionario">
+                                <label class="form-check-label mr-2" for="radio{{ $i }}_func">
+                                    Funcionário:
+                                </label>
+
+                                @php 
+                                    $radioStatus = $form['radios'][$i]['status'] ?? null;
+                                @endphp
+
+                                <input type="text" 
+                                    class="form-control form-control-sm w-50 ml-2"
+                                    wire:model.live="form.radios.{{ $i }}.funcionario"
+                                    placeholder="Nome"
+                                    @if($radioStatus !== 'funcionario') disabled @endif>
+                            </div>
+
+                            @error('form.radios.'.$i.'.status')
+                                <small class="text-danger d-block mt-2">{{ $message }}</small>
+                            @enderror
+                            
+                            @error('form.radios.'.$i.'.funcionario')
+                                <small class="text-danger d-block mt-2">{{ $message }}</small>
+                            @enderror
+
+                        </div>
+                    </div>
+                @endfor
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header bg-primary">
+            <h3 class="card-title">Checklist — Recepção (Máquinas de Cartão)::</h3>
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool text-white" data-card-widget="collapse">
+                <i class="fas fa-minus"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="card-body">
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label><strong>Máquina Nº 1</strong></label>
+                </div>
+
+                <div class="col-md-4">
+                    <label>Carga atual do aparelho (%)</label>
+                </div>
+
+                <div class="col-md-4">
+                    <input type="number" class="form-control @error('form.maquina_safra_1') is-invalid @enderror"
+                        wire:model="form.maquina_safra_1"
+                        min="1" max="100"
+                        placeholder="Informe %">
+                    @error('form.maquina_safra_1') <small class="text-danger">{{ $message }}</small> @enderror
+                </div>
+            </div>
+
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label><strong>Máquina Nº 2</strong></label>
+                </div>
+
+                <div class="col-md-4">
+                    <label>Carga atual do aparelho (%)</label>
+                </div>
+
+                <div class="col-md-4">
+                    <input type="number" class="form-control @error('form.maquina_safra_2') is-invalid @enderror"
+                        wire:model="form.maquina_safra_2"
+                        min="1" max="100"
+                        placeholder="Informe %">
+                    @error('form.maquina_safra_2') <small class="text-danger">{{ $message }}</small> @enderror
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header bg-primary">
+            <h3 class="card-title">Checklist — Celulares de Serviço (2 unidades)::</h3>
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool text-white" data-card-widget="collapse">
+                <i class="fas fa-minus"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="border rounded p-3 mb-3">
+                <h5 class="mb-3">
+                    <strong>Celular Recepção</strong>
+                </h5>
+                <div class="row">
+                    {{-- Bateria --}}
+                    <div class="col-md-5">
+                        <label><strong>Bateria (%)</strong></label>
+                        <input type="number"
+                            class="form-control"
+                            wire:model="form.celular1_bateria"
+                            placeholder="Informe % da carga">
+                        @error('form.celular1_bateria')
+                            <small class="text-danger d-block mt-1">{{ $message }}</small>
+                        @enderror
+                    </div>
+
+                    {{-- Está com funcionário --}}
+                    <div class="col-md-7">
+                        <label><strong>Está com o funcionário?</strong></label>
+                        <input type="text"
+                            class="form-control"
+                            wire:model="form.celular1_funcionario"
+                            placeholder="Nome do funcionário ou local (se estiver em uso)">
+                    </div>
+                </div>
+            </div>
+            <div class="border rounded p-3 mb-3">
+                <h5 class="mb-3">
+                    <strong>Celular Recepção 2</strong>
+                </h5>
+                <div class="row">
+                    {{-- Bateria --}}
+                    <div class="col-md-5">
+                        <label><strong>Bateria (%)</strong></label>
+                        <input type="number"
+                            class="form-control"
+                            wire:model="form.celular2_bateria"
+                            placeholder="Informe % da carga">
+                        @error('form.celular2_bateria')
+                            <small class="text-danger d-block mt-2">{{ $message }}</small>
+                        @enderror
+                    </div>
+
+                    {{-- Está com funcionário --}}
+                    <div class="col-md-7">
+                        <label><strong>Está com o funcionário?</strong></label>
+                        <input type="text"
+                            class="form-control"
+                            wire:model="form.celular2_funcionario"
+                            placeholder="Nome do funcionário ou local (se estiver em uso)">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+    <div class="card">
+        <div class="card-header bg-primary">
+            <h3 class="card-title">Checklist — Geladeira Recepção::</h3>
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool text-white" data-card-widget="collapse">
+                <i class="fas fa-minus"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="row">
+                <div class="col-12"> 
+                    <textarea wire:model.live="form.geladeira_recepcao" rows="16" class="w-full p-3 m-0 border border-gray-300 resize-none"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

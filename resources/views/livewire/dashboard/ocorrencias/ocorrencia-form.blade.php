@@ -43,12 +43,10 @@
                             <label class="labelforms text-muted"><b>*Selecione o Tipo de Ocorrência</b></label>
                             <select name="type" class="form-control @error('type') is-invalid @enderror" wire:model.live="type">
                                 <option value="">Selecione...</option>
-                                <option value="branco">Em Branco</option>
-                                @if (auth()->user()->company_id === 18)
-                                    <option value="varreduras-fichas-sistemas">Varreduras de fichas x sistemas</option>
-                                    <option value="ocorrencias-diarias">Ocorrências Diárias</option>
-                                    <option value="passagem-de-turno">Passagem de Turno</option>
-                                @endif                                
+
+                                @foreach ($types as $value => $label)
+                                    <option value="{{ $value }}">{{ $label }}</option>
+                                @endforeach                                
                             </select>    
                             @error('type')
                                 <span class="error erro-feedback">{{ $message }}</span>
@@ -62,15 +60,14 @@
             <form wire:submit.prevent="save" autocomplete="off">                
                 @if($type === 'branco')
                     @include('livewire.dashboard.ocorrencias.forms.branco')
-
                 @elseif($type === 'varreduras-fichas-sistemas')
                     @include('livewire.dashboard.ocorrencias.forms.varreduras-fichas-sistemas')
-
                 @elseif($type === 'ocorrencias-diarias')
-                    @include('livewire.dashboard.ocorrencias.forms.ocorrencias-diarias')
-                    
+                    @include('livewire.dashboard.ocorrencias.forms.ocorrencias-diarias')                    
                 @elseif($type === 'passagem-de-turno')
                     @include('livewire.dashboard.ocorrencias.forms.passagem-de-turno')
+                @elseif($type === 'passagem-de-turno-cavalo')
+                    @include('livewire.dashboard.ocorrencias.forms.passagem-de-turno-cavalo')
                 @endif
                 <div class="row text-right mt-3">
                     <div class="col-12 mb-4">

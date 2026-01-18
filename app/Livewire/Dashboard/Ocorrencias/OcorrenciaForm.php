@@ -24,6 +24,8 @@ class OcorrenciaForm extends Component
     public $title = '';
     public $company_id;
 
+    public array $types = [];
+
     protected $messages = [
         'destinatario' => 'nome do funcionário que vai assumir o turno',
         'form.sauna' => 'Sauna',
@@ -278,6 +280,25 @@ class OcorrenciaForm extends Component
 
     ];
 
+    public array $itensChavesFixasCavalo = [
+        1 => 'Rouparia',
+        2 => 'Depósito de Água',
+        3 => 'Depósito Camareiras',
+        4 => 'Bicicletário',
+        5 => 'Chave 1 Portão Praia',
+        6 => 'Chave 2 Portão Praia',
+        7 => 'Chave Mestra',
+        8 => 'Chave Manutenção/ Eletrônicos',
+        9 => 'Aquecedor',
+        10 => 'Chave Copa Mamãe',
+        11 => 'Chave Ala Mar Armário',
+        12 => 'Sala da Gerência',
+        13 => 'Sala Depósito (Antiga Gerência)',
+        14 => 'Chave Portão de Entrega',
+        15 => 'Chave porta da manutenção',
+    ];
+
+   
     public array $itensChavesFixas = [
         17 => 'Chave Mestra Elevador',
         18 => 'Molho de Chave Mestra de Todos os Aptos',
@@ -362,6 +383,24 @@ class OcorrenciaForm extends Component
     
 
     public array $form = [   
+        //Cavalo Marinho
+        'politicas_importantes' => null,
+        
+        'rouparia' => null,
+        'porta_praia' => null,
+        'portao_bicicletario' => null,
+        'portao_entrega' => null,
+        'porta_recepcao' => null,
+
+        'geladeira_recepcao' => '',
+
+        'celular1_bateria' => null,
+        'celular2_bateria' => null,
+        'celular1_funcionario' => null,
+        'celular2_funcionario' => null,
+
+        //Fim Cavalo Marinho
+
         //Seção 1     
         'sauna' => null,
         'temperatura_aquecedor' => null,
@@ -463,6 +502,44 @@ class OcorrenciaForm extends Component
     {
         // PRIMEIRO: Inicializa as estruturas base
         $this->initializeArrays();
+
+        $user = auth()->user();
+
+        // Todos veem isso select de ocorrencias
+        $this->types = [
+            'branco' => 'Em Branco',
+            'passagem-de-turno-cavalo'   => 'Passagem de Turno',
+        ];
+
+        // Apenas company 18 vê os demais
+        if ((int) $user->company_id === 18 || $user->isAdmin() || $user->isSuperAdmin()) {
+            $this->types += [
+                'varreduras-fichas-sistemas' => 'Varreduras de fichas x sistemas',
+                'ocorrencias-diarias'        => 'Ocorrências Diárias',
+                'passagem-de-turno'          => 'Passagem de Turno',                
+            ];
+        }
+
+        if (empty($this->form['geladeira_recepcao'])) {
+            $this->form['geladeira_recepcao'] = implode("\n", [
+                '· Água com Gás: 00',
+                '· Água sem Gás: 00',
+                '· Coca-Cola: 00',
+                '· Coca-Cola Zero: 00',
+                '· Sprite: 00',
+                '· Soda Limonada: 00',
+                '· Tônica: 00',
+                '· Soda Zero: 00',
+                '· Fanta Laranja: 00',
+                '· Fanta Uva: 00',
+                '· Guaraná: 00',
+                '· Guaraná Zero: 00',
+                '· Heineken: 00',
+                '· Corona: 00',
+                '· Império: 00',
+                '· Budweiser: 00',
+            ]);
+        }
 
         // SEGUNDO: Se for edição, carrega e SOBRESCREVE os dados
         if ($id) {
