@@ -3,6 +3,7 @@
 namespace App\Livewire\Dashboard\Ocorrencias;
 
 use App\Models\Ocorrencia;
+use App\Models\OcorrenciaTemplate;
 use App\Models\User;
 use App\Notifications\OcorrenciaCriada;
 use Illuminate\Support\Facades\Notification;
@@ -399,6 +400,30 @@ class OcorrenciaForm extends Component
         'celular1_funcionario' => null,
         'celular2_funcionario' => null,
 
+        'chaves_cavalo' => [
+            1 => null, 2 => null, 3 => null, 4 => null, 5 => null,
+            6 => null, 7 => null, 8 => null, 9 => null, 10 => null,
+            11 => null, 12 => null, 13 => null, 14 => null, 15 => null,
+            16 => null, 17 => null, 18 => null, 19 => null, 20 => null,
+        ],
+
+        'chave_apto' => [
+            1 => null, 2 => null, 3 => null, 4 => null, 5 => null,
+            6 => null, 7 => null, 8 => null, 9 => null, 10 => null,
+            11 => null, 12 => null, 13 => null, 14 => null, 15 => null,
+            16 => null, 17 => null, 18 => null, 19 => null, 20 => null,
+        ],
+
+        'cartoes_camareira_cavalo' => [
+            1 => ['status' => null, 'funcionario' => ''],
+            2 => ['status' => null, 'funcionario' => ''],
+            3 => ['status' => null, 'funcionario' => ''],
+            4 => ['status' => null, 'funcionario' => ''],
+            5 => ['status' => null, 'funcionario' => ''],
+            6 => ['status' => null, 'funcionario' => ''],
+            7 => ['status' => null, 'funcionario' => ''],
+        ],
+
         //Fim Cavalo Marinho
 
         //Seção 1     
@@ -543,7 +568,13 @@ class OcorrenciaForm extends Component
 
         // SEGUNDO: Se for edição, carrega e SOBRESCREVE os dados
         if ($id) {
-            $this->ocorrencia = Ocorrencia::findOrFail($id);
+            $this->ocorrencia = Ocorrencia::findOrFail($id);            
+            
+            $this->type = $this->ocorrencia->type;
+            $this->title = $this->ocorrencia->title;
+            $this->destinatario = $this->ocorrencia->destinatario;
+            $this->content = $this->ocorrencia->content ?? '';
+            $this->form = $this->ocorrencia->form ?? [];
 
             // 🔹 Preenche formVarreduras se for checklist
             if ($this->ocorrencia->type === 'varreduras-fichas-sistemas') {
@@ -554,12 +585,6 @@ class OcorrenciaForm extends Component
                     $this->ocorrencia->form ?? []
                 );
             }
-            
-            $this->type = $this->ocorrencia->type;
-            $this->title = $this->ocorrencia->title;
-            $this->destinatario = $this->ocorrencia->destinatario;
-            $this->content = $this->ocorrencia->content ?? '';
-            $this->form = $this->ocorrencia->form ?? [];
         } 
     }
 
@@ -1044,6 +1069,14 @@ class OcorrenciaForm extends Component
 
         if ($value === 'ocorrencias-diarias') {
             $this->content = '<p><em style="color:rgb(255, 0, 0); font-size:18px"><strong><span style="background-color:#FFFF00">DURANTE O MEU TURNO DE TRABALHO FICA REGISTRADO QUE:</span></strong></em></p>';
+        }
+
+        $template = OcorrenciaTemplate::where('company_id', auth()->user()->company_id)
+            ->where('type', $value)
+            ->first();
+        
+        if ($template) {
+            $this->content = $template->content;
         }
     }
 
