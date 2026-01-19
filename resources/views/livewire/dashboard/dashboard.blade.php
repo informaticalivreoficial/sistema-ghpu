@@ -139,32 +139,32 @@
                                     <!-- ESQUERDA -->
                                     <div class="flex items-center space-x-4 flex-1 min-w-0">
                                         <img
-                                            src="{{ $ocorrencia['user']['avatar']
-                                                ? asset('storage/'.$ocorrencia['user']['avatar'])
+                                            src="{{ $ocorrencia->user->avatar
+                                                ? asset('storage/'.$ocorrencia->user->avatar)
                                                 : asset('theme/images/image.jpg') }}"
                                             class="w-10 h-10 rounded-full object-cover flex-shrink-0"
                                         >
 
                                         <span class="text-gray-800 font-medium truncate">
-                                            <strong>{{ $ocorrencia['user']['name'] }}</strong> -> 
-                                            {{ $ocorrencia['title'] ?? 'Ocorrência' }}
+                                            <strong>{{ $ocorrencia->user->name }}</strong> -> 
+                                            {{ $ocorrencia->title ?? 'Ocorrência' }}
                                         </span>
                                     </div>
 
                                     <!-- DATA (LARGURA FIXA) -->
                                     <div class="w-36 text-right text-sm text-gray-500 whitespace-nowrap">
-                                        {{ \Carbon\Carbon::parse($ocorrencia['created_at'])->format('d/m/Y H:i') }}
+                                        {{ \Carbon\Carbon::parse($ocorrencia->created_at)->format('d/m/Y H:i') }}
                                     </div>
 
                                     <!-- AÇÕES (LARGURA FIXA) -->
                                     <div class="w-20 flex items-center justify-end space-x-2">
                                         <a target="_blank"
-                                        href="{{ route('ocorrencia.pdf', $ocorrencia['id']) }}"
+                                        href="{{ route('ocorrencia.pdf', $ocorrencia->id) }}"
                                         class="text-gray-400 hover:text-gray-600">
                                             <i class="fas fa-search"></i>
                                         </a>
 
-                                        @if(\Carbon\Carbon::parse($ocorrencia['created_at'])->gt(now()->subDay()))
+                                        @if(\Carbon\Carbon::parse($ocorrencia->created_at)->gt(now()->subDay()))
                                             <span class="px-2 py-0.5 text-xs font-semibold rounded-full bg-green-100 text-green-800">
                                                 Nova
                                             </span>

@@ -4,6 +4,7 @@ namespace App\Livewire\Dashboard\Ocorrencias;
 
 use App\Models\Ocorrencia;
 use App\Models\OcorrenciaTemplate;
+use App\Traits\WithToastr;
 use App\Models\User;
 use App\Notifications\OcorrenciaCriada;
 use Illuminate\Support\Facades\Notification;
@@ -14,6 +15,7 @@ use Livewire\Attributes\On;
 class OcorrenciaForm extends Component
 {
     use WithFileUploads;
+    use WithToastr;
 
     public ?Ocorrencia $ocorrencia = null;
 
@@ -31,7 +33,12 @@ class OcorrenciaForm extends Component
         'destinatario' => 'nome do funcionário que vai assumir o turno',
         'form.sauna' => 'Sauna',
         'form.chama_aquecedor' => 'Chama do aquecedor',
+        'form.aquecedor_ala_rua' => 'Selecione uma opção',
+        'form.gas1' => 'Informe o nível de Gás 1',
+        'form.gas2' => 'Informe o nível de Gás 2',
+        'form.lixeira_cavalo' => 'Informe se a lixeira está vazia',
         'form.motor_piscina' => 'Motor da piscina',
+        'form.motor_ofuro' => 'Motor Ofurô',
         'form.piscina_coberta' => 'Piscina coberta',
         'form.ibrain_fechado' => 'Salão IBrain',
         'form.ac_ibrain' => 'Ar condicionado iBrain',
@@ -41,6 +48,12 @@ class OcorrenciaForm extends Component
         'form.nome' => 'Nome',
         //'form.title' => 'Título',
         'type' => 'Tipo de Ocorrência',
+
+        'form.cartao_1_cavalo' => 'Informe onde está o cartão 1',
+        'form.cartao_2_cavalo' => 'Informe onde está o cartão 2',
+        'form.cartao_datacard1_cavalo' => 'Informe onde está o cartão DataCard 1',
+        'form.cartao_datacard2_cavalo' => 'Informe onde está o cartão DataCard 2',
+        'form.cartao_manutencao_cavalo' => 'Informe onde está o cartão da manutenção',
 
         'title.required' => 'O título é obrigatório.',
         'title.string' => 'O título deve ser um texto.',
@@ -83,6 +96,23 @@ class OcorrenciaForm extends Component
         //'form.tvbox_201.required' => 'Informe o status do TV Box do apto 201.',
         //'form.tvbox_203.required' => 'Informe o status do TV Box do apto 203.',
         //'form.tvbox_204.required' => 'Informe o status do TV Box do apto 204.',
+
+        'form.cartoes_camareira_cavalo.*.status.required' => 'Selecione uma opção',
+        'form.cartoes_camareira_cavalo.*.funcionario.required_if' => 'Informe com quem está o cartão.',
+
+        'form.chaves_cavalo.*.required' => 'Selecione uma opção',
+
+        'form.chave_apto.*.required_if' => 'Informe o nº do apartamento.',
+
+        'form.rouparia.required' => 'Selecione aberto ou fechado',
+        'form.portao_praia.required' => 'Selecione aberto ou fechado',
+        'form.portao_bicicletario.required' => 'Selecione aberto ou fechado',
+        'form.portao_entrega.required' => 'Selecione aberto ou fechado',
+        'form.porta_recepcao.required' => 'Selecione aberto ou fechado',
+
+        'form.celular1_bateria.required' => 'Informe a porcentagem da bateria.',
+        'form.celular2_bateria.required' => 'Informe a porcentagem da bateria.',
+        
 
         // Chaves fixas
         'form.chaves.*.status.required' => 'Selecione o status da chave.',
@@ -184,19 +214,23 @@ class OcorrenciaForm extends Component
         // Seção 10 - Turno
         'form.turno.hospedes.required' => 'Informe o número de hóspedes.',
         'form.turno.hospedes.numeric' => 'O número de hóspedes deve ser numérico.',
-        'form.turno.hospedes.min' => 'O número mínimo de hóspedes é 0.',
+        'form.turno.hospedes.min' => 'O número mínimo de hóspedes é 1.',
         
         'form.turno.apto_ocupados.required' => 'Informe o número de apartamentos ocupados.',
         'form.turno.apto_ocupados.numeric' => 'Deve ser um número.',
-        'form.turno.apto_ocupados.min' => 'O número mínimo é 0.',
+        'form.turno.apto_ocupados.min' => 'O número mínimo é 1.',
         
         'form.turno.reservas.required' => 'Informe o número de reservas.',
         'form.turno.reservas.numeric' => 'Deve ser um número.',
-        'form.turno.reservas.min' => 'O número mínimo é 0.',
+        'form.turno.reservas.min' => 'O número mínimo é 1.',
         
         'form.turno.checkouts.required' => 'Informe o número de checkouts.',
         'form.turno.checkouts.numeric' => 'Deve ser um número.',
-        'form.turno.checkouts.min' => 'O número mínimo é 0.',
+        'form.turno.checkouts.min' => 'O número mínimo é 1.',
+
+        'form.turno.latecheckouts.required' => 'Informe o número de Late checkouts.',
+        'form.turno.latecheckouts.numeric' => 'Deve ser um número.',
+        'form.turno.latecheckouts.min' => 'O número mínimo é 1.',
         
         'form.turno.interditados.required' => 'Informe o número de apartamentos interditados.',
         'form.turno.interditados.numeric' => 'Deve ser um número.',
@@ -209,9 +243,14 @@ class OcorrenciaForm extends Component
         'form.turno.cartoes_aguardando.required' => 'Informe a quantidade de cartões aguardando.',
         'form.turno.cartoes_aguardando.numeric' => 'Deve ser um número.',
         'form.turno.cartoes_aguardando.min' => 'O número mínimo é 0.',
+
+        'form.turno.paes.required' => 'Informe a quantidade de pães.',
         
         'form.turno.luzes_calcada.required' => 'Informe o status das luzes da calçada.',
         'form.turno.luzes_calcada.in' => 'O status deve ser "ligada" ou "desligada".',
+
+        'form.turno.luzes_calcada_cavalo.required' => 'Informe o status das luzes.',
+        'form.turno.luzes_calcada_cavalo.in' => 'O status deve ser "ligada" ou "desligada".',
         
         'form.turno.caixa_responsavel.required' => 'Informe o responsável pelo caixa.',
         'form.turno.caixa_responsavel.string' => 'O nome deve ser um texto.',
@@ -301,21 +340,21 @@ class OcorrenciaForm extends Component
 
    
     public array $itensChavesFixas = [
-        17 => 'Chave Mestra Elevador',
-        18 => 'Molho de Chave Mestra de Todos os Aptos',
-        19 => 'Cartão TAG - Sala de Eventos Ibrain',
-        20 => 'Chave da Porta de Vidro da Recepção',
-        21 => 'Chave da Lixeira (2)',
-        22 => 'Chave Porta Sauna',
-        23 => 'Chave Porta Manutenção',
+        1 => 'Chave Mestra Elevador',
+        2 => 'Molho de Chave Mestra de Todos os Aptos',
+        3 => 'Cartão TAG - Sala de Eventos Ibrain',
+        4 => 'Chave da Porta de Vidro da Recepção',
+        5 => 'Chave da Lixeira (2)',
+        6 => 'Chave Porta Sauna',
+        7 => 'Chave Porta Manutenção',
         //24 => 'Controle Remoto P1',
         //25 => 'Controle Remoto P2',
-        26 => 'Chave Cadeado Bike Roxa',
-        27 => 'Chave Cadeado Bike Vermelha',
-        28 => 'Chave HUB 3° Andar',
-        29 => 'Chave Porta Automática Recepção Entrada',
-        30 => 'Chave (Vareta) Abertura do P2',
-        31 => 'Chave Cartão Magnético Rouparia 3° Andar',
+        8 => 'Chave Cadeado Bike Roxa',
+        9 => 'Chave Cadeado Bike Vermelha',
+        10 => 'Chave HUB 3° Andar',
+        11 => 'Chave Porta Automática Recepção Entrada',
+        12 => 'Chave (Vareta) Abertura do P2',
+        13 => 'Chave Cartão Magnético Rouparia 3° Andar',
     ];
 
     public array $formVarreduras = [
@@ -392,6 +431,7 @@ class OcorrenciaForm extends Component
         'portao_bicicletario' => null,
         'portao_entrega' => null,
         'porta_recepcao' => null,
+        'luzes_calcada_cavalo' => null,
 
         'geladeira_recepcao' => '',
 
@@ -399,6 +439,17 @@ class OcorrenciaForm extends Component
         'celular2_bateria' => null,
         'celular1_funcionario' => null,
         'celular2_funcionario' => null,
+        'aquecedor_ala_rua' => null,
+        'gas1' => null,
+        'gas2' => null,
+        'lixeira_cavalo' => null,
+        'motor_ofuro' => null,
+        'cartao_1_cavalo' => null,
+        'cartao_2_cavalo' => null,
+        'cartao_datacard1_cavalo' => null,
+        'cartao_datacard2_cavalo' => null,
+        'cartao_manutencao_cavalo' => null,
+        'geladeira_recepcao' => null,
 
         'chaves_cavalo' => [
             1 => null, 2 => null, 3 => null, 4 => null, 5 => null,
@@ -459,18 +510,10 @@ class OcorrenciaForm extends Component
 
         //Seção 6
         'secadores' => [
-            1 => null,
-            2 => null,
-            3 => null,
-            4 => null,
-            5 => null,
+            1 => null, 2 => null, 3 => null, 4 => null, 5 => null,
         ],
         'secadores_apto' => [
-            1 => '',
-            2 => '',
-            3 => '',
-            4 => '',
-            5 => '',
+            1 => '', 2 => '', 3 => '', 4 => '',  5 => '',
         ],
 
         //Seção 7 - CORRETO: usar array aninhado
@@ -497,6 +540,8 @@ class OcorrenciaForm extends Component
             'apto_ocupados' => null,
             'reservas' => null,
             'checkouts' => null,
+            'latecheckouts' => null,
+            'paes' => null,
             'interditados' => null,
             'cartoes_emprestados' => null,
             'cartoes_aguardando' => null,
@@ -706,6 +751,11 @@ class OcorrenciaForm extends Component
                 $rules['destinatario'] = 'required|string|min:6|max:100';                
             }
 
+            if($this->type === 'passagem-de-turno-cavalo') {
+                $rules['form'] = 'required|array';
+                $rules['destinatario'] = 'required|string|min:6|max:100';                
+            }
+
             if ($this->type === 'ocorrencias-diarias') {                
                 $rules['content'] = 'required|string|min:10';
             }
@@ -740,6 +790,12 @@ class OcorrenciaForm extends Component
                 $data['content'] = null;
             }
 
+            if($this->type === 'passagem-de-turno-cavalo') {
+                $data['title']   = $this->titleFromType($this->type);
+                $data['destinatario'] = $this->destinatario;
+                $data['content'] = $this->content;
+            }
+
             if($this->type === 'branco') {
                 $data['title'] = $this->title;
                 $data['destinatario'] = null;
@@ -770,7 +826,7 @@ class OcorrenciaForm extends Component
                 
                 $data['user_id'] = auth()->id();
             }
-            //dd($data);
+            dd($data, $this->validate($rules));
             
             $ocorrencia = Ocorrencia::updateOrCreate(
                 ['id' => $this->ocorrencia->id ?? null],
@@ -814,9 +870,7 @@ class OcorrenciaForm extends Component
                 }
 
                 // Junta todos
-                $users = $superAdmins
-                    ->concat($admins)
-                    ->concat($companyUsers)
+                $users = $superAdmins->concat($admins)->concat($companyUsers)
 
                     // ❌ remove quem criou
                     ->reject(fn ($user) => $user->id === $author->id)
@@ -847,12 +901,8 @@ class OcorrenciaForm extends Component
             $this->dispatch('scroll-to-top');
             
             // Só dispara toast se tiver mais de 1 erro
-            if ($errorCount > 1) {                
-                $this->dispatch('toast', [
-                    'type' => 'error',
-                    'message' => "Por favor, preencha os {$errorCount} campos destacados no formulário.",
-                    'title' => 'Login realizado'
-                ]);
+            if ($errorCount > 1) {  
+                $this->toastError("Por favor, preencha os {$errorCount} campos destacados no formulário.");
             }
             
             throw $e;
@@ -972,6 +1022,7 @@ class OcorrenciaForm extends Component
                 'form.turno.cartoes_emprestados' => 'required|numeric|min:0',
                 'form.turno.cartoes_aguardando' => 'required|numeric|min:0',
                 'form.turno.luzes_calcada' => 'required|in:ligada,desligada',
+                
                 'form.turno.caixa_responsavel' => 'required|string|min:3',
                 'form.turno.cartao_mestre' => 'required|in:sim,nao',
                 'form.turno.aquecedor' => 'required|in:sim,nao',
@@ -1008,6 +1059,116 @@ class OcorrenciaForm extends Component
             'branco' => [
                 // Regras específicas para formulário em branco                
             ],
+            'passagem-de-turno-cavalo' => [
+                'form.maquina_safra_1' => 'required|numeric|min:1|max:100',
+                'form.maquina_safra_2' => 'required|numeric|min:1|max:100',
+                'form.turno.hospedes' => 'required|numeric|min:0',
+                'form.turno.apto_ocupados' => 'required|numeric|min:0',
+                'form.turno.reservas' => 'required|numeric|min:0',
+                'form.turno.checkouts' => 'required|numeric|min:0',
+                'form.turno.latecheckouts' => 'required|numeric|min:0',
+                'form.turno.paes' => 'required|string',
+                'form.cartao_1_cavalo' => 'required|string',
+                'form.cartao_2_cavalo' => 'required|string',
+                'form.cartao_datacard1_cavalo' => 'required|string',
+                'form.turno.luzes_calcada_cavalo' => 'required|in:ligada,desligada',
+                'form.cartao_datacard2_cavalo' => 'required|string',
+                'form.cartao_manutencao_cavalo' => 'required|string',
+                'form.rouparia' => 'required|in:aberto,fechado',
+                'form.portao_praia' => 'required|in:aberto,fechado',
+                'form.portao_bicicletario' => 'required|in:aberto,fechado',
+                'form.portao_entrega' => 'required|in:aberto,fechado',
+                'form.porta_recepcao' => 'required|in:aberto,fechado',
+                'form.celular1_bateria' => 'required|numeric|min:1|max:100',
+                'form.celular2_bateria' => 'required|numeric|min:1|max:100',  
+                'form.temperatura_aquecedor' => 'required|numeric|min:0',  
+                'form.chama_aquecedor' => 'required|in:aberto,fechado',
+                'form.aquecedor_ala_rua' => 'required|in:aberto,fechado',
+                'form.gas1' => 'required|string',
+                'form.gas2' => 'required|string',
+                'form.lixeira_cavalo' => 'required|in:sim,nao',
+                'form.motor_piscina' => 'required|in:ligado,desligado',
+                'form.motor_ofuro' => 'required|in:ligado,desligado',
+                
+                
+                'form.turno.luzes_calcada' => 'required|in:ligada,desligada',                
+                'form.turno.codigo_cores' => 'required|in:sim,nao',
+                'form.turno.caixa_dinheiro' => 'required|numeric|min:0',
+                'form.turno.caixa_cartoes' => 'required|numeric|min:0',
+                'form.turno.caixa_faturamento' => 'required|numeric|min:0',
+
+                //Chaves Extras
+                'form.chaves_cavalo.1' => 'required|in:disponivel,emprestado',
+                'form.chaves_cavalo.2' => 'required|in:disponivel,emprestado',
+                'form.chaves_cavalo.3' => 'required|in:disponivel,emprestado',
+                'form.chaves_cavalo.4' => 'required|in:disponivel,emprestado',
+                'form.chaves_cavalo.5' => 'required|in:disponivel,emprestado',
+                'form.chaves_cavalo.6' => 'required|in:disponivel,emprestado',
+                'form.chaves_cavalo.7' => 'required|in:disponivel,emprestado',
+                'form.chaves_cavalo.8' => 'required|in:disponivel,emprestado',
+                'form.chaves_cavalo.9' => 'required|in:disponivel,emprestado',
+                'form.chaves_cavalo.10' => 'required|in:disponivel,emprestado',
+                'form.chaves_cavalo.11' => 'required|in:disponivel,emprestado',
+                'form.chaves_cavalo.12' => 'required|in:disponivel,emprestado',
+                'form.chaves_cavalo.13' => 'required|in:disponivel,emprestado',
+                'form.chaves_cavalo.14' => 'required|in:disponivel,emprestado',
+                'form.chaves_cavalo.15' => 'required|in:disponivel,emprestado',
+                'form.chaves_cavalo.16' => 'required|in:disponivel,emprestado',
+                'form.chaves_cavalo.17' => 'required|in:disponivel,emprestado',
+                'form.chaves_cavalo.18' => 'required|in:disponivel,emprestado',
+                'form.chaves_cavalo.19' => 'required|in:disponivel,emprestado',
+                'form.chaves_cavalo.20' => 'required|in:disponivel,emprestado',
+
+                'form.chave_apto.1' => 'required_if:form.chaves_cavalo.1,emprestado|nullable|string|min:1',
+                'form.chave_apto.2' => 'required_if:form.chaves_cavalo.2,emprestado|nullable|string|min:1',
+                'form.chave_apto.3' => 'required_if:form.chaves_cavalo.3,emprestado|nullable|string|min:1',
+                'form.chave_apto.4' => 'required_if:form.chaves_cavalo.4,emprestado|nullable|string|min:1',
+                'form.chave_apto.5' => 'required_if:form.chaves_cavalo.5,emprestado|nullable|string|min:1',
+                'form.chave_apto.6' => 'required_if:form.chaves_cavalo.6,emprestado|nullable|string|min:1',
+                'form.chave_apto.7' => 'required_if:form.chaves_cavalo.7,emprestado|nullable|string|min:1',
+                'form.chave_apto.8' => 'required_if:form.chaves_cavalo.8,emprestado|nullable|string|min:1',
+                'form.chave_apto.9' => 'required_if:form.chaves_cavalo.9,emprestado|nullable|string|min:1',
+                'form.chave_apto.10' => 'required_if:form.chaves_cavalo.10,emprestado|nullable|string|min:1',
+                'form.chave_apto.11' => 'required_if:form.chaves_cavalo.11,emprestado|nullable|string|min:1',
+                'form.chave_apto.12' => 'required_if:form.chaves_cavalo.12,emprestado|nullable|string|min:1',
+                'form.chave_apto.13' => 'required_if:form.chaves_cavalo.13,emprestado|nullable|string|min:1',
+                'form.chave_apto.14' => 'required_if:form.chaves_cavalo.14,emprestado|nullable|string|min:1',
+                'form.chave_apto.15' => 'required_if:form.chaves_cavalo.15,emprestado|nullable|string|min:1',
+                'form.chave_apto.16' => 'required_if:form.chaves_cavalo.16,emprestado|nullable|string|min:1',
+                'form.chave_apto.17' => 'required_if:form.chaves_cavalo.17,emprestado|nullable|string|min:1',
+                'form.chave_apto.18' => 'required_if:form.chaves_cavalo.18,emprestado|nullable|string|min:1',
+                'form.chave_apto.19' => 'required_if:form.chaves_cavalo.19,emprestado|nullable|string|min:1',
+                'form.chave_apto.20' => 'required_if:form.chaves_cavalo.20,emprestado|nullable|string|min:1',                
+
+                'form.radios.1.status' => 'required|in:base,funcionario',
+                'form.radios.1.funcionario' => 'required_if:form.radios.1.status,funcionario|nullable|string|min:3',
+                'form.radios.2.status' => 'required|in:base,funcionario',
+                'form.radios.2.funcionario' => 'required_if:form.radios.2.status,funcionario|nullable|string|min:3',
+                'form.radios.3.status' => 'required|in:base,funcionario',
+                'form.radios.3.funcionario' => 'required_if:form.radios.3.status,funcionario|nullable|string|min:3',
+                'form.radios.4.status' => 'required|in:base,funcionario',
+                'form.radios.4.funcionario' => 'required_if:form.radios.4.status,funcionario|nullable|string|min:3',
+                'form.radios.5.status' => 'required|in:base,funcionario',
+                'form.radios.5.funcionario' => 'required_if:form.radios.5.status,funcionario|nullable|string|min:3',
+                'form.radios.6.status' => 'required|in:base,funcionario',
+                'form.radios.6.funcionario' => 'required_if:form.radios.6.status,funcionario|nullable|string|min:3',
+                'form.radios.7.status' => 'required|in:base,funcionario',
+                'form.radios.7.funcionario' => 'required_if:form.radios.7.status,funcionario|nullable|string|min:3',    
+                'form.cartoes_camareira_cavalo.1.status' => 'required|in:base,funcionario',
+                'form.cartoes_camareira_cavalo.1.funcionario' => 'required_if:form.cartoes_camareira_cavalo.1.status,funcionario|nullable|string|min:3',
+                'form.cartoes_camareira_cavalo.2.status' => 'required|in:base,funcionario',
+                'form.cartoes_camareira_cavalo.2.funcionario' => 'required_if:form.cartoes_camareira_cavalo.2.status,funcionario|nullable|string|min:3',
+                'form.cartoes_camareira_cavalo.3.status' => 'required|in:base,funcionario',
+                'form.cartoes_camareira_cavalo.3.funcionario' => 'required_if:form.cartoes_camareira_cavalo.3.status,funcionario|nullable|string|min:3',
+                'form.cartoes_camareira_cavalo.4.status' => 'required|in:base,funcionario',
+                'form.cartoes_camareira_cavalo.4.funcionario' => 'required_if:form.cartoes_camareira_cavalo.4.status,funcionario|nullable|string|min:3',
+                'form.cartoes_camareira_cavalo.5.status' => 'required|in:base,funcionario',
+                'form.cartoes_camareira_cavalo.5.funcionario' => 'required_if:form.cartoes_camareira_cavalo.5.status,funcionario|nullable|string|min:3',               
+                'form.secadores.1' => 'required|in:gaveta,emprestado',
+                'form.secadores.2' => 'required|in:gaveta,emprestado',
+                'form.secadores_apto.1' => 'required_if:form.secadores.1,emprestado|nullable|string',
+                'form.secadores_apto.2' => 'required_if:form.secadores.2,emprestado|nullable|string',
+            ]
         ];
 
         if ($type === 'passagem-de-turno') {
@@ -1033,6 +1194,13 @@ class OcorrenciaForm extends Component
                 $rulesMap[$type]["form.chaves_mecanicas.{$index}.pessoa"] = "required_if:form.chaves_mecanicas.{$index}.status,pessoa|nullable|string|min:3|max:100";
             }
         }
+
+        if($type === 'passagem-de-turno-cavalo'){
+            foreach ($this->itensChavesFixasCavalo as $key => $label) {
+                $rulesMap[$type]["form.chaves.{$key}.status"] = 'required|in:gaveta,com';
+                $rulesMap[$type]["form.chaves.{$key}.pessoa"] = "required_if:form.chaves.{$key}.status,com|nullable|string|min:3|max:100";
+            }
+        }
         
         return $rulesMap[$type] ?? [];
     }
@@ -1040,8 +1208,9 @@ class OcorrenciaForm extends Component
     protected function titleFromType(string $type): string
     {
         return match ($type) {
-            'passagem-de-turno' => 'Passagem de Turno',
-            'ocorrencias-diarias' => 'Ocorrências Diárias',
+            'passagem-de-turno'          => 'Passagem de Turno',
+            'passagem-de-turno-cavalo'   => 'Passagem de Turno',
+            'ocorrencias-diarias'        => 'Ocorrências Diárias',
             'varreduras-fichas-sistemas' => 'Varreduras, Fichas e Sistemas',
             //'branco' => 'Formulário em Branco',
             default => $type,

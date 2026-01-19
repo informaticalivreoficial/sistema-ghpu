@@ -11,7 +11,7 @@ class Dashboard extends Component
     public array $topposts = [];
     public int $postsCount = 0;
     public int $postsYearCount = 0;
-    public array $lastOcorrencias = [];
+    public $lastOcorrencias = null;
     public array $lastTurno = [];
     public ?string $lastTurnoDate = null;
 
@@ -33,8 +33,7 @@ class Dashboard extends Component
                 ->latest()
                 ->limit(5)
                 ->with('user:id,name,avatar')
-                ->get()
-                ->toArray();
+                ->get();
             return;
         }
 
@@ -46,7 +45,7 @@ class Dashboard extends Component
             $query->where('company_id', $user->company_id);
         }
 
-        $this->lastOcorrencias = $query->get()->toArray();
+        $this->lastOcorrencias = $query->get();
 
 
         $turno = Ocorrencia::query()
@@ -91,7 +90,7 @@ class Dashboard extends Component
             $query->where('company_id', $user->company_id);
         }
 
-        $this->lastOcorrencias = $query->get()->toArray();
+        $this->lastOcorrencias = $query->get();
     }
 
     public function render()

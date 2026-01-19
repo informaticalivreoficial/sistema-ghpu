@@ -406,28 +406,8 @@
             </div>
         </div>
 
-        <div class="card-body">
-            @php
-                $itens = [
-                    17 => 'Chave Mestra Elevador',
-                    18 => 'Molho de Chave Mestra de Todos os Aptos',
-                    19 => 'Cartão TAG - Sala de Eventos Ibrain',
-                    20 => 'Chave da Porta de Vidro da Recepção',
-                    21 => 'Chave da Lixeira (2)',
-                    22 => 'Chave Porta Sauna',
-                    23 => 'Chave Porta Manutenção',
-                    //24 => 'Controle Remoto P1',
-                    //25 => 'Controle Remoto P2',
-                    26 => 'Chave Cadeado Bike Roxa',
-                    27 => 'Chave Cadeado Bike Vermelha',
-                    28 => 'Chave HUB 3° Andar',
-                    29 => 'Chave Porta Automática Recepção Entrada',
-                    30 => 'Chave (Vareta) Abertura do P2',
-                    31 => 'Chave Cartão Magnético Rouparia 3° Andar',
-                ];
-            @endphp
-
-            @foreach ($itens as $key => $label)
+        <div class="card-body"> 
+            @foreach ($itensChavesFixas as $key => $label)
                 <div class="border rounded p-3 mb-3" wire:key="chave-{{ $key }}">
                     <label class="fw-bold">{{ $key }}. {{ $label }}</label>
 

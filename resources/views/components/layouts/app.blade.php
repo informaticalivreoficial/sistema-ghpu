@@ -189,129 +189,129 @@
 
     <script>
         document.addEventListener('alpine:init', () => {
-    Alpine.data('quillEditor', ({ value, model }) => ({
-        quill: null,
+            Alpine.data('quillEditor', ({ value, model }) => ({
+                quill: null,
 
-        init() {
-            if (this.quill) return; // 🔥 evita duplicar editor
+                init() {
+                    if (this.quill) return; // 🔥 evita duplicar editor
 
-            // 🔥 Registrar módulo de redimensionamento
-            if (typeof ImageResize !== 'undefined') {
-                Quill.register('modules/imageResize', ImageResize.default);
-            }
+                    // 🔥 Registrar módulo de redimensionamento
+                    if (typeof ImageResize !== 'undefined') {
+                        Quill.register('modules/imageResize', ImageResize.default);
+                    }
 
-            this.quill = new Quill(this.$refs.editor, {
-                theme: 'snow',
-                placeholder: 'Digite aqui...',
-                modules: {
-                    toolbar: [
-                        [{ header: [1, 2, 3, false] }],
-                        [{ font: [] }, { size: ['small', false, 'large', 'huge'] }],
-                        ['bold', 'italic', 'underline', 'strike'],
-                        [{ color: [] }, { background: [] }],
-                        [{ align: [] }],
-                        [{ list: 'ordered' }, { list: 'bullet' }],
-                        ['blockquote'],
-                        ['link', 'image'],
-                        ['clean'],
-                    ],
-                    // 🖼️ Módulo de redimensionamento visual
-                    imageResize: {
-                        displaySize: true,
-                        modules: ['Resize', 'DisplaySize']
+                    this.quill = new Quill(this.$refs.editor, {
+                        theme: 'snow',
+                        placeholder: 'Digite aqui...',
+                        modules: {
+                            toolbar: [
+                                [{ header: [1, 2, 3, false] }],
+                                [{ font: [] }, { size: ['small', false, 'large', 'huge'] }],
+                                ['bold', 'italic', 'underline', 'strike'],
+                                [{ color: [] }, { background: [] }],
+                                [{ align: [] }],
+                                [{ list: 'ordered' }, { list: 'bullet' }],
+                                ['blockquote'],
+                                ['link', 'image'],
+                                ['clean'],
+                            ],
+                            // 🖼️ Módulo de redimensionamento visual
+                            imageResize: {
+                                displaySize: true,
+                                modules: ['Resize', 'DisplaySize']
+                            }
+                        },
+                    });
+
+                    // Conteúdo inicial (edit)
+                    if (value) {
+                        this.quill.root.innerHTML = value;
+                    }
+
+                    // 🔥 SINCRONIZAÇÃO INICIAL (create FIX)
+                    this.sync();
+
+                    // Atualização ao digitar
+                    this.quill.on('text-change', () => {
+                        this.sync();
+                    });
+
+                    // Adicionar suporte a alinhamento de imagens
+                    this.addImageAlignmentSupport();
+                },
+
+                sync() {
+                    const html = this.quill.root.innerHTML;
+                    const componentEl = this.$el.closest('[wire\\:id]');
+
+                    if (!componentEl || typeof Livewire === 'undefined') return;
+
+                    const component = Livewire.find(componentEl.getAttribute('wire:id'));
+                    if (component) {
+                        component.set(model, html, false);
                     }
                 },
-            });
 
-            // Conteúdo inicial (edit)
-            if (value) {
-                this.quill.root.innerHTML = value;
-            }
-
-            // 🔥 SINCRONIZAÇÃO INICIAL (create FIX)
-            this.sync();
-
-            // Atualização ao digitar
-            this.quill.on('text-change', () => {
-                this.sync();
-            });
-
-            // Adicionar suporte a alinhamento de imagens
-            this.addImageAlignmentSupport();
-        },
-
-        sync() {
-            const html = this.quill.root.innerHTML;
-            const componentEl = this.$el.closest('[wire\\:id]');
-
-            if (!componentEl || typeof Livewire === 'undefined') return;
-
-            const component = Livewire.find(componentEl.getAttribute('wire:id'));
-            if (component) {
-                component.set(model, html, false);
-            }
-        },
-
-        addImageAlignmentSupport() {
-            this.quill.root.addEventListener('click', (e) => {
-                if (e.target.tagName === 'IMG') {
-                    const parent = e.target.closest('p');
-                    if (parent) {
-                        const alignment = parent.className.match(/ql-align-(\w+)/);
-                        if (alignment) {
-                            const alignType = alignment[1];
-                            this.applyImageAlignment(e.target, alignType);
-                        }
-                    }
-                }
-            });
-
-            const observer = new MutationObserver((mutations) => {
-                mutations.forEach((mutation) => {
-                    if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-                        const target = mutation.target;
-                        const img = target.querySelector('img');
-                        if (img) {
-                            const alignment = target.className.match(/ql-align-(\w+)/);
-                            if (alignment) {
-                                this.applyImageAlignment(img, alignment[1]);
+                addImageAlignmentSupport() {
+                    this.quill.root.addEventListener('click', (e) => {
+                        if (e.target.tagName === 'IMG') {
+                            const parent = e.target.closest('p');
+                            if (parent) {
+                                const alignment = parent.className.match(/ql-align-(\w+)/);
+                                if (alignment) {
+                                    const alignType = alignment[1];
+                                    this.applyImageAlignment(e.target, alignType);
+                                }
                             }
                         }
+                    });
+
+                    const observer = new MutationObserver((mutations) => {
+                        mutations.forEach((mutation) => {
+                            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                                const target = mutation.target;
+                                const img = target.querySelector('img');
+                                if (img) {
+                                    const alignment = target.className.match(/ql-align-(\w+)/);
+                                    if (alignment) {
+                                        this.applyImageAlignment(img, alignment[1]);
+                                    }
+                                }
+                            }
+                        });
+                    });
+
+                    observer.observe(this.quill.root, {
+                        attributes: true,
+                        attributeFilter: ['class'],
+                        subtree: true
+                    });
+                },
+
+                applyImageAlignment(img, alignment) {
+                    img.style.marginLeft = '';
+                    img.style.marginRight = '';
+                    img.style.display = 'block';
+
+                    switch(alignment) {
+                        case 'center':
+                            img.style.marginLeft = 'auto';
+                            img.style.marginRight = 'auto';
+                            break;
+                        case 'right':
+                            img.style.marginLeft = 'auto';
+                            img.style.marginRight = '0';
+                            break;
+                        case 'left':
+                            img.style.marginLeft = '0';
+                            img.style.marginRight = 'auto';
+                            break;
                     }
-                });
-            });
 
-            observer.observe(this.quill.root, {
-                attributes: true,
-                attributeFilter: ['class'],
-                subtree: true
-            });
-        },
-
-        applyImageAlignment(img, alignment) {
-            img.style.marginLeft = '';
-            img.style.marginRight = '';
-            img.style.display = 'block';
-
-            switch(alignment) {
-                case 'center':
-                    img.style.marginLeft = 'auto';
-                    img.style.marginRight = 'auto';
-                    break;
-                case 'right':
-                    img.style.marginLeft = 'auto';
-                    img.style.marginRight = '0';
-                    break;
-                case 'left':
-                    img.style.marginLeft = '0';
-                    img.style.marginRight = 'auto';
-                    break;
-            }
-
-            this.sync();
-        },
-    }));
-});
+                    this.sync();
+                },
+            }));
+        });
         
         document.addEventListener('livewire:init', () => {
 
@@ -330,41 +330,41 @@
 
         });
 
-        function showToast(type, message) {
-            const colors = {
-                success: '#16a34a',
-                error: '#dc2626',
-                warning: '#f59e0b',
-                info: '#2563eb',
-            };
+        // function showToast(type, message) {
+        //     const colors = {
+        //         success: '#16a34a',
+        //         error: '#dc2626',
+        //         warning: '#f59e0b',
+        //         info: '#2563eb',
+        //     };
 
-            Toastify({
-                text: message,
-                duration: 4000,
-                gravity: "top",
-                position: "right",
-                close: true,
-                style: {
-                    background: colors[type] ?? '#2563eb',
-                },
-            }).showToast();
-        }
+        //     Toastify({
+        //         text: message,
+        //         duration: 4000,
+        //         gravity: "top",
+        //         position: "right",
+        //         close: true,
+        //         style: {
+        //             background: colors[type] ?? '#2563eb',
+        //         },
+        //     }).showToast();
+        // }
 
-        // 🔥 Toast via Livewire
-        window.addEventListener('toast', event => {
-            const { type, message } = event.detail[0];
-            showToast(type, message);
-        });
+        // // 🔥 Toast via Livewire
+        // window.addEventListener('toast', event => {
+        //     const { type, message } = event.detail[0];
+        //     showToast(type, message);
+        // });
 
-        // 🔥 Toast via session (redirect)
-        @if (session()->has('toast'))
-            document.addEventListener('DOMContentLoaded', () => {
-                showToast(
-                    "{{ session('toast.type') }}",
-                    "{{ session('toast.message') }}"
-                );
-            });
-        @endif
+        // // 🔥 Toast via session (redirect)
+        // @if (session()->has('toast'))
+        //     document.addEventListener('DOMContentLoaded', () => {
+        //         showToast(
+        //             "{{ session('toast.type') }}",
+        //             "{{ session('toast.message') }}"
+        //         );
+        //     });
+        // @endif
     </script>
 
     @stack('scripts') 

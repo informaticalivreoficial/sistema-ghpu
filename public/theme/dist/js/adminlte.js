@@ -2558,53 +2558,7 @@
     return NavbarSearch._jQueryInterface;
   };
 
-  /**
-   * --------------------------------------------
-   * AdminLTE Toasts.js
-   * License MIT
-   * --------------------------------------------
-   */
-  /**
-   * Constants
-   * ====================================================
-   */
-
-  var NAME$2 = 'Toasts';
-  var DATA_KEY$2 = 'lte.toasts';
-  var EVENT_KEY$1 = "." + DATA_KEY$2;
-  var JQUERY_NO_CONFLICT$2 = $__default["default"].fn[NAME$2];
-  var EVENT_INIT = "init" + EVENT_KEY$1;
-  var EVENT_CREATED = "created" + EVENT_KEY$1;
-  var EVENT_REMOVED = "removed" + EVENT_KEY$1;
-  var SELECTOR_CONTAINER_TOP_RIGHT = '#toastsContainerTopRight';
-  var SELECTOR_CONTAINER_TOP_LEFT = '#toastsContainerTopLeft';
-  var SELECTOR_CONTAINER_BOTTOM_RIGHT = '#toastsContainerBottomRight';
-  var SELECTOR_CONTAINER_BOTTOM_LEFT = '#toastsContainerBottomLeft';
-  var CLASS_NAME_TOP_RIGHT = 'toasts-top-right';
-  var CLASS_NAME_TOP_LEFT = 'toasts-top-left';
-  var CLASS_NAME_BOTTOM_RIGHT = 'toasts-bottom-right';
-  var CLASS_NAME_BOTTOM_LEFT = 'toasts-bottom-left';
-  var POSITION_TOP_RIGHT = 'topRight';
-  var POSITION_TOP_LEFT = 'topLeft';
-  var POSITION_BOTTOM_RIGHT = 'bottomRight';
-  var POSITION_BOTTOM_LEFT = 'bottomLeft';
-  var Default$2 = {
-    position: POSITION_TOP_RIGHT,
-    fixed: true,
-    autohide: false,
-    autoremove: true,
-    delay: 1000,
-    fade: true,
-    icon: null,
-    image: null,
-    imageAlt: null,
-    imageHeight: '25px',
-    title: null,
-    subtitle: null,
-    close: true,
-    body: null,
-    class: null
-  };
+  
   /**
    * Class Definition
    * ====================================================

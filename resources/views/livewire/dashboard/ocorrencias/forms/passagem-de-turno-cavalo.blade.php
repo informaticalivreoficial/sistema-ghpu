@@ -92,15 +92,15 @@
             <hr class="mt-4 mb-4">
 
             <div class="row">
-                <!-- Interditados -->
+                <!-- Late Check-out -->
                 <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                     <label class="font-weight-bold">Late Check-out?</label>
                     <input type="number" 
-                        class="form-control @error('form.turno.interditados') is-invalid @enderror"
-                        wire:model.live="form.turno.interditados"
+                        class="form-control @error('form.turno.latecheckouts') is-invalid @enderror"
+                        wire:model.live="form.turno.latecheckouts"
                         placeholder="Informe o total"
                         min="0">
-                    @error('form.turno.interditados')
+                    @error('form.turno.latecheckouts')
                         <small class="text-danger d-block mt-1">{{ $message }}</small>
                     @enderror
                 </div>
@@ -109,14 +109,14 @@
                 <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                     <label class="font-weight-bold">🥖 Quantidade de Pães do Dia</label>
                     <input type="text" 
-                        class="form-control @error('form.turno.interditados') is-invalid @enderror"
-                        wire:model.live="form.turno.interditados"
+                        class="form-control @error('form.turno.paes') is-invalid @enderror"
+                        wire:model.live="form.turno.paes"
                         placeholder="Informe o total de pães"
                     >
                     <small class="text-info">
                         * Pedido realizado entre 00:00 e 03:00
                     </small>
-                    @error('form.turno.interditados')
+                    @error('form.turno.paes')
                         <small class="text-danger d-block mt-1">{{ $message }}</small>
                     @enderror
                 </div>  
@@ -161,7 +161,7 @@
                             <input type="radio" 
                                 class="form-check-input"
                                 id="luz_ligada"
-                                wire:model.live="form.turno.luzes_calcada"
+                                wire:model.live="form.turno.luzes_calcada_cavalo_cavalo"
                                 value="ligada">
                             <label class="form-check-label" for="luz_ligada">conforme</label>
                         </div>
@@ -170,7 +170,7 @@
                             <input type="radio" 
                                 class="form-check-input"
                                 id="luz_desligada"
-                                wire:model.live="form.turno.luzes_calcada"
+                                wire:model.live="form.turno.luzes_calcada_cavalo"
                                 value="desligada">
                             <label class="form-check-label" for="luz_desligada">Não conforme</label>
                         </div>
@@ -180,7 +180,7 @@
                         * 🌙 Apagar todas às 22h (exceto recepção)<br>
                         * 🕛 Se necessário, manter acesas até no máximo 00h
                     </small>
-                    @error('form.turno.luzes_calcada')
+                    @error('form.turno.luzes_calcada_cavalo')
                         <small class="text-danger d-block mt-1">{{ $message }}</small>
                     @enderror
                 </div>
@@ -219,7 +219,7 @@
                 <div class="col-md-4">
                     <input type="number" 
                         class="form-control"
-                        placeholder="Valor faturamento"
+                        placeholder="Valor Total"
                         wire:model.live="form.turno.caixa_faturamento"
                         step="0.01"
                         min="0">
@@ -421,27 +421,27 @@
                         <label class="labelforms">Aquecedor Ala Rua</label>
                         <div class="d-flex flex-wrap">
                             <label class="mr-3">
-                                <input type="radio" value="aberto" wire:model.live="form.motor_piscina"> Aberto
+                                <input type="radio" value="aberto" wire:model.live="form.aquecedor_ala_rua"> Aberto
                             </label>
 
                             <label>
-                                <input type="radio" value="fechado" wire:model.live="form.motor_piscina"> Fechado
+                                <input type="radio" value="fechado" wire:model.live="form.aquecedor_ala_rua"> Fechado
                             </label>
                         </div>
-                        @error('form.motor_piscina') <small class="text-danger">{{ $message }}</small> @enderror
+                        @error('form.aquecedor_ala_rua') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
                 </div>
                 <div class="col-12 col-sm-6 col-md-6 mb-3">
                     <div class="form-group">
                         <label class="labelforms">Gás</label>
                         <div class="d-flex flex-wrap">
-                            <input type="text" placeholder="0%"  wire:model.live="gas1" class="form-control w-20 @error('gas1') is-invalid @enderror">
-                            <input type="text" placeholder="0%"  wire:model.live="gas2" class="form-control w-20 @error('gas2') is-invalid @enderror">
+                            <input type="text" placeholder="0%"  wire:model.live="form.gas1" class="form-control w-20 @error('gas1') is-invalid @enderror">
+                            <input type="text" placeholder="0%"  wire:model.live="form.gas2" class="form-control w-20 @error('gas2') is-invalid @enderror">
                         </div>
                         <small class="text-info">
                             → Manter apenas um cilindro aberto.<br>
                             → Ao término, fechar o registro e abrir o próximo.<br>
-                            → Caso o nível esteja abaixo de 20%, notificar a gerência.
+                            → Caso o nível esteja abaixo de 20%, notificar a gerência.<br>
                         </small>
                         @error('form.gas1') <small class="text-danger">{{ $message }}</small> @enderror
                         @error('form.gas2') <small class="text-danger">{{ $message }}</small> @enderror
@@ -503,7 +503,7 @@
                         </div>
                         <small class="text-info">
                             → Verificar se está ligado às 10h e desligar às 18h<br>
-                            → LED da piscina até as 22h
+                            → LED da piscina até as 22h<br>
                         </small>
                         @error('form.motor_piscina') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
@@ -523,7 +523,7 @@
                         <small class="text-info">
                             → Verificar se está ligado às 10h e desligar às 22h<br>
                             Obs.: O motor da piscina e o ofurô são ligados pela manutenção.<br>
-                            → Apenas na ausência da manutenção, a recepção deverá ligar ambos.
+                            → Apenas na ausência da manutenção, a recepção deverá ligar ambos.<br>
                         </small>
                         @error('form.motor_ofuro') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
@@ -759,7 +759,7 @@
                                 <input type="radio" class="form-check-input"
                                     id="rouparia_fechado"
                                     wire:model="form.rouparia"
-                                    value="fechada">
+                                    value="fechado">
 
                                 <label class="form-check-label" for="rouparia_fechado">
                                     Fechado
@@ -770,7 +770,7 @@
                                 <input type="radio" class="form-check-input"
                                     id="rouparia_aberto"
                                     wire:model="form.rouparia"
-                                    value="aberta">
+                                    value="aberto">
 
                                 <label class="form-check-label" for="rouparia_aberto">
                                     Aberto
@@ -792,7 +792,7 @@
                                 <input type="radio" class="form-check-input"
                                     id="portao_praia_fechado"
                                     wire:model="form.portao_praia"
-                                    value="fechada">
+                                    value="fechado">
 
                                 <label class="form-check-label" for="portao_praia_fechado">
                                     Fechado
@@ -803,7 +803,7 @@
                                 <input type="radio" class="form-check-input"
                                     id="portao_praia_aberto"
                                     wire:model="form.portao_praia"
-                                    value="aberta">
+                                    value="aberto">
 
                                 <label class="form-check-label" for="portao_praia_aberto">
                                     Aberto
