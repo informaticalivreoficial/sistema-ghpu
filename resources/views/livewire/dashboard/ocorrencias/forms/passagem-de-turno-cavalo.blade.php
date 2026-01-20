@@ -5,7 +5,14 @@
             <div class="row">
                 <div class="col-12">
                     <div class="form-group">
-                        <label class="labelforms">De => {{ auth()->user()->name }} para:</label>
+                        <label class="labelforms">
+                            De => 
+                            @if ($ocorrencia)
+                                {{ $ocorrencia->user->name }}
+                            @else    
+                                {{ auth()->user()->name }}
+                            @endif
+                             para:</label>
                         <input type="text"  wire:model.live="destinatario" class="form-control w-50 @error('destinatario') is-invalid @enderror" placeholder="Nome do funcionário que está assumindo o turno">
                         @error('destinatario')
                             <span class="error erro-feedback">{{ $message }}</span>
@@ -23,6 +30,7 @@
         </div>
     </div>
 
+    {{-- Turno --}}
     <div class="card">
         <div class="card-header bg-primary">
             <h3 class="card-title">Checklist — Dados do Turno::</h3>
@@ -161,7 +169,7 @@
                             <input type="radio" 
                                 class="form-check-input"
                                 id="luz_ligada"
-                                wire:model.live="form.turno.luzes_calcada_cavalo_cavalo"
+                                wire:model.live="form.turno.luzes_calcada_cavalo"
                                 value="ligada">
                             <label class="form-check-label" for="luz_ligada">conforme</label>
                         </div>
@@ -927,7 +935,7 @@
         <div class="card-body">
             <div class="border rounded p-3 mb-3">
                 <h5 class="mb-3">
-                    <strong>Celular Recepção</strong>
+                    <strong>Celular 1 Recepção</strong>
                 </h5>
                 <div class="row">
                     {{-- Bateria --}}
@@ -983,7 +991,6 @@
     </div>
 
     {{-- Máquinas de Cartão --}}
-
     <div class="card">
         <div class="card-header bg-primary">
             <h3 class="card-title">Checklist — Recepção (Máquinas de Cartão)::</h3>
@@ -1058,7 +1065,7 @@
                                     class="form-check-input"
                                     id="radio{{ $i }}_recepcao"
                                     wire:model.live="form.radios.{{ $i }}.status"
-                                    value="recepcao">
+                                    value="base">
                                 <label class="form-check-label" for="radio{{ $i }}_recepcao">Na recepção</label>
                             </div>
 

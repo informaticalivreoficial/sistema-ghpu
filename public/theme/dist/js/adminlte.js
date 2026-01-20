@@ -2706,13 +2706,13 @@
    */
 
 
-  $__default["default"].fn[NAME$2] = Toasts._jQueryInterface;
-  $__default["default"].fn[NAME$2].Constructor = Toasts;
+  //$__default["default"].fn[NAME$2] = Toasts._jQueryInterface;
+  //$__default["default"].fn[NAME$2].Constructor = Toasts;
 
-  $__default["default"].fn[NAME$2].noConflict = function () {
-    $__default["default"].fn[NAME$2] = JQUERY_NO_CONFLICT$2;
-    return Toasts._jQueryInterface;
-  };
+  // $__default["default"].fn[NAME$2].noConflict = function () {
+  //   $__default["default"].fn[NAME$2] = JQUERY_NO_CONFLICT$2;
+  //   return Toasts._jQueryInterface;
+  // };
 
   /**
    * --------------------------------------------

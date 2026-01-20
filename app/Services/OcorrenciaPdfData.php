@@ -16,6 +16,9 @@ class OcorrenciaPdfData
             'passagem-de-turno' =>
                 self::buildPassagemTurno($ocorrencia),
 
+            'passagem-de-turno-cavalo' =>
+                self::buildPassagemTurnoCavalo($ocorrencia),
+
             default => [],
         };
     }
@@ -126,6 +129,103 @@ class OcorrenciaPdfData
             ->toArray(),
             //'item1_status' => $form['item1_status'] ?? null,
             //'item1_apto' => $form['item1_apto'] ?? '',
+        ];
+    }
+
+    private static function buildPassagemTurnoCavalo(Ocorrencia $ocorrencia): array
+    {
+        $form = $ocorrencia->form ?? [];
+
+        return [ 
+            'checklist_aquecedores_gas_lixeira' => [
+                'Temperatura do aquecedor' => $form['temperatura_aquecedor'] . '°C' ?? '-',
+                'Aquecedor Ala Praia' => $form['chama_aquecedor'] ?? '-',
+                'Aquecedor Ala Rua' => $form['aquecedor_ala_rua'] ?? '-',
+                'Gás 1' => $form['gas1'] . '%' ?? '-',
+                'Gás 2' => $form['gas2'] . '%' ?? '-',
+                'Lixeira está vazia?' => $form['lixeira_cavalo'] ?? 0,
+            ],
+            'checklist_piscina_ofuro' => [
+                'Motor da Piscina' => $form['motor_piscina'] ?? '-',                
+                'Ofurô' => $form['motor_ofuro'] ?? '-',
+            ],            
+            'chaves_servico' => collect($form['chaves'] ?? [])
+                ->map(fn ($item) => [
+                    'status' => $item['status'] ?? '-',
+                    'pessoa' => $item['pessoa'] ?? '-',
+                ])
+                ->toArray(),
+            'checklist_cartoes' => [
+                'Cartão 1 Recepção' => $form['cartao_1_cavalo'] ?? '-',
+                'Cartão 2 Recepção' => $form['cartao_2_cavalo'] ?? '-',
+                'Data Card 1' => $form['cartao_datacard1_cavalo'] ?? '-',
+                'Data Card 2' => $form['cartao_datacard2_cavalo'] ?? '-',
+                'Manutenção' => $form['cartao_manutencao_cavalo'] ?? '-',
+            ],
+            'cartoes_camareira' => collect($form['cartoes_camareira_cavalo'] ?? [])
+            ->map(fn ($item, $key) => [
+                'numero' => $key,
+                'status' => $item['status'] ?? '-',
+                'funcionario' => $item['funcionario'] ?? '-',
+            ])
+            ->values()
+            ->toArray(), 
+            'checklist_aberto_fechado' => [
+                'Rouparia' => $form['rouparia'] ?? '-',
+                'Portão Praia' => $form['portao_praia'] ?? '-',
+                'Portão Bicicletário' => $form['portao_bicicletario'] ?? '-',
+                'Portão Entrega' => $form['portao_entrega'] ?? '-',
+                'Porta Recepção' => $form['porta_recepcao'] ?? '-',
+            ],
+            'checklist_celulares' => [
+                'bateria1' => $form['celular1_bateria'] ?? '-',
+                'bateria2' => $form['celular2_bateria'] ?? '-',
+                'funcionario1' => $form['celular1_funcionario'] ?? '-',
+                'funcionario2' => $form['celular2_funcionario'] ?? '-',
+            ],
+            'checklist_recepcao' => [
+                'Máquina Nº 1' => $form['maquina_safra_1'] ?? '-',
+                'Máquina Nº 2' => $form['maquina_safra_2'] ?? '-',
+            ],
+            'turno' => [
+                'Hóspedes no hotel agora' => $form['turno']['hospedes'] ?? '-',
+                'Aptos ocupados agora' => $form['turno']['apto_ocupados'] ?? '-',
+                'Reservas para chegar' => $form['turno']['reservas'] ?? '-',
+                'Check-outs à fazer' => $form['turno']['checkouts'] ?? '-',
+                'Late Check-out' => $form['turno']['latecheckouts'] ?? '-',
+                'Quantidade de Pães' => $form['turno']['paes'] ?? '-',
+                'Foi batido o código de cores antes de passar o turno?' => $form['turno']['codigo_cores'] ?? '-',                
+                'Movimento do caixa agora dinheiro:' => \App\Helpers\Renato::formatCurrency($form['turno']['caixa_dinheiro'] ?? 0) ?? '-',
+                'Movimento do caixa agora cartão:' => \App\Helpers\Renato::formatCurrency($form['turno']['caixa_cartoes'] ?? 0) ?? '-',
+                'Movimento do caixa agora Total:' => \App\Helpers\Renato::formatCurrency($form['turno']['caixa_faturamento'] ?? 0) ?? '-',
+            ],
+            'luzes' => $form['luzes_calcada_cavalo'] ?? '-',            
+            'secadores' => collect($form['secadores'] ?? [])
+            ->map(fn ($status, $numero) => [
+                'numero' => $numero,
+                'status' => $status,
+                'apto' => $form['secadores_apto'][$numero] ?? null,
+            ])
+            ->values()
+            ->toArray(), 
+
+            'radios' => collect($form['radios'] ?? [])
+            ->map(fn ($item, $key) => [
+                'numero' => $key,
+                'status' => $item['status'] ?? '-',
+                'funcionario' => $item['funcionario'] ?? '-',
+            ])
+            ->values()
+            ->toArray(), 
+
+            'chaves_cavalo' => collect($form['chaves_cavalo'] ?? [])
+            ->map(fn ($status, $key) => [
+                'numero' => $key,
+                'status' => $status,
+                'chave_apto' => $form['chave_apto'][$key] ?? null,
+            ])
+            ->toArray(),  
+            'geladeira_recepcao' => $form['geladeira_recepcao'] ?? '-',      
         ];
     }
 

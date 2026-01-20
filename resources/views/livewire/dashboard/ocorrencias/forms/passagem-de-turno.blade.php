@@ -5,7 +5,14 @@
             <div class="row">
                 <div class="col-12">
                     <div class="form-group">
-                        <label class="labelforms">De => {{ auth()->user()->name }} para:</label>
+                        <label class="labelforms">
+                            De => 
+                            @if ($ocorrencia)
+                                {{ $ocorrencia->user->name }}
+                            @else    
+                                {{ auth()->user()->name }}
+                            @endif
+                             para:</label>
                         <input type="text"  wire:model.live="destinatario" class="form-control w-50 @error('destinatario') is-invalid @enderror" placeholder="Nome do funcionário que está assumindo o turno">
                         @error('destinatario')
                             <span class="error erro-feedback">{{ $message }}</span>
@@ -398,7 +405,7 @@
 
     <div class="card mt-4">
         <div class="card-header bg-primary">
-            <h3 class="card-title">Checklist — Chaves de Serviço Diário — Estoque Fixo (13 unidades)::</h3>
+            <h3 class="card-title">Checklist — Chaves de Serviço Diário — Estoque Fixo (14 unidades)::</h3>
             <div class="card-tools">
                 <button type="button" class="btn btn-tool text-white" data-card-widget="collapse">
                 <i class="fas fa-minus"></i>

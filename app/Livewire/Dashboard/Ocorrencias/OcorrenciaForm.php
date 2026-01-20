@@ -186,7 +186,7 @@ class OcorrenciaForm extends Component
         'form.radios.7.funcionario.required_if' => 'Informe o nome do funcionário com o Rádio 7.',
         'form.radios.7.funcionario.min' => 'O nome deve ter no mínimo 3 caracteres.',
 
-        // Seção 9 - Gavetas
+        // Seção 9 - Chaves
         'form.gavetas.1.required' => 'Selecione o status do Controle PS4 — Nº 1.',
         'form.gavetas.2.required' => 'Selecione o status do Controle PS4 — Nº 2.',
         'form.gavetas.3.required' => 'Selecione o status do Jogo FIFA 25.',
@@ -347,14 +347,13 @@ class OcorrenciaForm extends Component
         5 => 'Chave da Lixeira (2)',
         6 => 'Chave Porta Sauna',
         7 => 'Chave Porta Manutenção',
-        //24 => 'Controle Remoto P1',
-        //25 => 'Controle Remoto P2',
         8 => 'Chave Cadeado Bike Roxa',
         9 => 'Chave Cadeado Bike Vermelha',
         10 => 'Chave HUB 3° Andar',
         11 => 'Chave Porta Automática Recepção Entrada',
         12 => 'Chave (Vareta) Abertura do P2',
         13 => 'Chave Cartão Magnético Rouparia 3° Andar',
+        14 => 'Chave da máquina do café da manhã',
     ];
 
     public array $formVarreduras = [
@@ -432,8 +431,6 @@ class OcorrenciaForm extends Component
         'portao_entrega' => null,
         'porta_recepcao' => null,
         'luzes_calcada_cavalo' => null,
-
-        'geladeira_recepcao' => '',
 
         'celular1_bateria' => null,
         'celular2_bateria' => null,
@@ -630,6 +627,8 @@ class OcorrenciaForm extends Component
                     $this->ocorrencia->form ?? []
                 );
             }
+            // 🔥 NORMALIZA AS CHAVES AQUI (OBRIGATÓRIO)
+            $this->normalizeChaves();
         } 
     }
 
@@ -767,9 +766,9 @@ class OcorrenciaForm extends Component
             
             // Adiciona regras específicas baseadas no tipo
             $rules = array_merge($rules, $this->getRulesForType($this->type));
-            //dd($rules);
-            $this->validate($rules);
             
+            $this->validate($rules);
+
             $data = [
                 'company_id'   => auth()->user()->company_id,
                 'user_id'      => auth()->id(),
@@ -788,12 +787,14 @@ class OcorrenciaForm extends Component
                 $data['title']   = $this->titleFromType($this->type);
                 $data['destinatario'] = $this->destinatario;
                 $data['content'] = null;
+                $data['form'] = $this->form;
             }
 
             if($this->type === 'passagem-de-turno-cavalo') {
                 $data['title']   = $this->titleFromType($this->type);
                 $data['destinatario'] = $this->destinatario;
                 $data['content'] = $this->content;
+                $data['form'] = $this->form;
             }
 
             if($this->type === 'branco') {
@@ -801,10 +802,6 @@ class OcorrenciaForm extends Component
                 $data['destinatario'] = null;
                 $data['content'] = $this->content;
                 $data['form'] = null;
-            }
-
-            if($this->type === 'passagem-de-turno') {
-                $data['form'] = $this->form;
             }
 
             if ($this->type === 'varreduras-fichas-sistemas') {
@@ -825,13 +822,30 @@ class OcorrenciaForm extends Component
                 }
                 
                 $data['user_id'] = auth()->id();
+
+                $ocorrencia = Ocorrencia::create($data);
+            } else{
+                //dd($data, $this->validate($rules));
+                $ocorrencia = $this->ocorrencia;
+
+                $ocorrencia->update(
+                    collect($data)
+                        ->except([
+                            'company_id',
+                            'user_id',
+                            'status',
+                        ])
+                        ->merge([
+                            'update_user_id' => auth()->id(),
+                        ])
+                        ->toArray()
+                );
             }
-            dd($data, $this->validate($rules));
-            
-            $ocorrencia = Ocorrencia::updateOrCreate(
-                ['id' => $this->ocorrencia->id ?? null],
-                $data
-            );
+                        
+            // $ocorrencia = Ocorrencia::updateOrCreate(
+            //     ['id' => $this->ocorrencia->id ?? null],
+            //     $data
+            // );
 
             $this->ocorrencia = $ocorrencia;
             // Mensagem de sucesso diferente para criar/editar
@@ -896,6 +910,7 @@ class OcorrenciaForm extends Component
             ]);            
             
         } catch (\Illuminate\Validation\ValidationException $e) {
+            //dd($e->errors());
             $errorCount = count($e->validator->errors()->all());
 
             $this->dispatch('scroll-to-top');
@@ -1091,7 +1106,7 @@ class OcorrenciaForm extends Component
                 'form.motor_ofuro' => 'required|in:ligado,desligado',
                 
                 
-                'form.turno.luzes_calcada' => 'required|in:ligada,desligada',                
+                'form.turno.luzes_calcada_cavalo' => 'required|in:ligada,desligada',                
                 'form.turno.codigo_cores' => 'required|in:sim,nao',
                 'form.turno.caixa_dinheiro' => 'required|numeric|min:0',
                 'form.turno.caixa_cartoes' => 'required|numeric|min:0',
@@ -1154,15 +1169,15 @@ class OcorrenciaForm extends Component
                 'form.radios.6.funcionario' => 'required_if:form.radios.6.status,funcionario|nullable|string|min:3',
                 'form.radios.7.status' => 'required|in:base,funcionario',
                 'form.radios.7.funcionario' => 'required_if:form.radios.7.status,funcionario|nullable|string|min:3',    
-                'form.cartoes_camareira_cavalo.1.status' => 'required|in:base,funcionario',
+                'form.cartoes_camareira_cavalo.1.status' => 'required|in:disponivel,funcionario',
                 'form.cartoes_camareira_cavalo.1.funcionario' => 'required_if:form.cartoes_camareira_cavalo.1.status,funcionario|nullable|string|min:3',
-                'form.cartoes_camareira_cavalo.2.status' => 'required|in:base,funcionario',
+                'form.cartoes_camareira_cavalo.2.status' => 'required|in:disponivel,funcionario',
                 'form.cartoes_camareira_cavalo.2.funcionario' => 'required_if:form.cartoes_camareira_cavalo.2.status,funcionario|nullable|string|min:3',
-                'form.cartoes_camareira_cavalo.3.status' => 'required|in:base,funcionario',
+                'form.cartoes_camareira_cavalo.3.status' => 'required|in:disponivel,funcionario',
                 'form.cartoes_camareira_cavalo.3.funcionario' => 'required_if:form.cartoes_camareira_cavalo.3.status,funcionario|nullable|string|min:3',
-                'form.cartoes_camareira_cavalo.4.status' => 'required|in:base,funcionario',
+                'form.cartoes_camareira_cavalo.4.status' => 'required|in:disponivel,funcionario',
                 'form.cartoes_camareira_cavalo.4.funcionario' => 'required_if:form.cartoes_camareira_cavalo.4.status,funcionario|nullable|string|min:3',
-                'form.cartoes_camareira_cavalo.5.status' => 'required|in:base,funcionario',
+                'form.cartoes_camareira_cavalo.5.status' => 'required|in:disponivel,funcionario',
                 'form.cartoes_camareira_cavalo.5.funcionario' => 'required_if:form.cartoes_camareira_cavalo.5.status,funcionario|nullable|string|min:3',               
                 'form.secadores.1' => 'required|in:gaveta,emprestado',
                 'form.secadores.2' => 'required|in:gaveta,emprestado',
@@ -1275,8 +1290,30 @@ class OcorrenciaForm extends Component
         $destinatarios = $destinatarios->unique('id');
         
         if ($destinatarios->isNotEmpty()) {
-            Notification::send($destinatarios, new OcorrenciaCriada($ocorrencia));
+            Notification::send($destinatarios, new OcorrenciaCriada($ocorrencia, auth()->user()));
         }
+    }
+
+    protected function normalizeChaves(): void
+    {
+        $fixas = collect($this->itensChavesFixas)
+            ->map(fn ($label, $id) => [
+                'id'     => $id,
+                'label'  => $label,
+                'status' => null,
+            ]);
+
+        $existentes = collect($this->form['chaves'] ?? []);
+
+        $this->form['chaves'] = $fixas
+            ->mapWithKeys(function ($item) use ($existentes) {
+                $id = $item['id'];
+
+                return [
+                    $id => $existentes->get($id, $item),
+                ];
+            })
+            ->toArray();
     }
 
     
