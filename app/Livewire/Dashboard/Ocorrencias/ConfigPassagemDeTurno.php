@@ -11,8 +11,8 @@ class ConfigPassagemDeTurno extends Component
 
     public string $type = '';
     public ?int $company_id = null;
-    public string $title = '';
-    public string $content = '';
+    public ?string $title = '';
+    public ?string $content = '';
 
     public function mount(string $type)
     {
