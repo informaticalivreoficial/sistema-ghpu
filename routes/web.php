@@ -38,6 +38,7 @@ use App\Livewire\Dashboard\Messages\ComposeMessage;
 use App\Livewire\Dashboard\Messages\Inbox;
 use App\Livewire\Dashboard\Messages\MessagesList;
 use App\Livewire\Dashboard\Messages\MessageThread;
+use App\Livewire\Dashboard\Ocorrencias\ConfigPassagemDeTurno;
 use App\Livewire\Dashboard\Ocorrencias\OcorrenciaForm;
 use App\Livewire\Dashboard\Ocorrencias\Ocorrencias;
 use App\Livewire\Dashboard\Posts\CatPosts;
@@ -96,6 +97,8 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], functi
         Route::get('usuarios/cadastrar', Form::class)->name('users.create');
 
         Route::get('/relatorios/ocorrencias', OccurrencesReport::class)->name('reports.occurrences');
+
+        Route::get('/ocorrencias/templates/{type}', ConfigPassagemDeTurno::class)->name('ocorrencias.templates.edit');
          
     });
 

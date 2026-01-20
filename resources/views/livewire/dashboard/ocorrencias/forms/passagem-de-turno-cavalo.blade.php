@@ -25,7 +25,7 @@
 
     <div class="card">
         <div class="border rounded p-4 space-y-3">
-            <h2 class="font-semibold mb-2">📌 Políticas Importantes</h2>
+            <h2 class="font-semibold mb-2">{{ $tituloContent }}</h2>
             <textarea wire:model.live="content" rows="14" class="w-full p-3 m-0 border border-gray-300 resize-none"></textarea>
         </div>
     </div>

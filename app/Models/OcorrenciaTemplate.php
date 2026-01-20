@@ -9,6 +9,8 @@ class OcorrenciaTemplate extends Model
 {
     use HasFactory;
 
+    protected $table = 'ocorrencia_templates';
+
     protected $fillable = [
         'company_id',
         'type',

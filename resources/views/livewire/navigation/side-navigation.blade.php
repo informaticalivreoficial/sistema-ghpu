@@ -75,16 +75,58 @@
                         </a>
                     </li>
                 @endrole
-                
-                <li class="nav-item">
-                    <a href="{{ route('ocorrencias.index') }}" class="nav-link {{ Route::is('ocorrencias.*') ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-file"></i>
-                        <p>
-                            Ocorrências
-                            <span class="badge badge-info right">{{ $ocorrenciaCount }}</span>
-                        </p>
-                    </a>
-                </li> 
+
+                @if (auth()->user()->isSuperAdmin() || auth()->user()->isAdmin() || auth()->user()->isManager())
+                    <li class="nav-item {{ Route::is('ocorrencias.*') ? 'menu-open' : '' }}">
+                        <a href="#" class="nav-link {{ Route::is('ocorrencias.*') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-file"></i>
+                            <p>Ocorrências <i class="fas fa-angle-left right"></i></p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{route('ocorrencias.index')}}" class="nav-link {{ Route::is('ocorrencias.index') ? 'active' : '' }}">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>
+                                        Listar Ocorrências
+                                        <span class="badge badge-info right">{{$ocorrenciaCount}}</span>
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                @if (auth()->user()->company_id = 18 && !auth()->user()->isSuperAdmin())
+                                    <a href="{{route('ocorrencias.templates.edit', ['type' => 'passagem-de-turno'])}}" class="nav-link {{ Route::is('ocorrencias.templates.edit') ? 'active' : '' }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Config Passagem de Turno</p>
+                                    </a>
+                                @elseif(auth()->user()->company_id != 18 && !auth()->user()->isSuperAdmin())
+                                    <a href="{{route('ocorrencias.templates.edit', ['type' => 'passagem-de-turno-cavalo'])}}" class="nav-link {{ Route::is('ocorrencias.templates.edit') ? 'active' : '' }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Config Passagem de Turno</p>
+                                    </a>
+                                @else
+                                    <a href="{{route('ocorrencias.templates.edit', ['type' => 'passagem-de-turno'])}}" class="nav-link {{ Route::is('ocorrencias.templates.edit') ? 'active' : '' }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Config Passagem de Turno</p>
+                                    </a>
+                                    <a href="{{route('ocorrencias.templates.edit', ['type' => 'passagem-de-turno-cavalo'])}}" class="nav-link {{ Route::is('ocorrencias.templates.edit') ? 'active' : '' }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Config Passagem de Turno</p>
+                                    </a>
+                                @endif
+                            </li>
+                        </ul>
+                    </li>
+                @else
+                    <li class="nav-item">
+                        <a href="{{ route('ocorrencias.index') }}" class="nav-link {{ Route::is('ocorrencias.*') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-file"></i>
+                            <p>
+                                Ocorrências
+                                <span class="badge badge-info right">{{ $ocorrenciaCount }}</span>
+                            </p>
+                        </a>
+                    </li>
+                @endif
 
                 <li class="nav-item">
                     <a href="{{ route('messages.inbox') }}" class="nav-link {{ Route::is('messages.*') ? 'active' : '' }}">

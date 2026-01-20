@@ -24,6 +24,7 @@ class OcorrenciaForm extends Component
     public $celulares = [];
     public $chavesMec = [];
     public $content = '';
+    public $tituloContent = '';
     public $title = '';
     public $company_id;
 
@@ -1261,6 +1262,7 @@ class OcorrenciaForm extends Component
         
         if ($template) {
             $this->content = $template->content;
+            $this->tituloContent = $template->title;
         }
     }
 
