@@ -86,6 +86,6 @@ class ConfigPassagemDeTurno extends Component
 
     public function render()
     {
-        return view('livewire.dashboard.ocorrencias.config-passagem-de-turno');
+        return view('livewire.dashboard.ocorrencias.config-passagem-de-turno')->with('title', 'Configuração de Passagem de Turno');
     }
 }

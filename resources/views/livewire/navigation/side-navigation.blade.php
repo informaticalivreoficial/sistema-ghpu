@@ -93,12 +93,12 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                @if (auth()->user()->company_id = 18 && !auth()->user()->isSuperAdmin())
+                                @if (auth()->user()->company_id === 18 && !auth()->user()->isSuperAdmin())
                                     <a href="{{route('ocorrencias.templates.edit', ['type' => 'passagem-de-turno'])}}" class="nav-link {{ Route::is('ocorrencias.templates.edit') ? 'active' : '' }}">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Config Passagem de Turno</p>
                                     </a>
-                                @elseif(auth()->user()->company_id != 18 && !auth()->user()->isSuperAdmin())
+                                @elseif(auth()->user()->company_id !== 18 && !auth()->user()->isSuperAdmin())
                                     <a href="{{route('ocorrencias.templates.edit', ['type' => 'passagem-de-turno-cavalo'])}}" class="nav-link {{ Route::is('ocorrencias.templates.edit') ? 'active' : '' }}">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Config Passagem de Turno</p>

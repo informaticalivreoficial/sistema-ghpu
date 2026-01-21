@@ -3,12 +3,15 @@
 namespace App\Livewire\Components;
 
 use App\Mail\SupportRequestMail;
+use App\Traits\WithToastr;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
 class SupportModal extends Component
 {
+    use WithToastr;
+
     public bool $showSupport = false;
     public string $message = '';
 
@@ -24,7 +27,7 @@ class SupportModal extends Component
             'message' => 'required|min:10',
         ]);
 
-        Mail::to(config('support.email'))
+        Mail::to(config('app.desenvolvedor_email'))
             ->send(new SupportRequestMail($this->message));
 
         $this->reset('message', 'showSupport');
