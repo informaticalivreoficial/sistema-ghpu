@@ -48,11 +48,20 @@ class Dashboard extends Component
         $this->lastOcorrencias = $query->get();
 
 
-        $turno = Ocorrencia::query()
+        if ($user->isManager() && $user->company_id === 18) {
+            $turno = Ocorrencia::query()
             ->where('company_id', $user->company_id)
             ->where('type', 'passagem-de-turno')
             ->latest('created_at')
             ->first();
+        }else{
+            $turno = Ocorrencia::query()
+            ->where('company_id', $user->company_id)
+            ->where('type', 'passagem-de-turno-cavalo')
+            ->latest('created_at')
+            ->first();
+        }
+        
 
         if (! $turno || ! is_array($turno->form)) {
             return;

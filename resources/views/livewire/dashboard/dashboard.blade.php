@@ -188,7 +188,7 @@
 
             <div class="row">
                 @role(['super-admin', 'admin'])
-                    <livewire:dashboard.github-updates />
+                <livewire:dashboard.github-updates />
                 @endrole
                 
                 <div class="col-lg-8">
