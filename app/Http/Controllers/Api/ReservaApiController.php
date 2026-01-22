@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use App\Models\Reservation;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -35,8 +36,8 @@ class ReservaApiController extends Controller
 
             // Reserva
             'apartamento'=> ['nullable', 'string'],
-            'checkin'    => ['required', 'date'],
-            'checkout'   => ['required', 'date', 'after:checkin'],
+            'checkin'    => ['required', 'date_format:d/m/Y'],
+            'checkout'   => ['required', 'date_format:d/m/Y', 'after:checkin'],
             'adultos'    => ['required', 'integer', 'min:1'],
             'criancas'   => ['nullable', 'integer', 'min:0'],
         ]);
@@ -63,13 +64,16 @@ class ReservaApiController extends Controller
             ]
         );
 
+        $checkin = Carbon::createFromFormat('d/m/Y', $request->checkin)->format('Y-m-d');
+        $checkout = Carbon::createFromFormat('d/m/Y', $request->checkout)->format('Y-m-d');
+
         // 3️⃣ Criar reserva
         $reservation = Reservation::create([
             'company_id'   => $companyId,
             'customer_id'  => $customer->id,
             'apartamento_texto'  => $data['apartamento'] ?? null,
-            'checkin'      => $data['checkin'],
-            'checkout'     => $data['checkout'],
+            'checkin'      => $checkin,
+            'checkout'     => $checkout,
             'adultos'      => $data['adultos'],
             'criancas'     => $data['criancas'] ?? 0,
             'codigo'       => strtoupper(Str::random(8)),
