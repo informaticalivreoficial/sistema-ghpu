@@ -18,7 +18,7 @@ class ReservaApiController extends Controller
     {
         $companyId = $request->company_id;
         // 1️⃣ Validação
-        $data = $request->validate([          
+        $data = $request->validate([         
 
             // Cliente
             'name'         => ['required', 'string', 'max:255'],
@@ -78,6 +78,7 @@ class ReservaApiController extends Controller
             'criancas'     => $data['criancas'] ?? 0,
             'codigo'       => strtoupper(Str::random(8)),
             'status'       => 'pendente',
+            'information'  => $data['information'] ?? null,
         ]);
 
         // 4️⃣ Retorno

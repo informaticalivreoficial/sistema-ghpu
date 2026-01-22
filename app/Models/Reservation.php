@@ -19,7 +19,8 @@ class Reservation extends Model
         'adultos',
         'criancas',
         'codigo',
-        'status'
+        'status',
+        'information',
     ];
 
     public function apartment()

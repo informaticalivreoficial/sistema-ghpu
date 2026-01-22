@@ -40,6 +40,8 @@ return new class extends Migration
 
             $table->string('codigo')->unique();
             $table->string('status')->default('pendente')->index();
+            $table->string('information')->nullable();
+
             $table->timestamps();
         });
     }
