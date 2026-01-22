@@ -21,6 +21,10 @@ class Apartments extends Model
         'observacoes',
     ];
 
+    protected $casts = [
+        'status' => 'boolean',
+    ];
+
     public function company()
     {
         return $this->belongsTo(Company::class);
@@ -28,6 +32,20 @@ class Apartments extends Model
 
     public function reservations()
     {
-        return $this->hasMany(Reservation::class);
+        return $this->hasMany(Reservation::class, 'apartment_id');
+    }
+
+    public function getStatusLabelAttribute(): string
+    {
+        return $this->status ? 'ativo' : 'inativo';
+    }
+
+    public function scopeVisibleFor($query, User $user)
+    {
+        if ($user->isSuperAdmin() || $user->isAdmin()) {
+            return $query;
+        }
+
+        return $query->where('company_id', $user->company_id);
     }
 }

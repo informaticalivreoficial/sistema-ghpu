@@ -128,6 +128,15 @@
                     </li>
                 @endif
 
+                @role(['super-admin'])
+                <li class="nav-item">
+                    <a href="{{ route('apartments.index') }}" class="nav-link {{ Route::is('apartments.*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-building"></i>
+                        <p>Apartamentos</p>
+                    </a>
+                </li>
+                @endrole
+
                 <li class="nav-item">
                     <a href="{{ route('messages.inbox') }}" class="nav-link {{ Route::is('messages.*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-comments"></i>

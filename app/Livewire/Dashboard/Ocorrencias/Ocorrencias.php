@@ -3,6 +3,7 @@
 namespace App\Livewire\Dashboard\Ocorrencias;
 
 use App\Models\Ocorrencia;
+use Illuminate\Support\Facades\Gate;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\Attributes\On;
@@ -22,10 +23,6 @@ class Ocorrencias extends Component
     public string $sortField = 'created_at';
 
     public string $sortDirection = 'desc';
-
-    public bool $active;
-
-    public ?int $delete_id = null;    
 
     #{Url}
     public function updatingSearch(): void
@@ -59,64 +56,40 @@ class Ocorrencias extends Component
 
     public function setDeleteId($id)
     {
-        $this->delete_id = $id;
-        $this->dispatch('delete-prompt');        
+        $this->dispatch('swal:confirm', [
+            'title' => 'Excluir Ocorrência?',
+            'text' => 'Essa ação não pode ser desfeita.',
+            'icon' => 'warning',
+            'confirmButtonText' => 'Sim, excluir',
+            'cancelButtonText' => 'Cancelar',
+            'confirmEvent' => 'deleteOcorrencia',
+            'confirmParams' => [$id],
+        ]);        
     }
 
-    #[On('goOn-Delete')]
-    public function delete(): void
+    #[On('deleteOcorrencia')]
+    public function deleteOcorrencia($id): void
     {
-        try {
-            $user = auth()->user();
+        $ocorrencia = Ocorrencia::findOrFail($id);
 
-            // Busca a ocorrência PRIMEIRO
-            $ocorrencia = Ocorrencia::findOrFail($this->delete_id);
-
-            // Verifica permissão
-            if (!$ocorrencia->canBeDeletedBy($user)) {
-                $this->dispatch('swal', [
-                    'title' => 'Acesso Negado',
-                    'icon'  => 'error',
-                    'text'  => 'Você não tem permissão para excluir esta ocorrência.',
-                ]);
-                return;
-            }
-            
-            // Deleta
-            $ocorrencia->delete();
-
-            // Limpa o ID
-            $this->delete_id = null;
-
-            // Recarrega a lista (se tiver)
-            // $this->loadOcorrencias(); // descomente se necessário
-
+        if (Gate::denies('delete', $ocorrencia)) {
             $this->dispatch('swal', [
-                'title' => 'Sucesso!',
-                'icon'  => 'success',
-                'text'  => 'Ocorrência removida!',
-            ]);
-            
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            $this->dispatch('swal', [
-                'title' => 'Erro!',
+                'title' => 'Acesso negado',
+                'text'  => 'Você não tem permissão para excluir esta ocorrência.',
                 'icon'  => 'error',
-                'text'  => 'Ocorrência não encontrada.',
             ]);
-            
-        } catch (\Exception $e) {
-            \Log::error('Erro ao excluir ocorrência', [
-                'delete_id' => $this->delete_id,
-                'user_id' => $user->id,
-                'error' => $e->getMessage()
-            ]);
-            
-            $this->dispatch('swal', [
-                'title' => 'Erro!',
-                'icon'  => 'error',
-                'text'  => 'Não foi possível excluir a ocorrência.',
-            ]);
+            return;
         }
+
+        $ocorrencia->delete();
+
+        $this->dispatch('swal', [
+            'title' => 'Excluído!',
+            'text'  => 'Ocorrência excluída com sucesso.',
+            'icon'  => 'success',
+            'timer' => 2000,
+            'showConfirmButton' => false,
+        ]);        
     }
 
     public function render()

@@ -97,7 +97,7 @@ class CompanyForm extends Component
             'cell_phone' => $this->cell_phone,
         ];
 
-        if ($this->company->exists) {
+        if ($this->company) {
             $this->company->update($data);
             $this->dispatch('empresa-atualizada');
         } else {
@@ -157,7 +157,7 @@ class CompanyForm extends Component
         }
 
         if ($this->logoPath && Storage::disk('public')->exists($this->logoPath)) {
-            return Storage::disk('public')->url($this->logoPath);
+            return Storage::url($this->logoPath);
         }
 
         return asset('theme/images/image.jpg');

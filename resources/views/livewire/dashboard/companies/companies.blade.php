@@ -63,34 +63,44 @@
                                 <td>{{$company->alias_name}}</td>
                                 <td class="text-center">{{$company->ocorrencias->count()}}</td>
                                 <td class="text-center">{{$company->users->count()}}</td>
-                                <td>                                
-                                    <label class="switch flex-shrink-0">
-                                        <input type="checkbox" 
-                                            value="{{ $company->status }}"  
-                                            wire:change="toggleStatus({{ $company->id }})" 
-                                            wire:loading.attr="disabled" 
-                                            {{ $company->status ? 'checked' : '' }}>
-                                        <span class="slider round"></span>
-                                    </label> 
-                                    <button 
-                                        class="action-btn btn-view" 
-                                        data-tooltip="Visualizar"
-                                        wire:click="viewCompany({{ $company->id }})">
-                                        <i class="fas fa-search"></i>
-                                    </button>                                    
-                                    <a href="{{ route('companies.edit', ['company' => $company->id]) }}" 
-                                        class="action-btn btn-edit" 
-                                        data-tooltip="Editar">
-                                        <i class="fas fa-pen"></i>
-                                    </a>
-                                    @if (auth()->user()->isSuperAdmin())
-                                        <button type="button" 
-                                            class="action-btn btn-delete" 
-                                            data-tooltip="Excluir"
-                                            wire:click="setDeleteId({{ $company->id }})">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    @endif
+                                <td>  
+                                    <div class="flex items-center gap-2">
+                                        @can('update', $company)
+                                            <x-forms.switch-toggle
+                                                wire:key="safe-switch-{{ $company->id }}"
+                                                wire:click="toggleStatus({{ $company->id }})"
+                                                :checked="$company->status"
+                                                size="sm"
+                                                color="green"
+                                            />
+                                        @else
+                                            <x-forms.switch-toggle
+                                                :checked="$apartment->status"
+                                                size="sm"
+                                                color="gray"
+                                                disabled
+                                            />
+                                        @endcan 
+                                        <button 
+                                            class="btn btn-xs btn-info" 
+                                            title="Visualizar"
+                                            wire:click="viewCompany({{ $company->id }})">
+                                            <i class="fas fa-search"></i>
+                                        </button>                                    
+                                        <a href="{{ route('companies.edit', ['company' => $company->id]) }}" 
+                                            class="btn btn-xs btn-default" 
+                                            title="Editar">
+                                            <i class="fas fa-pen"></i>
+                                        </a>
+                                        @can ('delete', $company)
+                                            <button type="button" 
+                                                class="btn btn-xs bg-danger text-white" 
+                                                title="Excluir Empresa"
+                                                wire:click="setDeleteId({{ $company->id }})">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        @endcan
+                                    </div>                                     
                                 </td>
                             </tr>
                             @endforeach
@@ -164,32 +174,3 @@
     @endif
 
 </div>
-
-<script>    
-    document.addEventListener('livewire:initialized', () => {
-        @this.on('swal', (event) => {
-            const data = event
-            swal.fire({
-                icon:data[0]['icon'],
-                title:data[0]['title'],
-                text:data[0]['text'],
-            })
-        })
-
-        @this.on('delete-prompt', (event) => {
-            swal.fire({
-                icon: 'warning',
-                title: 'Atenção',
-                text: 'Você tem certeza que deseja excluir esta Empresa?',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Sim, excluir!',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    @this.dispatch('goOn-Delete')
-                }
-            })
-        })
-    });
-</script>

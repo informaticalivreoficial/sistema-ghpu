@@ -313,61 +313,64 @@
             }));
         });
         
-        document.addEventListener('livewire:init', () => {
+        // document.addEventListener('livewire:init', () => {
 
-            Livewire.on('swal', (params) => {
+        //     Livewire.on('swal', (params) => {
 
-                const data = params[0] ?? {};
+        //         const data = params[0] ?? {};
+
+        //         Swal.fire({
+        //             title: data.title ?? 'Atenção',
+        //             text: data.text ?? '',
+        //             icon: data.icon ?? 'info',
+        //             confirmButtonText: data.confirmButtonText ?? 'OK',
+        //         });
+
+        //     });
+
+        // }); 
+        
+        // Listener genérico para todos os tipos de SweetAlert
+        ['swal', 'swal:error', 'swal:success', 'swal:info', 'swal:warning'].forEach(eventName => {
+            window.addEventListener(eventName, (event) => {
+                const data = event.detail?.[0] ?? {};
+
+                // Define o ícone baseado no tipo de evento
+                let defaultIcon = 'info';
+                if (eventName === 'swal:error') defaultIcon = 'error';
+                if (eventName === 'swal:success') defaultIcon = 'success';
+                if (eventName === 'swal:warning') defaultIcon = 'warning';
 
                 Swal.fire({
-                    title: data.title ?? 'Atenção',
+                    title: data.title ?? 'Aviso',
                     text: data.text ?? '',
-                    icon: data.icon ?? 'info',
+                    icon: data.icon ?? defaultIcon,
+                    timer: data.timer ?? null,
+                    showConfirmButton: data.showConfirmButton ?? true,
                     confirmButtonText: data.confirmButtonText ?? 'OK',
                 });
-
             });
-
         });
 
-        // function showToast(type, message) {
-        //     const colors = {
-        //         success: '#16a34a',
-        //         error: '#dc2626',
-        //         warning: '#f59e0b',
-        //         info: '#2563eb',
-        //     };
+        // Listener para confirmação (precisa de lógica especial)
+        window.addEventListener('swal:confirm', (event) => {
+            const data = event.detail?.[0] ?? {};
 
-        //     Toastify({
-        //         text: message,
-        //         duration: 4000,
-        //         gravity: "top",
-        //         position: "right",
-        //         close: true,
-        //         style: {
-        //             background: colors[type] ?? '#2563eb',
-        //         },
-        //     }).showToast();
-        // }
-
-        // // 🔥 Toast via Livewire
-        // window.addEventListener('toast', event => {
-        //     const { type, message } = event.detail[0];
-        //     showToast(type, message);
-        // });
-
-        // // 🔥 Toast via session (redirect)
-        // @if (session()->has('toast'))
-        //     document.addEventListener('DOMContentLoaded', () => {
-        //         showToast(
-        //             "{{ session('toast.type') }}",
-        //             "{{ session('toast.message') }}"
-        //         );
-        //     });
-        // @endif
+            Swal.fire({
+                title: data.title ?? 'Tem certeza?',
+                text: data.text ?? '',
+                icon: data.icon ?? 'warning',
+                showCancelButton: true,
+                confirmButtonText: data.confirmButtonText ?? 'Confirmar',
+                cancelButtonText: data.cancelButtonText ?? 'Cancelar',
+            }).then((result) => {
+                if (result.isConfirmed && data.confirmEvent) {
+                    Livewire.dispatch(data.confirmEvent, data.confirmParams ?? []);
+                }
+            });
+        });
     </script>
 
-    @stack('scripts') 
-    
+    @stack('scripts')     
 </body>
 </html>

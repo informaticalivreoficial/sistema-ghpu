@@ -20,8 +20,6 @@ use App\Http\Controllers\Admin\{
     ConfigController,
     EmailController,
     OcorrenciaPdfController,
-    TemplateController,
-    UserController,
     UserPdfController
 };
 use App\Http\Controllers\Auth\LoginRgController;
@@ -32,11 +30,12 @@ use App\Http\Controllers\Web\{
 use App\Livewire\Auth\ChangePassword;
 use App\Livewire\Auth\ForgotPassword;
 use App\Livewire\Auth\ResetPassword;
+use App\Livewire\Dashboard\Apartments\ApartmentForm;
+use App\Livewire\Dashboard\Apartments\ApartmentIndex;
 use App\Livewire\Dashboard\Companies\Companies;
 use App\Livewire\Dashboard\Companies\CompanyForm;
 use App\Livewire\Dashboard\Messages\ComposeMessage;
 use App\Livewire\Dashboard\Messages\Inbox;
-use App\Livewire\Dashboard\Messages\MessagesList;
 use App\Livewire\Dashboard\Messages\MessageThread;
 use App\Livewire\Dashboard\Ocorrencias\ConfigPassagemDeTurno;
 use App\Livewire\Dashboard\Ocorrencias\OcorrenciaForm;
@@ -45,8 +44,6 @@ use App\Livewire\Dashboard\Posts\CatPosts;
 use App\Livewire\Dashboard\Posts\PostForm;
 use App\Livewire\Dashboard\Posts\Posts;
 use App\Livewire\Dashboard\Reports\OccurrencesReport;
-use App\Livewire\Dashboard\Slides\SlideForm;
-use App\Livewire\Dashboard\Slides\Slides;
 
 
 Route::group(['namespace' => 'Web', 'as' => 'web.'], function () {
@@ -89,31 +86,33 @@ Route::group(['namespace' => 'Web', 'as' => 'web.'], function () {
 
 Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], function () {
 
-    //Somente Gerente e Super Admin e Admin
+    Route::get('/', Dashboard::class)->name('admin');
+
+    //Somente Gerente, Super Admin e Admin
     Route::middleware('role:super-admin|admin|manager')->group(function () {
-        Route::get('configuracoes', Settings::class)->name('settings');   
-        
+        Route::get('configuracoes', Settings::class)->name('settings'); 
         Route::get('usuarios/colaboradores', Users::class)->name('users.index');        
         Route::get('usuarios/cadastrar', Form::class)->name('users.create');
-
         Route::get('/relatorios/ocorrencias', OccurrencesReport::class)->name('reports.occurrences');
-
-        Route::get('/ocorrencias/templates/{type}', ConfigPassagemDeTurno::class)->name('ocorrencias.templates.edit');
-         
+        Route::get('/ocorrencias/templates/{type}', ConfigPassagemDeTurno::class)->name('ocorrencias.templates.edit'); 
     });
 
     // Somente Super Admin e Admin
     Route::middleware('role:super-admin|admin')->group(function () {
         Route::get('empresas', Companies::class)->name('companies.index');
         Route::get('empresas/cadastrar-empresa', CompanyForm::class)->name('companies.create');
-        Route::get('empresas/{company}/editar-empresa', CompanyForm::class)->name('companies.edit'); 
-        
-        Route::get('usuarios/time', Time::class)->name('users.time');
+        Route::get('empresas/{company}/editar-empresa', CompanyForm::class)->name('companies.edit');        
+        Route::get('usuarios/time', Time::class)->name('users.time');        
     });
 
-    Route::get('/', Dashboard::class)->name('admin');
+    // Somente Super Admin
+    Route::middleware('role:super-admin')->group(function () {
+        Route::get('/apartamentos', ApartmentIndex::class)->name('apartments.index');
+        Route::get('/apartamentos/create', ApartmentForm::class)->name('apartments.create');
+        Route::get('/apartamentos/{apartment}/edit', ApartmentForm::class)->name('apartments.edit');        
+    });
+    
     Route::get('notificacoes', NotificationsList::class)->name('notifications.index'); 
-
     Route::get('ocorrencias/{ocorrencia}/visualizar', [OcorrenciaPdfController::class, 'show'])->name('ocorrencia.pdf');
     Route::get('usuarios/{user}/perfil', [UserPdfController::class, 'profile'])->name('users.profile');   
 
@@ -121,9 +120,7 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], functi
 
     Route::get('/mensagens', Inbox::class)->name('messages.inbox');
     Route::get('/mensagens/compose', ComposeMessage::class)->name('messages.compose');
-    Route::get('/mensagens/{message}', MessageThread::class)->name('messages.thread');
-    
-    
+    Route::get('/mensagens/{message}', MessageThread::class)->name('messages.thread');    
 
     //*********************** Posts *********************************************/
     Route::get('posts/{post}/editar', PostForm::class)->name('posts.edit');

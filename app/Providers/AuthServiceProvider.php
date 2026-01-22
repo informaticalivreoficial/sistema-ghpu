@@ -4,9 +4,11 @@ namespace App\Providers;
 
 // use Illuminate\Support\Facades\Gate;
 
+use App\Models\Apartments;
 use App\Models\Company;
 use App\Models\Ocorrencia;
 use App\Models\User;
+use App\Policies\ApartmentPolicy;
 use App\Policies\CompanyPolicy;
 use App\Policies\OcorrenciaPolicy;
 use App\Policies\UserPolicy;
@@ -23,6 +25,7 @@ class AuthServiceProvider extends ServiceProvider
         User::class       => UserPolicy::class,
         Ocorrencia::class => OcorrenciaPolicy::class,
         Company::class    => CompanyPolicy::class,
+        Apartments::class => ApartmentPolicy::class,
     ];
 
     /**

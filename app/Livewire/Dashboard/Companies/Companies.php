@@ -3,6 +3,7 @@
 namespace App\Livewire\Dashboard\Companies;
 
 use App\Models\Company;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -19,8 +20,6 @@ class Companies extends Component
     public string $sortField = 'social_name';
 
     public string $sortDirection = 'asc';
-
-    public ?int $delete_id = null;
 
     public $showCompanyModal = false;
     public $companySelected;
@@ -70,36 +69,51 @@ class Companies extends Component
 
     public function setDeleteId($id)
     {
-        $this->delete_id = $id;
-        $this->dispatch('delete-prompt');        
+        $this->dispatch('swal:confirm', [
+            'title' => 'Excluir Empresa?',
+            'text' => 'Essa ação não pode ser desfeita.',
+            'icon' => 'warning',
+            'confirmButtonText' => 'Sim, excluir',
+            'cancelButtonText' => 'Cancelar',
+            'confirmEvent' => 'deleteEmpresa',
+            'confirmParams' => [$id],
+        ]);       
     }
 
-    #[On('goOn-Delete')]
-    public function delete(): void
+    #[On('deleteEmpresa')]
+    public function deleteEmpresa($id): void
     {
-        try {
-            $company = Company::findOrFail($this->delete_id);
+        $company = Company::findOrFail($id);
 
-            $logoPath = $company->logo;
-            if ($logoPath && Storage::disk('public')->exists($logoPath)) {
-                Storage::disk('public')->delete($logoPath);
-            }
-
-            $company->delete();
-
-            $this->delete_id = null;
-
+        if (Gate::denies('delete', $company)) {
             $this->dispatch('swal', [
-                'title' => 'Sucesso!',
-                'icon'  => 'success',
-                'text'  => 'Empresa removida!',
-            ]);
-        } catch (\Exception $e) {
-            $this->dispatch('swal', [
-                'title' => 'Erro!',
+                'title' => 'Acesso negado',
+                'text'  => 'Você não tem permissão para excluir esta empresa.',
                 'icon'  => 'error',
-                'text'  => 'Não foi possível excluir a empresa.',
             ]);
+            return;
         }
+
+        if ($company->users()->exists()) {
+            $this->dispatch('swal', [
+                'title' => 'Não é possível excluir',
+                'text'  => 'Esta empresa possui colaboradores e administradores vinculados.',
+                'icon'  => 'error',
+            ]);
+            return;
+        }
+
+        $logoPath = $company->logo;
+        if ($logoPath && Storage::disk('public')->exists($logoPath)) {
+            Storage::disk('public')->delete($logoPath);
+        }
+
+        $this->dispatch('swal', [
+            'title' => 'Excluído!',
+            'text'  => 'Empresa excluída com sucesso.',
+            'icon'  => 'success',
+            'timer' => 2000,
+            'showConfirmButton' => false,
+        ]);
     }
 }

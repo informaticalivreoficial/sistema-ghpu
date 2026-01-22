@@ -3,6 +3,7 @@
 namespace App\Livewire\Dashboard\Users;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -19,11 +20,7 @@ class Users extends Component
 
     public string $sortField = 'name';
 
-    public $delete_id;
-
     public string $sortDirection = 'desc';
-
-    public bool $active;
 
     public bool $updateMode = false;
 
@@ -89,31 +86,47 @@ class Users extends Component
 
     public function setDeleteId($id)
     {
-        $this->delete_id = $id;
-        $this->dispatch('delete-prompt');        
+        $this->dispatch('swal:confirm', [
+            'title' => 'Excluir Colaborador?',
+            'text' => 'Essa ação não pode ser desfeita.',
+            'icon' => 'warning',
+            'confirmButtonText' => 'Sim, excluir',
+            'cancelButtonText' => 'Cancelar',
+            'confirmEvent' => 'deleteColaborador',
+            'confirmParams' => [$id],
+        ]);        
     }
     
-    #[On('goOn-Delete')]
-    public function delete()
+    #[On('deleteColaborador')]
+    public function deleteColaborador($id)
     {
-        $user = \App\Models\User::where('id', $this->delete_id)->first();
-        if(!empty($user)){
-            $user->delete();
-            
+        $user = User::findOrFail($id);
+
+        if (Gate::denies('delete', $user)) {
             $this->dispatch('swal', [
-                'title' =>  'Success!',
-                'icon' => 'success',
-                'text' => 'Colaborador removido com sucesso!'
+                'title' => 'Acesso negado',
+                'text'  => 'Você não tem permissão para excluir este colaborador.',
+                'icon'  => 'error',
             ]);
+            return;
         }
+
+        $user->delete();
+        
+        $this->dispatch('swal', [
+            'title' => 'Excluído!',
+            'text'  => 'Colaborador excluído com sucesso.',
+            'icon'  => 'success',
+            'timer' => 2000,
+            'showConfirmButton' => false,
+        ]);
     }
 
     public function toggleStatus($id)
     {              
-        $user = User::find($id);
-        $user->status = !$this->active;        
+        $user = User::findOrFail($id);
+        $user->status = !$user->status;        
         $user->save();
-        $this->active = $user->status;
     }
 
     public function edit($id)

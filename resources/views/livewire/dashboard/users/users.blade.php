@@ -86,30 +86,46 @@
                             @endif                            
                             <td>{{$user->cargo}}</td>
                             <td>
-                                <label class="switch flex-shrink-0" wire:model="active">
-                                    <input type="checkbox" 
-                                        value="{{ $user->status }}"  
-                                        wire:change="toggleStatus({{ $user->id }})" 
-                                        wire:loading.attr="disabled" 
-                                        {{ $user->status ? 'checked' : '' }}>
-                                    <span class="slider round"></span>
-                                </label> 
-                                <a class="action-btn btn-view" 
+                                <div class="flex items-center gap-2">
+                                    @can('update', $user)
+                                        <x-forms.switch-toggle
+                                            wire:key="safe-switch-{{ $user->id }}"
+                                            wire:click="toggleStatus({{ $user->id }})"
+                                            :checked="$user->status"
+                                            size="sm"
+                                            color="green"
+                                        />
+                                    @else
+                                        <x-forms.switch-toggle
+                                            :checked="$user->status"
+                                            size="sm"
+                                            color="gray"
+                                            disabled
+                                        />
+                                    @endcan
+
+                                    <a class="btn btn-xs btn-info" 
                                     href="{{ route('users.profile', ['user' => $user->id]) }}" 
-                                    target="_blank" title="Visualizar Perfil">
-                                    <i class="fas fa-search"></i>
-                                </a>                                                                   
-                                <a href="{{ route('users.edit', [ 'userId' => $user->id ]) }}" 
-                                    class="action-btn btn-edit" 
-                                    data-tooltip="Editar">
-                                    <i class="fas fa-pen"></i>
-                                </a>
-                                <button type="button" 
-                                    class="action-btn btn-delete" 
-                                    data-tooltip="Excluir"
-                                    wire:click="setDeleteId({{ $user->id }})">
-                                    <i class="fas fa-trash"></i>
-                                </button>
+                                    target="_blank" 
+                                    title="Visualizar Perfil">
+                                        <i class="fas fa-search"></i>
+                                    </a>                                                                   
+
+                                    <a href="{{ route('users.edit', ['userId' => $user->id ]) }}" 
+                                    class="btn btn-xs btn-default" 
+                                    title="Editar Colaborador">
+                                        <i class="fas fa-pen"></i>
+                                    </a>
+
+                                    @can('delete', $user)
+                                        <button type="button" 
+                                            class="btn btn-xs bg-danger text-white" 
+                                            title="Excluir Colaborador"
+                                            wire:click="setDeleteId({{ $user->id }})">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    @endcan
+                                </div>
                             </td>
                         </tr>
                         @endforeach
@@ -156,35 +172,3 @@
     </div>
 
 </div>
-
-
-<script>
-    
-    document.addEventListener('livewire:initialized', () => {
-        @this.on('swal', (event) => {
-            const data = event
-            swal.fire({
-                icon:data[0]['icon'],
-                title:data[0]['title'],
-                text:data[0]['text'],
-            })
-        })
-
-        @this.on('delete-prompt', (event) => {
-            swal.fire({
-                icon: 'warning',
-                title: 'Atenção',
-                text: 'Você tem certeza que deseja excluir este Colaborador?',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Sim, excluir!',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    @this.dispatch('goOn-Delete')
-                }
-            })
-        })
-    });
-
-</script>

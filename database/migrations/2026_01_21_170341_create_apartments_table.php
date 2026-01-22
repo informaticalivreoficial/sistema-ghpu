@@ -27,7 +27,7 @@ return new class extends Migration
             $table->unsignedTinyInteger('capacidade_criancas')->default(0);
 
             // Status
-            $table->string('status')->default('ativo')->index();
+            $table->unsignedTinyInteger('status')->default(0);
 
             // Observações
             $table->text('observacoes')->nullable();
