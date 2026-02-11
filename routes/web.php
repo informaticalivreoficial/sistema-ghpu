@@ -57,18 +57,6 @@ Route::group(['namespace' => 'Web', 'as' => 'web.'], function () {
     Route::get('/login', [LoginRgController::class, 'show'])->name('login');
     Route::post('/login', [LoginRgController::class, 'login'])->name('login.rg');
 
-    
-
-//     /** FEED */
-//     Route::get('feed', [FeedController::class, 'feed'])->name('feed');
-    
-//     Route::get('/sitemap', [WebController::class, 'sitemap'])->name('sitemap');
-
-//     /** Página de Experiências - Específica de uma categoria */
-//     Route::get('/experiencias/{slug}', [FilterController::class, 'experienceCategory'])->name('experienceCategory');
-
-     
-
      //Client
      Route::get('/atendimento', [WebController::class, 'contact'])->name('contact');
      

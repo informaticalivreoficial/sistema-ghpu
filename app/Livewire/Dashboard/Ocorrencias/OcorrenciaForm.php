@@ -355,6 +355,7 @@ class OcorrenciaForm extends Component
         12 => 'Chave (Vareta) Abertura do P2',
         13 => 'Chave Cartão Magnético Rouparia 3° Andar',
         14 => 'Chave da máquina do café da manhã',
+        15 => 'Chave da Academia',
     ];
 
     public array $formVarreduras = [
@@ -674,14 +675,14 @@ class OcorrenciaForm extends Component
         }
 
         $this->celulares = [
-            ['titulo' => 'Recepção 1080'],
-            ['titulo' => 'Recepção 9664'],
-            ['titulo' => 'Manutenção 01'],
-            ['titulo' => 'Manutenção 02'],
-            ['titulo' => 'Governança 01'],
-            ['titulo' => 'Governança 02'],
-            ['titulo' => 'Governança 03'],
-            ['titulo' => 'Governança 04'],
+            ['id' => 1, 'titulo' => 'Recepção 1080'],
+            ['id' => 2, 'titulo' => 'Recepção 9664'],
+            ['id' => 3, 'titulo' => 'Manutenção 01'],
+            ['id' => 4, 'titulo' => 'Manutenção 02'],
+            ['id' => 5, 'titulo' => 'Governança 01'],
+            ['id' => 6, 'titulo' => 'Governança 02'],
+            ['id' => 7, 'titulo' => 'Governança 03'],
+            ['id' => 8, 'titulo' => 'Governança 04'],
         ];
 
         if (empty($this->form['celulares'])) {

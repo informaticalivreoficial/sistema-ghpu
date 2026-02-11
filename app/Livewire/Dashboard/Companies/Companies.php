@@ -108,6 +108,8 @@ class Companies extends Component
             Storage::disk('public')->delete($logoPath);
         }
 
+	$company->delete();
+
         $this->dispatch('swal', [
             'title' => 'Excluído!',
             'text'  => 'Empresa excluída com sucesso.',

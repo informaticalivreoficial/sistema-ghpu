@@ -804,17 +804,19 @@
 
             @php
                 $itens = [
-                    ['id' => 1, 'label' => 'Controle PS4 — Nº 1'],
-                    ['id' => 2, 'label' => 'Controle PS4 — Nº 2'],
-                    ['id' => 3, 'label' => 'Jogo FIFA 25'],
-                    ['id' => 4, 'label' => 'Jogo Days Gone'],
-                    ['id' => 5, 'label' => 'Jogo Gran Turismo'],
-                    ['id' => 6, 'label' => 'God of War'],
-                    ['id' => 7, 'label' => 'Controle TV 3° Andar'],
-                    ['id' => 8, 'label' => 'Controle Ar iBrain'],
-                    ['id' => 9, 'label' => 'Controle Ar Recepção'],
-                    ['id' => 10, 'label' => 'FIFA FC 26'],
+                    ['id' => 1, 'label'  => 'Controle PS4 — Nº 1'],
+                    ['id' => 2, 'label'  => 'Controle PS4 — Nº 2'],
+                    ['id' => 3, 'label'  => 'Jogo FIFA 25'],
+                    ['id' => 4, 'label'  => 'Jogo Days Gone'],
+                    ['id' => 5, 'label'  => 'Jogo Gran Turismo'],
+                    ['id' => 6, 'label'  => 'God of War'],
+                    ['id' => 7, 'label'  => 'Controle TV 3° Andar'],
+                    ['id' => 8, 'label'  => 'Controle Ar iBrain'],
+                    ['id' => 9, 'label'  => 'Controle Ar Recepção'],
+                    ['id' => 10, 'label' => 'Mortal kombat'],
                     ['id' => 11, 'label' => 'Formula 1 — 24'],
+                    ['id' => 12, 'label' => 'Residente Evil'],
+                    ['id' => 13, 'label' => 'Street Fighter'],
                 ];
             @endphp
 

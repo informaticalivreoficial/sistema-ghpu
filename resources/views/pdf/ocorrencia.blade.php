@@ -311,6 +311,7 @@
                 12 => 'Chave (Vareta) Abertura do P2',
                 13 => 'Chave Cartão Magnético Rouparia 3° Andar',
                 14 => 'Chave da máquina do café da manhã',
+                15 => 'Chave da Academia',
             ];
         @endphp
 
@@ -422,6 +423,19 @@
 
         <h2>Checklist — Celulares de Serviço (8 unidades)</h2>
 
+        @php
+            $titulosCelulares = [
+                0 => 'Recepção 1080',
+                1 => 'Recepção 9664',
+                2 => 'Manutenção 01',
+                3 => 'Manutenção 02',
+                4 => 'Governança 01',
+                5 => 'Governança 02',
+                6 => 'Governança 03',
+                7 => 'Governança 04',
+            ];
+        @endphp
+
         <table width="100%" cellspacing="0" cellpadding="6" border="1">
             <thead>
                 <tr style="background-color: #f2f2f2;">
@@ -433,7 +447,7 @@
             <tbody>
                 @foreach($data['celulares'] as $celular)
                     <tr>
-                        <td>Celular Nº {{ $celular['numero'] }}</td>
+                        <td>{{ $titulosCelulares[$loop->index] ?? 'Celular' }}</td>
                         <td>{{ $celular['bateria'] ?? '-' }}%</td>
                         <td>
                             @if(!empty($celular['funcionario']) && $celular['funcionario'] !== '-')
@@ -450,7 +464,7 @@
         {{-- QUEBRA DE PÁGINA MANUAL --}}
         <div class="page-break"></div>
 
-        <h2>Checklist — Gavetas de Jogos e Controles do 3° e Ar Cond.</h2>
+        <h2>Checklist — Gavetas de Jogos e Controles do 3° e Ar Cond.</h2>        
 
         <table width="100%" cellspacing="0" cellpadding="6" border="1">
             <thead>
@@ -462,13 +476,14 @@
             <tbody>
                 @foreach($data['gavetas'] as $gaveta)
                     <tr>
-                        <td>Gaveta Nº {{ $gaveta['numero'] }}</td>
+                        <td>{{ $gaveta['label'] }}</td>
                         <td>
                             @if($gaveta['status'] === 'gaveta')
                                 <span style="color: green;">✔ Está na gaveta</span>
                             @else
                                 <span style="color: #d9534f;">
-                                    ✖ Emprestada — Apto: <strong>{{ $gaveta['apto_emprestado'] ?? 'N/A' }}</strong>
+                                    ✖ Emprestada — Apto:
+                                    <strong>{{ $gaveta['apto_emprestado'] ?? 'N/A' }}</strong>
                                 </span>
                             @endif
                         </td>
@@ -490,6 +505,21 @@
 
         <h2>Checklist — Chaves Mecânicas dos Apartamentos</h2>
 
+        @php
+            $chavesMec = [
+                0 => '108 CASAL',
+                1 => '109 CASAL',
+                2 => '109 SOLT',
+                3 => '119 CASAL',
+                4 => '119 SOLT',
+                5 => '208 CASAL',
+                6 => '209 CASAL',
+                7 => '209 SOLT',
+                8 => '219 CASAL',
+                9 => '219 SOLT',
+            ];
+        @endphp 
+
         <table width="100%" cellspacing="0" cellpadding="6" border="1">
             <thead>
                 <tr style="background-color: #f2f2f2;">
@@ -500,7 +530,7 @@
             <tbody>
                 @foreach($data['chaves_mecanicas'] as $chave)
                     <tr>
-                        <td>Chave Nº {{ $chave['numero'] }}</td>
+                        <td>{{ $chavesMec[$loop->index] ?? 'Chave' }}</td>
                         <td>
                             @if($chave['status'] === 'recepcao')
                                 <span style="color: green;">✔ Está na recepção</span>

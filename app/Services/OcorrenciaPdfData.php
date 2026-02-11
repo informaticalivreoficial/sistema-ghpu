@@ -27,6 +27,24 @@ class OcorrenciaPdfData
     {
         $form = $ocorrencia->form ?? [];
 
+        $labelsjogos = [
+            1 => 'Controle PS4 — Nº 1',
+            2 => 'Controle PS4 — Nº 2',
+            3 => 'Jogo FIFA 25',
+            4 => 'Jogo Days Gone',
+            5 => 'Jogo Gran Turismo',
+            6 => 'God of War',
+            7 => 'Controle TV 3° Andar',
+            8 => 'Controle Ar iBrain',
+            9 => 'Controle Ar Recepção',
+            10 => 'Mortal Kombat',
+            11 => 'Formula 1 — 24',
+            12 => 'Resident Evil',
+            13 => 'Street Fighter',
+        ];
+
+        //dd($form);  
+
         return [
             'horario' => $form['horario'] ?? null,
             'atividades_realizadas' => $form['atividades_realizadas'] ?? '',
@@ -113,11 +131,15 @@ class OcorrenciaPdfData
             ->toArray(),
 
             'gavetas' => collect($form['gavetas'] ?? [])
-            ->map(fn ($status, $key) => [
-                'numero' => $key,
-                'status' => $status,
-                'apto_emprestado' => $form['apto_emprestado'][$key] ?? null,
-            ])
+            ->map(function ($status, $key) use ($form, $labelsjogos) {
+                return [
+                    'numero' => $key,
+                    'label' => $labelsjogos[$key] ?? 'Item não identificado',
+                    'status' => $status,
+                    'apto_emprestado' => $form['apto_emprestado'][$key] ?? null,
+                ];
+            })
+            ->values()
             ->toArray(),
 
             'chaves_mecanicas' => collect($form['chaves_mecanicas'] ?? [])
