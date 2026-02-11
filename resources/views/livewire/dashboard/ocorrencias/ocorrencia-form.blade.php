@@ -71,7 +71,7 @@
                 @endif
                 <div class="row text-right mt-3">
                     <div class="col-12 mb-4">
-                        <button wire:click="save" wire class="btn btn-lg btn-success p-3">
+                        <button type="submit" class="btn btn-lg btn-success p-3">
                             <i class="nav-icon fas fa-check mr-2"></i> {{ $ocorrencia ? 'Atualizar Agora' : 'Cadastrar Agora' }}
                         </button>
                     </div>
