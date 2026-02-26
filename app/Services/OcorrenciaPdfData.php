@@ -60,6 +60,7 @@ class OcorrenciaPdfData
                 'Ar condicionado do salão Ibrain' => $form['ac_ibrain'] ?? '-',
                 'Luzes da sala de TV' => $form['luzes_tv'] ?? '-',
                 'TV do 3° andar' => $form['tv_3andar'] ?? '-',
+                'Porta da academia' => $form['porta_academia'] ?? '-',
             ],
             'checklist_estacionamento_lixeiras' => [
                 'Porta interna da lixeira' => $form['porta_interna'] ?? 0,

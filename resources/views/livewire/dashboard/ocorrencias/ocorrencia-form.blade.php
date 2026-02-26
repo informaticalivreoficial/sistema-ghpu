@@ -55,6 +55,8 @@
                     </div> 
                 </div>               
             @endif
+
+          
             
             {{-- Renderização dinâmica --}}
             <form wire:submit.prevent="save" autocomplete="off">                
@@ -66,8 +68,8 @@
                     @include('livewire.dashboard.ocorrencias.forms.ocorrencias-diarias')                    
                 @elseif($type === 'passagem-de-turno')
                     @include('livewire.dashboard.ocorrencias.forms.passagem-de-turno')
-                @elseif($type === 'passagem-de-turno-cavalo')
-                    @include('livewire.dashboard.ocorrencias.forms.passagem-de-turno-cavalo')
+                @elseif($type === 'passagem-de-turno-cavalo')                    
+                    @include('livewire.dashboard.ocorrencias.forms.passagem-de-turno-cavalo')                    
                 @endif
                 <div class="row text-right mt-3">
                     <div class="col-12 mb-4">

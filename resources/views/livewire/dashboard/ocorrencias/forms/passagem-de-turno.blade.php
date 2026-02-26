@@ -189,6 +189,30 @@
                     </div>
                 </div>
             </div>
+
+            <div class="row mb-3">
+                <div class="col-12 col-sm-6 col-md-6 mb-3">
+                    <div class="form-group">
+                        <label class="labelforms">Portas e janelas da Academia</label>
+                        <small class="text-info">(Quando nao estiver sendo usada deve permanecer fechada.)</small>
+                        <div class="d-flex flex-wrap">
+                            <label class="mr-3">
+                                <input type="radio" value="aberta" wire:model.live="form.porta_academia"> Aberta
+                            </label>
+
+                            <label>
+                                <input type="radio" value="fechada" wire:model.live="form.porta_academia"> Fechada
+                            </label>
+                        </div>
+                        @error('form.porta_academia') <small class="text-danger">{{ $message }}</small> @enderror
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-md-6 mb-3">
+                    
+                </div>
+            </div>
+
         </div>
     </div>
 

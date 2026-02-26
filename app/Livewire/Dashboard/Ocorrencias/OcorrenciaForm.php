@@ -486,6 +486,7 @@ class OcorrenciaForm extends Component
         'ac_ibrain' => null,
         'luzes_tv' => null,
         'tv_3andar' => null,
+        'porta_academia' => null,
 
         //Seção 2
         'porta_interna' => null,
@@ -577,8 +578,14 @@ class OcorrenciaForm extends Component
         // Todos veem isso select de ocorrencias
         $this->types = [
             'branco' => 'Em Branco',
-            'passagem-de-turno-cavalo'   => 'Passagem de Turno',
+            //'passagem-de-turno-cavalo'   => 'Passagem de Turno',
         ];
+
+        if ((int) $user->company_id === 21 || $user->isAdmin() || $user->isSuperAdmin()) {
+            $this->types += [
+                'passagem-de-turno-cavalo'   => 'Passagem de Turno'                
+            ];
+        }
 
         // Apenas company 18 vê os demais
         if ((int) $user->company_id === 18 || $user->isAdmin() || $user->isSuperAdmin()) {
@@ -942,6 +949,7 @@ class OcorrenciaForm extends Component
                 'form.ac_ibrain' => 'required|in:ligado,desligado',
                 'form.luzes_tv' => 'required|in:ligadas,desligadas',
                 'form.tv_3andar' => 'required|in:ligada,desligada',
+                'form.porta_academia' => 'required|in:aberta,fechada',
 
                 //Seção 2
                 'form.porta_interna' => 'required|in:aberta,fechada',
@@ -1318,6 +1326,5 @@ class OcorrenciaForm extends Component
             })
             ->toArray();
     }
-
     
 }
