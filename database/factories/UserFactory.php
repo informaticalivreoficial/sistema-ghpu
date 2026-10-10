@@ -37,7 +37,7 @@ class UserFactory extends Factory
             'whatsapp' => fake()->cellphoneNumber,
             'additional_email' => fake()->safeEmail(),
             'email_verified_at' => now(),
-            'status' => 1,            
+            'status' => $this->faker->boolean(),           
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
         ];
