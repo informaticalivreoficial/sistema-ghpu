@@ -18,14 +18,6 @@
         </div>
     </div>
 
-    {{-- DEBUG - REMOVER DEPOIS 
-    <div class="alert alert-info">
-        <strong>Debug:</strong><br>
-        Ocorrência ID: {{ $ocorrencia->id ?? 'null' }}<br>
-        Type carregado: {{ $type ?? 'vazio' }}<br>
-        Type da ocorrência: {{ $ocorrencia->type ?? 'null' }}
-    </div>--}}
-
     <div class="card card-primary card-outline">
         <div class="card-body text-muted">
             @if ($ocorrencia)

@@ -10,11 +10,9 @@ use App\Notifications\OcorrenciaCriada;
 use App\Traits\WithToastr;
 use Illuminate\Support\Facades\Notification;
 use Livewire\Component;
-use Livewire\WithFileUploads;
 
 class OcorrenciaForm extends Component
 {
-    use WithFileUploads;
     use WithToastr;
 
     public ?Ocorrencia $ocorrencia = null;
@@ -105,11 +103,6 @@ class OcorrenciaForm extends Component
         'form.celular_2.min' => 'A bateria mínima é 0%.',
         'form.celular_2.max' => 'A bateria máxima é 100%.',
 
-        // 'form.tvbox_103.required' => 'Informe o status do TV Box do apto 103.',
-        // 'form.tvbox_201.required' => 'Informe o status do TV Box do apto 201.',
-        // 'form.tvbox_203.required' => 'Informe o status do TV Box do apto 203.',
-        // 'form.tvbox_204.required' => 'Informe o status do TV Box do apto 204.',
-
         'form.cartoes_camareira_cavalo.*.status.required' => 'Selecione uma opção',
         'form.cartoes_camareira_cavalo.*.funcionario.required_if' => 'Informe com quem está o cartão.',
 
@@ -133,21 +126,13 @@ class OcorrenciaForm extends Component
 
         // Celulares
         'form.celulares.*.bateria.required' => 'Informe a porcentagem da bateria.',
-        // 'form.celulares.*.funcionario.required' => 'Informe com quem está o celular.',
-
-        'form.celulares.*.bateria.required' => 'Informe a porcentagem da bateria.',
         'form.celulares.*.bateria.numeric' => 'A bateria deve ser um número.',
         'form.celulares.*.bateria.min' => 'A bateria mínima é 0%.',
         'form.celulares.*.bateria.max' => 'A bateria máxima é 100%.',
-        // 'form.celulares.*.funcionario.required' => 'Informe com quem está o celular.',
-        // 'form.celulares.*.funcionario.min' => 'O nome deve ter no mínimo 3 caracteres.',
 
         // Chaves mecânicas
         'form.chaves_mecanicas.*.status.required' => 'Selecione o status da chave mecânica.',
         'form.chaves_mecanicas.*.pessoa.required_if' => 'Informe com quem está a chave.',
-
-        // Turno
-        'form.turno.caixa_responsavel.required' => 'Informe o responsável pelo caixa.',
 
         // Secadores
         'form.secadores.1.required' => 'Selecione o status do Secador 1.',
@@ -295,9 +280,6 @@ class OcorrenciaForm extends Component
         'form.turno.caixa_faturamento.required' => 'Informe o valor do faturamento no caixa.',
         'form.turno.caixa_faturamento.numeric' => 'O valor deve ser numérico.',
         'form.turno.caixa_faturamento.min' => 'O valor mínimo é 0.',
-
-        'form.turno.cartoes_extras_local.required_if' => 'Informe onde estão os cartões extras.',
-        'form.turno.cartoes_extras_local.min' => 'A informação deve ter no mínimo 3 caracteres.',
 
         // Seção 11 - Chaves Mecânicas
         'form.chaves_mecanicas.0.status.required' => 'Selecione o status da chave 108 CASAL.',
@@ -511,11 +493,11 @@ class OcorrenciaForm extends Component
         // Seção 4
         'chaves' => [],
 
-        // Seção 5
-        // 'tvbox_103' => null,
-        // 'tvbox_201' => null,
-        // 'tvbox_203' => null,
-        // 'tvbox_204' => null,
+        // Seção 5 (TV Boxes — opcionais, sem regra required)
+        'tvbox_103' => null,
+        'tvbox_201' => null,
+        'tvbox_203' => null,
+        'tvbox_204' => null,
 
         // Seção 6
         'secadores' => [
@@ -571,9 +553,6 @@ class OcorrenciaForm extends Component
 
         // Seção 11
         'chaves_mecanicas' => [],
-
-        'item1_status' => null,
-        'item1_apto' => '',
 
     ];
 
@@ -885,7 +864,6 @@ class OcorrenciaForm extends Component
 
                 $ocorrencia = Ocorrencia::create($data);
             } else {
-                // dd($data, $this->validate($rules));
                 $ocorrencia = $this->ocorrencia;
 
                 $ocorrencia->update(
@@ -901,11 +879,6 @@ class OcorrenciaForm extends Component
                         ->toArray()
                 );
             }
-
-            // $ocorrencia = Ocorrencia::updateOrCreate(
-            //     ['id' => $this->ocorrencia->id ?? null],
-            //     $data
-            // );
 
             $this->ocorrencia = $ocorrencia;
             // Mensagem de sucesso diferente para criar/editar
@@ -970,7 +943,6 @@ class OcorrenciaForm extends Component
             ]);
 
         } catch (\Illuminate\Validation\ValidationException $e) {
-            // dd($e->errors());
             $errorCount = count($e->validator->errors()->all());
 
             $this->dispatch('scroll-to-top');
@@ -1013,11 +985,7 @@ class OcorrenciaForm extends Component
                 'form.celular_1' => 'required|numeric|min:0|max:100',
                 'form.celular_2' => 'required|numeric|min:0|max:100',
 
-                // Seção 5
-                // 'form.tvbox_103' => 'required|in:pote,uso',
-                // 'form.tvbox_201' => 'required|in:pote,uso',
-                // 'form.tvbox_203' => 'required|in:pote,uso',
-                // 'form.tvbox_204' => 'required|in:pote,uso',
+                // Seção 5 (TV Boxes são opcionais — sem regras)
 
                 // Seção 6
                 'form.secadores.1' => 'required|in:gaveta,emprestado',
@@ -1256,11 +1224,7 @@ class OcorrenciaForm extends Component
             }
 
             // Adiciona validação das chaves mecânicas
-            foreach ($this->chavesMec as $index => $apto) {
-                $rulesMap[$type]["form.chaves_mecanicas.{$index}.status"] = 'required|in:gaveta,emprestado';
-                $rulesMap[$type]["form.chaves_mecanicas.{$index}.pessoa"] = "required_if:form.chaves_mecanicas.{$index}.status,emprestado|nullable|string|min:3|max:100";
-            }
-
+            // (view usa os status "recepcao" e "pessoa")
             foreach ($this->chavesMec as $index => $apto) {
                 $rulesMap[$type]["form.chaves_mecanicas.{$index}.status"] = 'required|in:recepcao,pessoa';
                 $rulesMap[$type]["form.chaves_mecanicas.{$index}.pessoa"] = "required_if:form.chaves_mecanicas.{$index}.status,pessoa|nullable|string|min:3|max:100";
@@ -1325,36 +1289,6 @@ class OcorrenciaForm extends Component
         if ($template) {
             $this->content = $template->content;
             $this->tituloContent = $template->title;
-        }
-    }
-
-    private function enviarNotificacoes(Ocorrencia $ocorrencia)
-    {
-        $destinatarios = collect();
-
-        // Super-admin e Admin recebem TODAS as notificações
-        $destinatarios = $destinatarios->merge(
-            User::whereHas('roles', function ($query) {
-                $query->whereIn('name', ['super-admin', 'admin']);
-            })->get()
-        );
-
-        // Se a ocorrência tem empresa, notifica os gerentes dessa empresa
-        if ($ocorrencia->company_id) {
-            $destinatarios = $destinatarios->merge(
-                User::whereHas('roles', function ($query) {
-                    $query->where('name', 'manager');
-                })
-                    ->where('company_id', $ocorrencia->company_id)
-                    ->get()
-            );
-        }
-
-        // Remove duplicados e envia
-        $destinatarios = $destinatarios->unique('id');
-
-        if ($destinatarios->isNotEmpty()) {
-            Notification::send($destinatarios, new OcorrenciaCriada($ocorrencia, auth()->user()));
         }
     }
 
