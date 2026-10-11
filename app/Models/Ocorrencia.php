@@ -82,7 +82,17 @@ class Ocorrencia extends Model
 
     public function canBeDeletedBy(User $user): bool
     {
-        // Mesma regra de edição
-        return $this->canBeEditedBy($user);
+        // Super-admin e admin sempre podem excluir
+        if ($user->hasRole(['admin', 'super-admin'])) {
+            return true;
+        }
+
+        // Manager só exclui da própria empresa
+        if ($user->hasRole('manager')) {
+            return $this->company_id === $user->company_id;
+        }
+
+        // 🔒 Employee NUNCA pode excluir (regra de negócio — difere da edição)
+        return false;
     }
 }
