@@ -650,7 +650,9 @@ class OcorrenciaForm extends Component
             $this->title = $this->ocorrencia->title;
             $this->destinatario = $this->ocorrencia->destinatario;
             $this->content = $this->ocorrencia->content ?? '';
-            $this->form = $this->ocorrencia->form ?? [];
+            // 🔹 Merge em vez de sobrescrever: preserva campos novos (ex.: gavetas 10/11,
+            //    radios 7) que um registro antigo pode não ter no JSON salvo
+            $this->form = $this->mergeFormData($this->form, $this->ocorrencia->form ?? []);
 
             // 🔹 No create o título vem do template; na edição usa o título salvo
             //    (a view cavalo renderiza {{ $tituloContent }} como cabeçalho do conteúdo)
