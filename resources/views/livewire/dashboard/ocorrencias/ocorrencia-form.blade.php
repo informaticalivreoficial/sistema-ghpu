@@ -53,6 +53,25 @@
                             @enderror                    
                         </div>
                     </div> 
+
+                    {{-- 🔹 Admin/Super escolhem para qual empresa é a ocorrência --}}
+                    @if (!empty($companies))
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <div class="form-group">
+                                <label class="labelforms text-muted"><b>*Empresa</b></label>
+                                <select name="company_id" class="form-control @error('company_id') is-invalid @enderror" wire:model.live="company_id">
+                                    <option value="">Selecione...</option>
+
+                                    @foreach ($companies as $companyId => $companyName)
+                                        <option value="{{ $companyId }}">{{ $companyName }}</option>
+                                    @endforeach
+                                </select>
+                                @error('company_id')
+                                    <span class="error erro-feedback">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+                    @endif
                 </div>               
             @endif
 
