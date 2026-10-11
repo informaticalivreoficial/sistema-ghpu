@@ -13,7 +13,30 @@
                                 {{ auth()->user()->name }}
                             @endif
                              para:</label>
-                        <input type="text"  wire:model.live="destinatario" class="form-control w-50 @error('destinatario') is-invalid @enderror" placeholder="Nome do funcionário que está assumindo o turno">
+                        <div class="position-relative w-50">
+                            <input type="text"
+                                wire:model.live="destinatario"
+                                wire:blur="hideDestinatarioSuggestions"
+                                autocomplete="off"
+                                class="form-control @error('destinatario') is-invalid @enderror"
+                                placeholder="Nome do funcionário que está assumindo o turno">
+
+                            @if ($showDestinatarioSuggestions && count($destinatarioSuggestions))
+                                <ul class="list-group position-absolute w-100 shadow-sm" style="z-index: 1050; max-height: 220px; overflow-y: auto;">
+                                    @foreach ($destinatarioSuggestions as $suggestion)
+                                        <li class="list-group-item list-group-item-action"
+                                            style="cursor: pointer;"
+                                            wire:click="selectDestinatario({{ $suggestion['id'] }})"
+                                            onmousedown="event.preventDefault()">
+                                            <div class="font-weight-bold">{{ $suggestion['name'] }}</div>
+                                            @if (! empty($suggestion['cargo']))
+                                                <small class="text-muted">{{ $suggestion['cargo'] }}</small>
+                                            @endif
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @endif
+                        </div>
                         @error('destinatario')
                             <span class="error erro-feedback">{{ $message }}</span>
                         @enderror

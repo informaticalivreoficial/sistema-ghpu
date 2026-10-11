@@ -21,6 +21,11 @@ class OcorrenciaForm extends Component
 
     public $destinatario = null;
 
+    /** Sugestões de destinatário (autocomplete por empresa) */
+    public array $destinatarioSuggestions = [];
+
+    public bool $showDestinatarioSuggestions = false;
+
     public $celulares = [];
 
     public $chavesMec = [];
@@ -1263,6 +1268,71 @@ class OcorrenciaForm extends Component
             $this->content = $template->content;
             $this->tituloContent = $template->title;
         }
+    }
+
+    /**
+     * 🔹 Autocomplete do destinatário: sugere colegas da MESMA empresa
+     *    (sem admins/super-admins) conforme o usuário digita.
+     */
+    public function updatedDestinatario($value): void
+    {
+        $term = trim((string) $value);
+
+        if (mb_strlen($term) < 2) {
+            $this->destinatarioSuggestions = [];
+            $this->showDestinatarioSuggestions = false;
+
+            return;
+        }
+
+        // 🔹 Na edição usa a empresa da ocorrência; no create, a selecionada/perfil
+        $companyId = $this->ocorrencia?->company_id ?? $this->company_id;
+
+        if (! $companyId) {
+            $this->destinatarioSuggestions = [];
+            $this->showDestinatarioSuggestions = false;
+
+            return;
+        }
+
+        $this->destinatarioSuggestions = User::query()
+            ->where('company_id', $companyId)
+            ->withoutRole(['super-admin', 'admin'])
+            ->where('name', 'like', "%{$term}%")
+            ->orderBy('name')
+            ->limit(8)
+            ->get(['id', 'name', 'cargo'])
+            ->map(fn ($user) => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'cargo' => $user->cargo,
+            ])
+            ->all();
+
+        $this->showDestinatarioSuggestions = $this->destinatarioSuggestions !== [];
+    }
+
+    public function selectDestinatario(int $userId): void
+    {
+        $companyId = $this->ocorrencia?->company_id ?? $this->company_id;
+
+        $user = User::query()
+            ->whereKey($userId)
+            ->when($companyId, fn ($query) => $query->where('company_id', $companyId))
+            ->withoutRole(['super-admin', 'admin'])
+            ->first(['name']);
+
+        if ($user) {
+            $this->destinatario = $user->name;
+        }
+
+        $this->destinatarioSuggestions = [];
+        $this->showDestinatarioSuggestions = false;
+    }
+
+    public function hideDestinatarioSuggestions(): void
+    {
+        $this->showDestinatarioSuggestions = false;
     }
 
     protected function normalizeChaves(): void
