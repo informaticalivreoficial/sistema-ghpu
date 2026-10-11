@@ -18,21 +18,7 @@
 
     <div class="card">
         <div class="card-header">
-            <div class="row">
-                <div class="col-12 col-sm-6 my-2">
-                    <div class="card-tools">
-                        <div style="width: 250px;">
-                            <form class="input-group input-group-sm" action="" method="post">
-                                <input type="text" wire:model.live="search" class="form-control float-right" placeholder="Pesquisar">               
-                                
-                            </form>
-                        </div>
-                      </div>
-                </div>
-                <div class="col-12 col-sm-6 my-2 text-right">
-                    <a href="{{route('ocorrencia.create')}}" class="btn btn-sm btn-default"><i class="fas fa-plus mr-2"></i> Cadastrar Ocorrência</a>
-                </div>
-            </div>
+            @include('livewire.dashboard.ocorrencias.partials.filtros-listagem')
         </div>        
         <!-- /.card-header -->
         <div class="card-body">
