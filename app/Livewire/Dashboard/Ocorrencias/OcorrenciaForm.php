@@ -775,6 +775,19 @@ class OcorrenciaForm extends Component
                 return;
             }
 
+            // 🔒 Na edição o tipo não pode ser trocado (o form salvo é do tipo original)
+            $isCriacao = ! $this->ocorrencia || ! $this->ocorrencia->id;
+
+            if (! $isCriacao && $this->type !== $this->ocorrencia->type) {
+                $this->type = $this->ocorrencia->type;
+            }
+
+            // 🔒 Blindagem: na criação o tipo precisa estar entre os permitidos
+            //    para o usuário/empresa (o select limita a UI, mas $type é propriedade pública)
+            if ($isCriacao && ! array_key_exists($this->type, $this->types)) {
+                abort(403, 'Tipo de ocorrência não permitido para seu usuário.');
+            }
+
             // Validação completa quando há tipo selecionado
             $rules = [
                 'type' => 'required|string',
@@ -782,7 +795,6 @@ class OcorrenciaForm extends Component
             ];
 
             // 🔹 Na criação, admin/super DEVEM escolher a empresa (evita ocorrência órfã)
-            $isCriacao = ! $this->ocorrencia || ! $this->ocorrencia->id;
             if ($isCriacao && (auth()->user()->isSuperAdmin() || auth()->user()->isAdmin())) {
                 $rules['company_id'] = 'required|exists:companies,id';
             }
