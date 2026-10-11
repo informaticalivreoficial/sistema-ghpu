@@ -10,9 +10,9 @@ class OcorrenciaPolicy
     public function create(User $user)
     {
         // SuperAdmin, Admin, Manager e Employee podem criar
-        return $user->isSuperAdmin() 
-            || $user->isAdmin() 
-            || $user->isManager() 
+        return $user->isSuperAdmin()
+            || $user->isAdmin()
+            || $user->isManager()
             || $user->isEmployee();
     }
 
@@ -29,22 +29,9 @@ class OcorrenciaPolicy
 
     public function update(User $user, Ocorrencia $ocorrencia)
     {
-        // SuperAdmin pode editar TUDO
-        if ($user->isSuperAdmin()) {
-            return true;
-        }
-
-        // Admin pode editar TUDO
-        if ($user->isAdmin()) {
-            return true;
-        }
-
-        // Manager e Employee só editam ocorrências da própria empresa
-        if ($user->isManager() || $user->isEmployee()) {
-            return $user->company_id === $ocorrencia->company_id;
-        }
-
-        return false;
+        // 🔒 Mesma regra do formulário: admin/super sempre; manager da empresa;
+        //    employee só as próprias e apenas dentro de 6h
+        return $ocorrencia->canBeEditedBy($user);
     }
 
     public function delete(User $user, Ocorrencia $ocorrencia)

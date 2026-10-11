@@ -641,6 +641,11 @@ class OcorrenciaForm extends Component
         if ($id) {
             $this->ocorrencia = Ocorrencia::findOrFail($id);
 
+            // 🔒 Bloqueia o acesso ao formulário de edição (não só o save)
+            if (! $this->ocorrencia->canBeEditedBy(auth()->user())) {
+                abort(403, 'Você não tem permissão para editar esta ocorrência.');
+            }
+
             $this->type = $this->ocorrencia->type;
             $this->title = $this->ocorrencia->title;
             $this->destinatario = $this->ocorrencia->destinatario;
