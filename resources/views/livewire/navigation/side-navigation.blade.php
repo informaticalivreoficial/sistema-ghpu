@@ -187,11 +187,11 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{--route('manifestReport.index')--}}" class="nav-link">
+                                <a href="{{ route('reports.colaboradores') }}" class="nav-link {{ Route::is('reports.colaboradores') ? 'active' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
                                     <p>Relatório de colaboradores</p>
                                 </a>
-                            </li>                        
+                            </li>
                         </ul>
                     </li>
                 @endrole
