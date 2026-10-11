@@ -226,23 +226,23 @@ class OcorrenciaForm extends Component
         // Seção 10 - Turno
         'form.turno.hospedes.required' => 'Informe o número de hóspedes.',
         'form.turno.hospedes.numeric' => 'O número de hóspedes deve ser numérico.',
-        'form.turno.hospedes.min' => 'O número mínimo de hóspedes é 1.',
+        'form.turno.hospedes.min' => 'O número mínimo de hóspedes é 0.',
 
         'form.turno.apto_ocupados.required' => 'Informe o número de apartamentos ocupados.',
         'form.turno.apto_ocupados.numeric' => 'Deve ser um número.',
-        'form.turno.apto_ocupados.min' => 'O número mínimo é 1.',
+        'form.turno.apto_ocupados.min' => 'O número mínimo é 0.',
 
         'form.turno.reservas.required' => 'Informe o número de reservas.',
         'form.turno.reservas.numeric' => 'Deve ser um número.',
-        'form.turno.reservas.min' => 'O número mínimo é 1.',
+        'form.turno.reservas.min' => 'O número mínimo é 0.',
 
         'form.turno.checkouts.required' => 'Informe o número de checkouts.',
         'form.turno.checkouts.numeric' => 'Deve ser um número.',
-        'form.turno.checkouts.min' => 'O número mínimo é 1.',
+        'form.turno.checkouts.min' => 'O número mínimo é 0.',
 
         'form.turno.latecheckouts.required' => 'Informe o número de Late checkouts.',
         'form.turno.latecheckouts.numeric' => 'Deve ser um número.',
-        'form.turno.latecheckouts.min' => 'O número mínimo é 1.',
+        'form.turno.latecheckouts.min' => 'O número mínimo é 0.',
 
         'form.turno.interditados.required' => 'Informe o número de apartamentos interditados.',
         'form.turno.interditados.numeric' => 'Deve ser um número.',
@@ -437,7 +437,7 @@ class OcorrenciaForm extends Component
         'politicas_importantes' => null,
 
         'rouparia' => null,
-        'porta_praia' => null,
+        'portao_praia' => null,
         'portao_bicicletario' => null,
         'portao_entrega' => null,
         'porta_recepcao' => null,
@@ -1008,10 +1008,10 @@ class OcorrenciaForm extends Component
                 'form.luzes_estacionamento1' => 'required|in:ligada,desligada',
 
                 // Seção 3
-                'form.maquina_safra_1' => 'required|numeric|min:1|max:100',
-                'form.maquina_safra_2' => 'required|numeric|min:1|max:100',
-                'form.celular_1' => 'required|numeric|min:1|max:100',
-                'form.celular_2' => 'required|numeric|min:1|max:100',
+                'form.maquina_safra_1' => 'required|numeric|min:0|max:100',
+                'form.maquina_safra_2' => 'required|numeric|min:0|max:100',
+                'form.celular_1' => 'required|numeric|min:0|max:100',
+                'form.celular_2' => 'required|numeric|min:0|max:100',
 
                 // Seção 5
                 // 'form.tvbox_103' => 'required|in:pote,uso',
@@ -1134,8 +1134,8 @@ class OcorrenciaForm extends Component
                 // Regras específicas para formulário em branco
             ],
             'passagem-de-turno-cavalo' => [
-                'form.maquina_safra_1' => 'required|numeric|min:1|max:100',
-                'form.maquina_safra_2' => 'required|numeric|min:1|max:100',
+                'form.maquina_safra_1' => 'required|numeric|min:0|max:100',
+                'form.maquina_safra_2' => 'required|numeric|min:0|max:100',
                 'form.turno.hospedes' => 'required|numeric|min:0',
                 'form.turno.apto_ocupados' => 'required|numeric|min:0',
                 'form.turno.reservas' => 'required|numeric|min:0',
@@ -1145,7 +1145,6 @@ class OcorrenciaForm extends Component
                 'form.cartao_1_cavalo' => 'required|string',
                 'form.cartao_2_cavalo' => 'required|string',
                 'form.cartao_datacard1_cavalo' => 'required|string',
-                'form.turno.luzes_calcada_cavalo' => 'required|in:ligada,desligada',
                 'form.cartao_datacard2_cavalo' => 'required|string',
                 'form.cartao_manutencao_cavalo' => 'required|string',
                 'form.rouparia' => 'required|in:aberto,fechado',
@@ -1153,8 +1152,8 @@ class OcorrenciaForm extends Component
                 'form.portao_bicicletario' => 'required|in:aberto,fechado',
                 'form.portao_entrega' => 'required|in:aberto,fechado',
                 'form.porta_recepcao' => 'required|in:aberto,fechado',
-                'form.celular1_bateria' => 'required|numeric|min:1|max:100',
-                'form.celular2_bateria' => 'required|numeric|min:1|max:100',
+                'form.celular1_bateria' => 'required|numeric|min:0|max:100',
+                'form.celular2_bateria' => 'required|numeric|min:0|max:100',
                 'form.temperatura_aquecedor' => 'required|numeric|min:0',
                 'form.chama_aquecedor' => 'required|in:aberto,fechado',
                 'form.aquecedor_ala_rua' => 'required|in:aberto,fechado',
@@ -1252,7 +1251,7 @@ class OcorrenciaForm extends Component
 
             // Adiciona validação dos celulares (8 itens)
             foreach ($this->celulares as $index => $c) {
-                $rulesMap[$type]["form.celulares.{$index}.bateria"] = 'required|numeric|min:2|max:100';
+                $rulesMap[$type]["form.celulares.{$index}.bateria"] = 'required|numeric|min:0|max:100';
                 // $rulesMap[$type]["form.celulares.{$index}.funcionario"] = 'required|string|min:3';
             }
 
