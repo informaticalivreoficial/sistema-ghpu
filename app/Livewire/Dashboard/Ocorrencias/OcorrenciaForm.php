@@ -652,6 +652,10 @@ class OcorrenciaForm extends Component
             $this->content = $this->ocorrencia->content ?? '';
             $this->form = $this->ocorrencia->form ?? [];
 
+            // 🔹 No create o título vem do template; na edição usa o título salvo
+            //    (a view cavalo renderiza {{ $tituloContent }} como cabeçalho do conteúdo)
+            $this->tituloContent = $this->ocorrencia->title;
+
             // 🔹 Preenche formVarreduras se for checklist
             if ($this->ocorrencia->type === 'varreduras-fichas-sistemas') {
 
