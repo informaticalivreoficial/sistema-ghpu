@@ -314,7 +314,7 @@
     {{-- Chaves Extras --}}
     <div class="card">
         <div class="card-header bg-primary">
-            <h3 class="card-title">Checklist — Chaves Extras (Estoque Fixo: 20 unidades)::</h3>
+            <h3 class="card-title">Checklist — Chaves Extras (Estoque Fixo: 36 unidades)::</h3>
             <div class="card-tools">
                 <button type="button" class="btn btn-tool text-white" data-card-widget="collapse">
                 <i class="fas fa-minus"></i>
@@ -324,7 +324,7 @@
 
         <div class="card-body">
 
-            @for($i = 1; $i <= 20; $i++)
+            @for($i = 1; $i <= 36; $i++)
                 <div class="form-group mb-4">
                     <label><strong>Chave {{ $i }}</strong>
                     @error('form.chaves_cavalo.'.$i)

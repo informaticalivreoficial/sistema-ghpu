@@ -603,7 +603,7 @@
         {{-- QUEBRA DE PÁGINA MANUAL --}}
         <div class="page-break"></div>
 
-        <h2>Checklist — Chaves Extras (Estoque Fixo: 20 unidades)</h2>
+        <h2>Checklist — Chaves Extras (Estoque Fixo: 36 unidades)</h2>
 
         <table width="100%" cellspacing="0" cellpadding="6" border="1">
             <thead>

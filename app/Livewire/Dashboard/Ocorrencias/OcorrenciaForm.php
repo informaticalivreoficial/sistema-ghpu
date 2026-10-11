@@ -446,6 +446,10 @@ class OcorrenciaForm extends Component
             6 => null, 7 => null, 8 => null, 9 => null, 10 => null,
             11 => null, 12 => null, 13 => null, 14 => null, 15 => null,
             16 => null, 17 => null, 18 => null, 19 => null, 20 => null,
+            21 => null, 22 => null, 23 => null, 24 => null, 25 => null,
+            26 => null, 27 => null, 28 => null, 29 => null, 30 => null,
+            31 => null, 32 => null, 33 => null, 34 => null, 35 => null,
+            36 => null,
         ],
 
         'chave_apto' => [
@@ -453,6 +457,10 @@ class OcorrenciaForm extends Component
             6 => null, 7 => null, 8 => null, 9 => null, 10 => null,
             11 => null, 12 => null, 13 => null, 14 => null, 15 => null,
             16 => null, 17 => null, 18 => null, 19 => null, 20 => null,
+            21 => null, 22 => null, 23 => null, 24 => null, 25 => null,
+            26 => null, 27 => null, 28 => null, 29 => null, 30 => null,
+            31 => null, 32 => null, 33 => null, 34 => null, 35 => null,
+            36 => null,
         ],
 
         'cartoes_camareira_cavalo' => [
@@ -1137,48 +1145,7 @@ class OcorrenciaForm extends Component
                 'form.turno.caixa_cartoes' => 'required|numeric|min:0',
                 'form.turno.caixa_faturamento' => 'required|numeric|min:0',
 
-                // Chaves Extras
-                'form.chaves_cavalo.1' => 'required|in:disponivel,emprestado',
-                'form.chaves_cavalo.2' => 'required|in:disponivel,emprestado',
-                'form.chaves_cavalo.3' => 'required|in:disponivel,emprestado',
-                'form.chaves_cavalo.4' => 'required|in:disponivel,emprestado',
-                'form.chaves_cavalo.5' => 'required|in:disponivel,emprestado',
-                'form.chaves_cavalo.6' => 'required|in:disponivel,emprestado',
-                'form.chaves_cavalo.7' => 'required|in:disponivel,emprestado',
-                'form.chaves_cavalo.8' => 'required|in:disponivel,emprestado',
-                'form.chaves_cavalo.9' => 'required|in:disponivel,emprestado',
-                'form.chaves_cavalo.10' => 'required|in:disponivel,emprestado',
-                'form.chaves_cavalo.11' => 'required|in:disponivel,emprestado',
-                'form.chaves_cavalo.12' => 'required|in:disponivel,emprestado',
-                'form.chaves_cavalo.13' => 'required|in:disponivel,emprestado',
-                'form.chaves_cavalo.14' => 'required|in:disponivel,emprestado',
-                'form.chaves_cavalo.15' => 'required|in:disponivel,emprestado',
-                'form.chaves_cavalo.16' => 'required|in:disponivel,emprestado',
-                'form.chaves_cavalo.17' => 'required|in:disponivel,emprestado',
-                'form.chaves_cavalo.18' => 'required|in:disponivel,emprestado',
-                'form.chaves_cavalo.19' => 'required|in:disponivel,emprestado',
-                'form.chaves_cavalo.20' => 'required|in:disponivel,emprestado',
-
-                'form.chave_apto.1' => 'required_if:form.chaves_cavalo.1,emprestado|nullable|string|min:1',
-                'form.chave_apto.2' => 'required_if:form.chaves_cavalo.2,emprestado|nullable|string|min:1',
-                'form.chave_apto.3' => 'required_if:form.chaves_cavalo.3,emprestado|nullable|string|min:1',
-                'form.chave_apto.4' => 'required_if:form.chaves_cavalo.4,emprestado|nullable|string|min:1',
-                'form.chave_apto.5' => 'required_if:form.chaves_cavalo.5,emprestado|nullable|string|min:1',
-                'form.chave_apto.6' => 'required_if:form.chaves_cavalo.6,emprestado|nullable|string|min:1',
-                'form.chave_apto.7' => 'required_if:form.chaves_cavalo.7,emprestado|nullable|string|min:1',
-                'form.chave_apto.8' => 'required_if:form.chaves_cavalo.8,emprestado|nullable|string|min:1',
-                'form.chave_apto.9' => 'required_if:form.chaves_cavalo.9,emprestado|nullable|string|min:1',
-                'form.chave_apto.10' => 'required_if:form.chaves_cavalo.10,emprestado|nullable|string|min:1',
-                'form.chave_apto.11' => 'required_if:form.chaves_cavalo.11,emprestado|nullable|string|min:1',
-                'form.chave_apto.12' => 'required_if:form.chaves_cavalo.12,emprestado|nullable|string|min:1',
-                'form.chave_apto.13' => 'required_if:form.chaves_cavalo.13,emprestado|nullable|string|min:1',
-                'form.chave_apto.14' => 'required_if:form.chaves_cavalo.14,emprestado|nullable|string|min:1',
-                'form.chave_apto.15' => 'required_if:form.chaves_cavalo.15,emprestado|nullable|string|min:1',
-                'form.chave_apto.16' => 'required_if:form.chaves_cavalo.16,emprestado|nullable|string|min:1',
-                'form.chave_apto.17' => 'required_if:form.chaves_cavalo.17,emprestado|nullable|string|min:1',
-                'form.chave_apto.18' => 'required_if:form.chaves_cavalo.18,emprestado|nullable|string|min:1',
-                'form.chave_apto.19' => 'required_if:form.chaves_cavalo.19,emprestado|nullable|string|min:1',
-                'form.chave_apto.20' => 'required_if:form.chaves_cavalo.20,emprestado|nullable|string|min:1',
+                // Chaves Extras (1..36) — regras adicionadas via loop no fim de getRulesForType()
 
                 'form.radios.1.status' => 'required|in:base,funcionario',
                 'form.radios.1.funcionario' => 'required_if:form.radios.1.status,funcionario|nullable|string|min:3',
@@ -1235,6 +1202,12 @@ class OcorrenciaForm extends Component
             foreach ($this->itensChavesFixasCavalo as $key => $label) {
                 $rulesMap[$type]["form.chaves.{$key}.status"] = 'required|in:gaveta,com';
                 $rulesMap[$type]["form.chaves.{$key}.pessoa"] = "required_if:form.chaves.{$key}.status,com|nullable|string|min:3|max:100";
+            }
+
+            // 🔹 Chaves Extras (Estoque Fixo: 36 unidades)
+            foreach (range(1, 36) as $i) {
+                $rulesMap[$type]["form.chaves_cavalo.{$i}"] = 'required|in:disponivel,emprestado';
+                $rulesMap[$type]["form.chave_apto.{$i}"] = "required_if:form.chaves_cavalo.{$i},emprestado|nullable|string|min:1";
             }
         }
 
