@@ -179,4 +179,29 @@ class ClientesTest extends TestCase
             ->assertOk()
             ->assertDontSee('wa.me');
     }
+
+    public function test_infinite_scroll_loads_next_batch(): void
+    {
+        // 🔹 30 clientes (nome zero-pad → ordem alfabética = numérica)
+        for ($i = 1; $i <= 30; $i++) {
+            $this->makeCustomer(
+                18,
+                sprintf('Cliente %03d', $i),
+                sprintf('cliente%03d@teste.com', $i)
+            );
+        }
+
+        $admin = $this->makeUser('admin', 18);
+
+        $this->actingAs($admin);
+
+        // Primeiro lote: 24 registros (Cliente 001 até Cliente 024)
+        Livewire::test(Clientes::class)
+            ->assertSee('Cliente 001')
+            ->assertDontSee('Cliente 030')
+            ->assertSee('Carregar mais')
+            ->call('loadMore')
+            ->assertSee('Cliente 030')
+            ->assertDontSee('Carregar mais');
+    }
 }

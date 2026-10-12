@@ -15,6 +15,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('notifications:clean-old')->everyMinute()->withoutOverlapping();
         $schedule->command('ocorrencias:cleanup')->everyMinute()->withoutOverlapping();
         $schedule->command('app:clear-logs')->everyMinute()->withoutOverlapping();
+        $schedule->command('pre-reservas:cleanup')->everyMinute()->withoutOverlapping();
     }
 
     /**

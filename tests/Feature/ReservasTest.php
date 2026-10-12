@@ -9,6 +9,7 @@ use App\Models\Reservation;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Livewire\Livewire;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
@@ -227,5 +228,76 @@ class ReservasTest extends TestCase
             ->get(route('reservas.index'))
             ->assertOk()
             ->assertDontSee('wa.me');
+    }
+
+    public function test_latest_inserted_reservations_show_first(): void
+    {
+        $antiga = $this->makeReserva(18, 'RESVANTIGA');
+        $nova = $this->makeReserva(18, 'RESVNOVA');
+
+        // 🔹 A antiga foi inserida ontem mas tem check-in MAIS distante:
+        // a ordenação prioriza a inserção (created_at), não o check-in
+        DB::table('reservations')->where('id', $antiga->id)->update([
+            'created_at' => now()->subDay(),
+            'checkin' => '2027-01-01',
+        ]);
+        DB::table('reservations')->where('id', $nova->id)->update([
+            'created_at' => now(),
+            'checkin' => '2026-10-15',
+        ]);
+
+        $admin = $this->makeUser('admin', 18);
+
+        $this->actingAs($admin)
+            ->get(route('reservas.index'))
+            ->assertOk()
+            ->assertSeeInOrder(['RESVNOVA', 'RESVANTIGA']);
+    }
+
+    public function test_reservations_tied_on_insertion_fall_back_to_checkin_desc(): void
+    {
+        $a = $this->makeReserva(18, 'ORDCHECKA');
+        $b = $this->makeReserva(18, 'ORDCHECKB');
+
+        // 🔹 Mesmo instante de inserção → desempate pelo maior check-in
+        DB::table('reservations')->update([
+            'created_at' => '2026-10-10 12:00:00',
+            'updated_at' => '2026-10-10 12:00:00',
+        ]);
+        DB::table('reservations')->where('id', $a->id)->update(['checkin' => '2026-12-01']);
+        DB::table('reservations')->where('id', $b->id)->update(['checkin' => '2026-11-01']);
+
+        $admin = $this->makeUser('admin', 18);
+
+        $this->actingAs($admin)
+            ->get(route('reservas.index'))
+            ->assertOk()
+            ->assertSeeInOrder(['ORDCHECKA', 'ORDCHECKB']);
+    }
+
+    public function test_infinite_scroll_loads_next_batch(): void
+    {
+        // 🔹 30 reservas com o mesmo created_at → ordem definida pelo check-in desc
+        for ($i = 1; $i <= 30; $i++) {
+            $reserva = $this->makeReserva(18, sprintf('SCROLL%03d', $i));
+
+            DB::table('reservations')->where('id', $reserva->id)->update([
+                'checkin' => sprintf('2026-11-%02d', $i),
+                'created_at' => '2026-10-10 12:00:00',
+            ]);
+        }
+
+        $admin = $this->makeUser('admin', 18);
+
+        $this->actingAs($admin);
+
+        // Primeiro lote: 24 registros (SCROLL030 até SCROLL007)
+        Livewire::test(Reservas::class)
+            ->assertSee('SCROLL030')
+            ->assertDontSee('SCROLL001')
+            ->assertSee('Carregar mais')
+            ->call('loadMore')
+            ->assertSee('SCROLL001')
+            ->assertDontSee('Carregar mais');
     }
 }

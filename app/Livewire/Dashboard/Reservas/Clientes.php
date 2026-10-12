@@ -13,6 +13,12 @@ class Clientes extends Component
 
     protected $paginationTheme = 'bootstrap';
 
+    /** Paginação infinita: registros por lote */
+    public int $perPage = 24;
+
+    /** Se há mais registros além dos carregados (controla o auto-scroll) */
+    public bool $hasMore = false;
+
     // 🔹 Filtros da listagem
     public string $search = '';
 
@@ -55,6 +61,16 @@ class Clientes extends Component
         $this->resetPage();
     }
 
+    /** Paginação infinita: anexa o próximo lote de 24 registros */
+    public function loadMore(): void
+    {
+        if (! $this->hasMore) {
+            return;
+        }
+
+        $this->perPage += 24;
+    }
+
     public function viewCustomer(int $id): void
     {
         // Global Scope do tenant garante que cada um só abre clientes da sua empresa
@@ -93,8 +109,12 @@ class Clientes extends Component
                         ->orWhere('whatsapp', 'LIKE', $term);
                 });
             })
+            // 🔹 Ordenação estável (nome + id de desempate para paginação infinita)
             ->orderBy('name')
-            ->paginate(35);
+            ->orderBy('id')
+            ->paginate($this->perPage);
+
+        $this->hasMore = $clientes->hasMorePages();
 
         return view('livewire.dashboard.reservas.clientes', [
             'title' => $title,

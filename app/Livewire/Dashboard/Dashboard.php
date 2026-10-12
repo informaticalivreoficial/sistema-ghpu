@@ -4,6 +4,7 @@ namespace App\Livewire\Dashboard;
 
 use App\Models\Ocorrencia;
 use App\Models\Post;
+use App\Models\Reservation;
 use Livewire\Component;
 
 class Dashboard extends Component
@@ -15,6 +16,9 @@ class Dashboard extends Component
     public int $postsYearCount = 0;
 
     public $lastOcorrencias = null;
+
+    /** 📅 Últimas 5 pré-reservas (todos os perfis) */
+    public $lastReservas = null;
 
     /** 📊 KPIs do período (manager/admin/super) */
     public int $kpiHoje = 0;
@@ -56,6 +60,9 @@ class Dashboard extends Component
                 ->with('user:id,name,avatar')
                 ->get();
 
+            // 📅 Últimas pré-reservas (Global Scope já limita à empresa do colaborador)
+            $this->loadLastReservas();
+
             return;
         }
 
@@ -73,6 +80,24 @@ class Dashboard extends Component
 
         // 🔁 Última passagem de turno por empresa (18 → turno, 21 → cavalo; admin/super → mais recente dos dois)
         $this->loadLastTurno();
+
+        // 📅 Últimas pré-reservas (Global Scope já limita manager à própria empresa)
+        $this->loadLastReservas();
+    }
+
+    /**
+     * 📅 Últimas 5 pré-reservas — mesma ordem da listagem
+     *    (últimas inseridas primeiro; entre elas, o maior check-in).
+     *    Global Scope do tenant: manager/employee → própria empresa; admin/super → todas.
+     */
+    protected function loadLastReservas(): void
+    {
+        $this->lastReservas = Reservation::query()
+            ->with(['customer:id,name', 'apartment:id,name'])
+            ->orderByDesc('created_at')
+            ->orderByDesc('checkin')
+            ->limit(5)
+            ->get();
     }
 
     /**
@@ -147,6 +172,9 @@ class Dashboard extends Component
         }
 
         $this->lastOcorrencias = $query->get();
+
+        // 📅 Pré-reservas acompanham o polling
+        $this->loadLastReservas();
 
         // 📊 KPIs acompanham o polling
         $this->loadKpis();

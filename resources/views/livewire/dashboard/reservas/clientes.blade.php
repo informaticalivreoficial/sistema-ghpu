@@ -112,9 +112,27 @@
             @endif
         </div>
 
-        <div class="card-footer clearfix">
-            {{ $clientes->links() }}
-        </div>
+        @if ($hasMore)
+            {{-- Paginação infinita: carrega o próximo lote ao rolar até o fim --}}
+            <div class="card-footer clearfix" id="clientes-sentinel"
+                x-data
+                x-on:scroll.window.throttle.300ms="
+                    if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 400) {
+                        $wire.loadMore();
+                    }
+                ">
+                <div class="text-center">
+                    <button type="button" wire:click="loadMore" wire:loading.remove wire:target="loadMore"
+                        class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                        Carregar mais
+                    </button>
+                </div>
+                <div wire:loading wire:target="loadMore" class="flex justify-center items-center mt-2">
+                    <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+                    <span class="ml-2 text-gray-600">Carregando...</span>
+                </div>
+            </div>
+        @endif
     </div>
 
     {{-- Modal de detalhes do cliente --}}

@@ -4,7 +4,9 @@ namespace Tests\Feature;
 
 use App\Livewire\Dashboard\Dashboard;
 use App\Models\Company;
+use App\Models\Customer;
 use App\Models\Ocorrencia;
+use App\Models\Reservation;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
@@ -34,6 +36,27 @@ class DashboardTest extends TestCase
         $user->assignRole($role);
 
         return $user;
+    }
+
+    private function makeReserva(int $companyId, string $codigo): Reservation
+    {
+        $customer = Customer::create([
+            'company_id' => $companyId,
+            'name' => "Cliente {$codigo}",
+            'email' => strtolower($codigo).'@teste.com',
+            'status' => 'ativo',
+        ]);
+
+        return Reservation::create([
+            'company_id' => $companyId,
+            'customer_id' => $customer->id,
+            'checkin' => '2026-11-15',
+            'checkout' => '2026-11-18',
+            'adultos' => 2,
+            'criancas' => 0,
+            'codigo' => $codigo,
+            'status' => 'pendente',
+        ]);
     }
 
     public function test_manager_company_18_sees_normal_turno_not_cavalo(): void
@@ -177,5 +200,72 @@ class DashboardTest extends TestCase
             ->test(Dashboard::class)
             ->assertSee('Diárias')
             ->assertSee('Varreduras');
+    }
+
+    public function test_dashboard_shows_last_five_reservas_newest_first(): void
+    {
+        $admin = $this->makeUser('admin', 1);
+
+        // 🔹 6 reservas → só as 5 mais recentes aparecem no card
+        for ($i = 1; $i <= 6; $i++) {
+            $reserva = $this->makeReserva(18, sprintf('PAINEL%03d', $i));
+            $reserva->created_at = now()->subMinutes(60 - $i);
+            $reserva->save();
+        }
+
+        Livewire::actingAs($admin)
+            ->test(Dashboard::class)
+            ->assertSee('Últimas Pré-reservas')
+            ->assertSeeInOrder(['PAINEL006', 'PAINEL002'])
+            ->assertDontSee('PAINEL001');
+    }
+
+    public function test_manager_sees_only_own_company_reservas_on_card(): void
+    {
+        $manager = $this->makeUser('manager', 18);
+
+        $this->makeReserva(18, 'RESVDASH18');
+        $this->makeReserva(21, 'RESVDASH21');
+
+        Livewire::actingAs($manager)
+            ->test(Dashboard::class)
+            ->assertSee('RESVDASH18')
+            ->assertDontSee('RESVDASH21');
+    }
+
+    public function test_employee_sees_improved_ocorrencias_and_reservas_cards(): void
+    {
+        $employee = $this->makeUser('employee', 18);
+
+        Ocorrencia::factory()->create([
+            'company_id' => 18,
+            'user_id' => $employee->id,
+            'type' => 'branco',
+            'status' => 1,
+            'title' => 'Ocorrência do painel XYZ',
+        ]);
+
+        $this->makeReserva(18, 'RESVEMP18');
+        $this->makeReserva(21, 'RESVEMP21');
+
+        Livewire::actingAs($employee)
+            ->test(Dashboard::class)
+            // 🔹 Card de ocorrências melhorado: autor + badge de tipo
+            ->assertSee('Últimas Ocorrências')
+            ->assertSee('Ocorrência do painel XYZ')
+            ->assertSee('Em branco')
+            // 🔹 Card de pré-reservas também no painel do colaborador
+            ->assertSee('Últimas Pré-reservas')
+            ->assertSee('RESVEMP18')
+            ->assertDontSee('RESVEMP21');
+    }
+
+    public function test_employee_does_not_see_kpis_section(): void
+    {
+        $employee = $this->makeUser('employee', 18);
+
+        Livewire::actingAs($employee)
+            ->test(Dashboard::class)
+            ->assertDontSee('Dados da última passagem');
     }
 }

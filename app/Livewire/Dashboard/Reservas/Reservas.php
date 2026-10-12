@@ -13,6 +13,12 @@ class Reservas extends Component
 
     protected $paginationTheme = 'bootstrap';
 
+    /** Paginação infinita: registros por lote */
+    public int $perPage = 24;
+
+    /** Se há mais registros além dos carregados (controla o auto-scroll) */
+    public bool $hasMore = false;
+
     // 🔹 Filtros da listagem
     public string $search = '';
 
@@ -67,6 +73,16 @@ class Reservas extends Component
         ]);
 
         $this->resetPage();
+    }
+
+    /** Paginação infinita: anexa o próximo lote de 24 registros */
+    public function loadMore(): void
+    {
+        if (! $this->hasMore) {
+            return;
+        }
+
+        $this->perPage += 24;
     }
 
     public function viewReserva(int $id): void
@@ -165,9 +181,14 @@ class Reservas extends Component
             ->when($this->filterDateTo !== '', function ($query) {
                 $query->whereDate('checkin', '<=', $this->filterDateTo);
             })
+            // 🔹 Últimas inseridas primeiro; entre elas, o maior check-in;
+            // id como desempate final para paginação estável
+            ->orderByDesc('created_at')
             ->orderByDesc('checkin')
             ->orderByDesc('id')
-            ->paginate(35);
+            ->paginate($this->perPage);
+
+        $this->hasMore = $reservas->hasMorePages();
 
         return view('livewire.dashboard.reservas.reservas', [
             'title' => $title,
