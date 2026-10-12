@@ -4,28 +4,22 @@ namespace App\Console\Commands;
 
 use Carbon\Carbon;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Notifications\DatabaseNotification;
 
 class DeleteOldNotifications extends Command
 {
-    protected $signature = 'notifications:cleanup';
+    protected $signature = 'notifications:clean-old';
 
-    protected $description = 'Remove notificações com mais de 3 meses';    
+    protected $description = 'Remove notificações com mais de 90 dias';
 
-    /**
-     * Execute the console command.
-     */
-    public function handle()
+    public function handle(): int
     {
-        $date = Carbon::now()->subMonths(3);
-
-        $deleted = DB::table('notifications')
-            //->whereNotNull('read_at')
-            ->where('created_at', '<', $date)
+        $deleted = DatabaseNotification::query()
+            ->where('created_at', '<', Carbon::now()->subDays(90))
             ->delete();
 
-        $this->info("{$deleted} notificações antigas removidas com sucesso.");
+        $this->info("Notificações removidas: {$deleted}");
 
-        return Command::SUCCESS;
+        return self::SUCCESS;
     }
 }

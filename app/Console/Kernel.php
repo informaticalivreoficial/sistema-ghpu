@@ -12,18 +12,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        $schedule->command('notifications:cleanup')
-            ->weeklyOn(0, '03:00')
-            ->withoutOverlapping();
-
-        $schedule->command('ocorrencias:cleanup')
-            ->weeklyOn(0, '03:10')
-            ->withoutOverlapping();
-
-        $schedule->command('messages:cleanup')
-            ->weeklyOn(0, '03:20')
-            ->withoutOverlapping()
-            ->appendOutputTo(storage_path('logs/messages-cleanup.log'));
+        $schedule->command('notifications:clean-old')->everyMinute()->withoutOverlapping();
+        $schedule->command('ocorrencias:cleanup')->everyMinute()->withoutOverlapping();
+        $schedule->command('app:clear-logs')->everyMinute()->withoutOverlapping();
     }
 
     /**

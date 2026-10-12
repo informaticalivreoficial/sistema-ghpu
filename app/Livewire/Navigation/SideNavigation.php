@@ -4,13 +4,11 @@ namespace App\Livewire\Navigation;
 
 use App\Models\Config;
 use App\Models\Message;
-use App\Models\MessageItem;
 use App\Models\Ocorrencia;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
-use Spatie\Permission\Models\Role;
 
 class SideNavigation extends Component
 {
@@ -26,31 +24,33 @@ class SideNavigation extends Component
             $colaboradoresCount = User::role('employee')->count();
         }
 
-        $timeCount   = User::role(['manager', 'admin'])->count(); // Gerente, admin e super
+        $timeCount = User::role(['manager', 'admin'])->count(); // Gerente, admin e super
 
         $postsCount = Post::count();
         $ocorrenciaCount = Ocorrencia::count();
 
         // Contagem de mensagens não lidas
         $unreadMessagesCount = Message::query()
-        ->forCompany($user->company_id)
-        ->forUser($user->id)
-        ->whereHas('lastItem', function ($q) use ($user) {
-            $q->where('sender_id', '!=', $user->id)
-            ->whereDoesntHave('reads', function ($q) use ($user) {
-                $q->where('user_id', $user->id);
-            });
-        })
-        ->count();
+            ->forCompany($user->company_id)
+            ->forUser($user->id)
+            ->whereHas('lastItem', function ($q) use ($user) {
+                $q->where('sender_id', '!=', $user->id)
+                    ->whereDoesntHave('reads', function ($q) use ($user) {
+                        $q->where('user_id', $user->id);
+                    });
+            })
+            ->count();
 
-        
-        $config = Config::first();
+        // Fallback para modelo vazio: se a tabela 'configs' estiver vazia,
+        // $config era null e a view morria com "getlogoadmin() on null" → 500
+        // em todas as páginas do painel.
+        $config = Config::first() ?? new Config;
 
-        return view('livewire.navigation.side-navigation',[
+        return view('livewire.navigation.side-navigation', [
             'colaboradoresCount' => $colaboradoresCount,
             'unreadMessagesCount' => $unreadMessagesCount,
-            'timeCount' => $timeCount,   
-            'postsCount' => $postsCount, 
+            'timeCount' => $timeCount,
+            'postsCount' => $postsCount,
             'ocorrenciaCount' => $ocorrenciaCount,
             'config' => $config,
         ]);

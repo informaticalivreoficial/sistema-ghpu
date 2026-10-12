@@ -61,8 +61,8 @@
                                     />
                                 </td>
                                 <td>{{$company->alias_name}}</td>
-                                <td class="text-center">{{$company->ocorrencias->count()}}</td>
-                                <td class="text-center">{{$company->users->count()}}</td>
+                                <td class="text-center">{{$company->ocorrencias_count}}</td>
+                                <td class="text-center">{{$company->users_count}}</td>
                                 <td>  
                                     <div class="flex items-center gap-2">
                                         @can('update', $company)
@@ -75,7 +75,7 @@
                                             />
                                         @else
                                             <x-forms.switch-toggle
-                                                :checked="$apartment->status"
+                                                :checked="$company->status"
                                                 size="sm"
                                                 color="gray"
                                                 disabled
@@ -152,9 +152,9 @@
             <h2 class="text-xl font-bold mb-4">Detalhes da Empresa</h2>
 
             <div class="space-y-2">
-                <p><strong>Nome Fantasia:</strong> {{ $companySelected->alias_name }}</p>
-                <p><strong>Razão Social:</strong> {{ $companySelected->corporate_name }}</p>
-                <p><strong>CNPJ:</strong> {{ $companySelected->cnpj }}</p>
+                                <p><strong>Nome Fantasia:</strong> {{ $companySelected->alias_name }}</p>
+                                <p><strong>Razão Social:</strong> {{ $companySelected->social_name }}</p>
+                                <p><strong>CNPJ:</strong> {{ $companySelected->document_company }}</p>
                 <p><strong>Status:</strong> {{ $companySelected->status ? 'Ativa' : 'Inativa' }}</p>
 
                 <p><strong>Ocorrências:</strong> {{ $companySelected->ocorrencias->count() }}</p>
