@@ -27,6 +27,8 @@ use App\Livewire\Dashboard\Posts\PostForm;
 use App\Livewire\Dashboard\Posts\Posts;
 use App\Livewire\Dashboard\Reports\ColaboradoresReport;
 use App\Livewire\Dashboard\Reports\OccurrencesReport;
+use App\Livewire\Dashboard\Reservas\Clientes;
+use App\Livewire\Dashboard\Reservas\Reservas;
 use App\Livewire\Dashboard\Roles\Index as RoleIndex;
 use App\Livewire\Dashboard\Settings;
 use App\Livewire\Dashboard\Users\Form;
@@ -114,6 +116,13 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], functi
     Route::get('ocorrencias', Ocorrencias::class)->name('ocorrencias.index');
     Route::get('ocorrencias/{id}/editar', OcorrenciaForm::class)->name('ocorrencia.edit');
     Route::get('ocorrencias/cadastrar', OcorrenciaForm::class)->name('ocorrencia.create');
+
+    // *********************** Reservas e Clientes (API) ********************************/
+    // Sem middleware de role de propósito: todos os perfis acessam e o
+    // Global Scope de tenant em Reservation/Customer corta por company_id
+    // (admin/super veem as duas empresas).
+    Route::get('reservas', Reservas::class)->name('reservas.index');
+    Route::get('clientes', Clientes::class)->name('clientes.index');
 
 });
 

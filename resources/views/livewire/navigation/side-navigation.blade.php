@@ -1,4 +1,4 @@
-<aside class="main-sidebar sidebar-light-primary elevation-4">
+<aside class="main-sidebar sidebar-light-primary elevation-4" wire:poll.15s="checkNewPreReservas">
     <!-- Brand Logo -->
     <a href="#" class="pt-3 d-flex justify-content-center">
         <img src="{{ $config->getlogoadmin() }}" alt="{{ $config->app_name }}"
@@ -127,6 +127,30 @@
                         </a>
                     </li>
                 @endif
+
+                <li class="nav-item {{ Route::is('reservas.*', 'clientes.*') ? 'menu-open' : '' }}">
+                    <a href="#" class="nav-link {{ Route::is('reservas.*', 'clientes.*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-calendar-check"></i>
+                        <p>Pré-reservas <i class="fas fa-angle-left right"></i></p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('reservas.index') }}" class="nav-link {{ Route::is('reservas.index') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>
+                                    Listar Pré-reservas
+                                    <span class="badge badge-info right">{{ $reservasCount }}</span>
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('clientes.index') }}" class="nav-link {{ Route::is('clientes.index') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Clientes</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
 
                 @role(['super-admin'])
                 <li class="nav-item">
