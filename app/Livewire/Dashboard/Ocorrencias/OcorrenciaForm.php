@@ -82,6 +82,8 @@ class OcorrenciaForm extends Component
         'form.porta_interna' => 'Porta interna',
         'form.porta_externa' => 'Porta externa',
         'form.luzes_estacionamento1' => 'Luzes do estacionamento 1',
+        'form.cisterna_nivel' => 'Selecione o nível da cisterna',
+        'form.caixa_dagua_nivel' => 'Selecione o nível da caixa d\'água',
 
         'form.maquina_safra_1' => 'Máquina Safra 1',
         'form.maquina_safra_2' => 'Máquina Safra 2',
@@ -496,6 +498,8 @@ class OcorrenciaForm extends Component
         'porta_interna' => null,
         'porta_externa' => null,
         'luzes_estacionamento1' => null,
+        'cisterna_nivel' => null,
+        'caixa_dagua_nivel' => null,
 
         // Seção 3
         'maquina_safra_1' => null,
@@ -991,6 +995,8 @@ class OcorrenciaForm extends Component
                 'form.porta_interna' => 'required|in:aberta,fechada',
                 'form.porta_externa' => 'required|in:aberta,fechada',
                 'form.luzes_estacionamento1' => 'required|in:ligada,desligada',
+                'form.cisterna_nivel' => 'required|in:100,75,50,25,0',
+                'form.caixa_dagua_nivel' => 'required|in:100,75,50,25,0',
 
                 // Seção 3
                 'form.maquina_safra_1' => 'required|numeric|min:0|max:100',

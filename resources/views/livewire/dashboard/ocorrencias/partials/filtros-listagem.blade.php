@@ -3,6 +3,17 @@
     Tipos: apenas os da empresa do usuário. Empresa: só admin/super. Status: só manager+.
 --}}
 <div class="d-flex flex-wrap align-items-center gap-2">
+    <div class="input-group input-group-sm" style="width: 220px;">
+        <div class="input-group-prepend">
+            <span class="input-group-text"><i class="fas fa-search"></i></span>
+        </div>
+        <input type="search"
+            wire:model.live.debounce.400ms="filterSearch"
+            class="form-control"
+            placeholder="Buscar por palavra..."
+            title="Busca no título, conteúdo e destinatário">
+    </div>
+
     <select wire:model.live="filterType" class="form-control form-control-sm" style="width: auto; min-width: 170px;">
         <option value="">Tipo: todos</option>
         @foreach ($typeOptions as $value => $label)
@@ -49,7 +60,7 @@
         <input type="date" wire:model.live="filterDateTo" class="form-control">
     </div>
 
-    @if ($filterType !== '' || $filterStatus !== '' || $filterCompany !== '' || $filterAuthor !== '' || $filterDateFrom !== '' || $filterDateTo !== '')
+    @if ($filterSearch !== '' || $filterType !== '' || $filterStatus !== '' || $filterCompany !== '' || $filterAuthor !== '' || $filterDateFrom !== '' || $filterDateTo !== '')
         <button type="button" wire:click="clearFilters" class="btn btn-sm btn-outline-secondary" title="Limpar filtros">
             <i class="fas fa-times"></i>
         </button>

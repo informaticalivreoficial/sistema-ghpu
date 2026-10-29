@@ -182,12 +182,92 @@ class OcorrenciasFiltrosTest extends TestCase
 
         Livewire::actingAs($user)
             ->test(Ocorrencias::class)
+            ->set('filterSearch', 'qualquer coisa')
             ->set('filterType', 'branco')
             ->set('filterStatus', '1')
             ->set('filterDateFrom', '2026-01-01')
             ->call('clearFilters')
+            ->assertSet('filterSearch', '')
             ->assertSet('filterType', '')
             ->assertSet('filterStatus', '')
             ->assertSet('filterDateFrom', '');
+    }
+
+    public function test_search_filter_matches_title_content_and_destinatario(): void
+    {
+        $user = $this->makeUser('manager', 18);
+        $author = $this->makeUser('employee', 18);
+
+        Ocorrencia::factory()->create([
+            'company_id' => 18,
+            'user_id' => $author->id,
+            'type' => 'branco',
+            'title' => 'Barulho no corredor',
+            'content' => '<p>Nada relevante aqui</p>',
+            'destinatario' => 'Fulano de Tal',
+            'status' => 1,
+        ]);
+
+        Ocorrencia::factory()->create([
+            'company_id' => 18,
+            'user_id' => $author->id,
+            'type' => 'branco',
+            'title' => 'Registro qualquer',
+            'content' => '<p>Hóspede reclamou do ar-condicionado</p>',
+            'destinatario' => 'Beltrano',
+            'status' => 1,
+        ]);
+
+        Ocorrencia::factory()->create([
+            'company_id' => 18,
+            'user_id' => $author->id,
+            'type' => 'branco',
+            'title' => 'Outro registro',
+            'content' => '<p>Sem palavras-chave</p>',
+            'destinatario' => 'Ciclano',
+            'status' => 1,
+        ]);
+
+        // Busca no título
+        Livewire::actingAs($user)
+            ->test(Ocorrencias::class)
+            ->set('filterSearch', 'corredor')
+            ->assertSee('Barulho no corredor')
+            ->assertDontSee('Registro qualquer')
+            ->assertDontSee('Outro registro');
+
+        // Busca no conteúdo
+        Livewire::actingAs($user)
+            ->test(Ocorrencias::class)
+            ->set('filterSearch', 'ar-condicionado')
+            ->assertSee('Registro qualquer')
+            ->assertDontSee('Barulho no corredor');
+
+        // Busca no destinatário
+        Livewire::actingAs($user)
+            ->test(Ocorrencias::class)
+            ->set('filterSearch', 'Ciclano')
+            ->assertSee('Outro registro')
+            ->assertDontSee('Barulho no corredor');
+    }
+
+    public function test_search_filter_ignores_like_wildcards(): void
+    {
+        $user = $this->makeUser('manager', 18);
+        $author = $this->makeUser('employee', 18);
+
+        Ocorrencia::factory()->create([
+            'company_id' => 18,
+            'user_id' => $author->id,
+            'type' => 'branco',
+            'title' => 'Registro comum',
+            'status' => 1,
+        ]);
+
+        // "%" não deve funcionar como curinga
+        Livewire::actingAs($user)
+            ->test(Ocorrencias::class)
+            ->set('filterSearch', '%')
+            ->assertDontSee('Registro comum');
     }
 }

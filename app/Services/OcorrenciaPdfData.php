@@ -66,6 +66,8 @@ class OcorrenciaPdfData
                 'Porta interna da lixeira' => $form['porta_interna'] ?? 0,
                 'Porta externa da lixeira' => $form['porta_externa'] ?? 0,
                 'Luzes do Estacionamento 1' => $form['luzes_estacionamento1'] ?? '-',
+                'Cisterna — nível de água' => self::nivelAguaLabel($form['cisterna_nivel'] ?? null),
+                'Caixa d\'água — nível de água' => self::nivelAguaLabel($form['caixa_dagua_nivel'] ?? null),
             ],
             'checklist_recepcao' => [
                 'Máquina Safra Nº 1' => $form['maquina_safra_1'] ?? '-',
@@ -250,6 +252,21 @@ class OcorrenciaPdfData
             ->toArray(),  
             'geladeira_recepcao' => $form['geladeira_recepcao'] ?? '-',      
         ];
+    }
+
+    /**
+     * Rótulo legível do nível de água dos reservatórios (cisterna / caixa d'água).
+     */
+    private static function nivelAguaLabel($nivel): string
+    {
+        return match ((string) $nivel) {
+            '100' => '100% (cheio)',
+            '75' => '75% (uso)',
+            '50' => '50% (atenção)',
+            '25' => '25% (avisar manutenção)',
+            '0' => '0% (vazia)',
+            default => '-',
+        };
     }
 
     private static function labelsVarredura(): array

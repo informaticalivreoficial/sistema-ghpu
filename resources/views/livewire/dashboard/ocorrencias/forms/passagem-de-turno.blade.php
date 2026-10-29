@@ -356,6 +356,62 @@
                     </div>
                 </div>
             </div>
+
+            @php
+                $niveisReservatorio = [
+                    '100' => '100% (cheio)',
+                    '75' => '75% (uso)',
+                    '50' => '50% (atenção)',
+                    '25' => '25% (avisar manutenção)',
+                    '0' => '0% vazia',
+                ];
+            @endphp
+
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="form-group">
+                        <label><strong>Cisterna — nível de água</strong></label>
+
+                        <div class="d-flex flex-wrap">
+                            @foreach ($niveisReservatorio as $valor => $rotulo)
+                                <div class="form-check mr-3 mb-2">
+                                    <input type="radio" class="form-check-input"
+                                        id="cisterna_nivel_{{ $valor }}"
+                                        wire:model="form.cisterna_nivel"
+                                        value="{{ $valor }}">
+
+                                    <label class="form-check-label" for="cisterna_nivel_{{ $valor }}">
+                                        {{ $rotulo }}
+                                    </label>
+                                </div>
+                            @endforeach
+                        </div>
+                        @error('form.cisterna_nivel') <small class="text-danger">{{ $message }}</small> @enderror
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                    <div class="form-group">
+                        <label><strong>Caixa d'água — nível de água</strong></label>
+
+                        <div class="d-flex flex-wrap">
+                            @foreach ($niveisReservatorio as $valor => $rotulo)
+                                <div class="form-check mr-3 mb-2">
+                                    <input type="radio" class="form-check-input"
+                                        id="caixa_dagua_nivel_{{ $valor }}"
+                                        wire:model="form.caixa_dagua_nivel"
+                                        value="{{ $valor }}">
+
+                                    <label class="form-check-label" for="caixa_dagua_nivel_{{ $valor }}">
+                                        {{ $rotulo }}
+                                    </label>
+                                </div>
+                            @endforeach
+                        </div>
+                        @error('form.caixa_dagua_nivel') <small class="text-danger">{{ $message }}</small> @enderror
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 

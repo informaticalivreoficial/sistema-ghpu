@@ -19,6 +19,7 @@ class Ocorrencias extends Component
     protected $paginationTheme = 'bootstrap';
 
     protected $updatesQueryString = [
+        'filterSearch',
         'filterType',
         'filterStatus',
         'filterCompany',
@@ -32,6 +33,8 @@ class Ocorrencias extends Component
     public string $sortDirection = 'desc';
 
     // 🔹 Filtros da listagem
+    public string $filterSearch = '';
+
     public string $filterType = '';
 
     public string $filterStatus = '';
@@ -97,6 +100,7 @@ class Ocorrencias extends Component
     public function clearFilters(): void
     {
         $this->reset([
+            'filterSearch',
             'filterType',
             'filterStatus',
             'filterCompany',
@@ -186,6 +190,16 @@ class Ocorrencias extends Component
                 $query->where(function ($q) {
                     $q->whereNotNull('status')
                         ->where('status', '!=', 0);
+                });
+            })
+            // 🔹 Busca por palavra (título, conteúdo e destinatário)
+            ->when(trim($this->filterSearch) !== '', function ($query) {
+                $term = '%'.addcslashes(trim($this->filterSearch), '%_\\').'%';
+
+                $query->where(function ($q) use ($term) {
+                    $q->where('title', 'like', $term)
+                        ->orWhere('content', 'like', $term)
+                        ->orWhere('destinatario', 'like', $term);
                 });
             })
             // 🔹 Filtro por tipo (sanitizado: só tipos da empresa do usuário)

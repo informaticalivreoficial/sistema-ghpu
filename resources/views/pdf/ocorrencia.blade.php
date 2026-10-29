@@ -7,12 +7,62 @@
     <style>
         body {
             font-family: DejaVu Sans, sans-serif;
-            font-size: 12px;
-            color: #555;
+            font-size: 11px;
+            line-height: 1.35;
+            color: #333;
         }
 
         h1 {
-            margin-bottom: 10px;
+            font-size: 18px;
+            color: #111;
+            margin: 0 0 12px 0;
+        }
+
+        h2 {
+            font-size: 12px;
+            color: #111;
+            background: #eef2f7;
+            border-left: 4px solid #2c3e50;
+            padding: 5px 8px;
+            margin: 14px 0 6px 0;
+            page-break-after: avoid;
+            page-break-inside: avoid;
+        }
+
+        table.checklist-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0 0 10px 0;
+            font-size: 10.5px;
+        }
+
+        table.checklist-table th,
+        table.checklist-table td {
+            border: 1px solid #b9c2cc;
+            padding: 4px 6px;
+            vertical-align: top;
+        }
+
+        /* Repete o cabeçalho da tabela quando ela quebra entre páginas */
+        table.checklist-table thead {
+            display: table-header-group;
+        }
+
+        table.checklist-table th {
+            background: #e9edf2;
+            color: #111;
+            text-align: left;
+            font-size: 10px;
+        }
+
+        /* Nunca corta uma linha ao meio entre páginas */
+        table.checklist-table tr {
+            page-break-inside: avoid;
+        }
+
+        /* Mantém na mesma página tabelas curtas (campo/valor) */
+        table.checklist-table.keep-together {
+            page-break-inside: avoid;
         }
 
         @page {
@@ -86,6 +136,7 @@
             font-weight: bold;
             border-left: 4px solid #000;
             margin-bottom: 8px;
+            page-break-after: avoid;
         }
 
         .checklist {
@@ -97,6 +148,7 @@
             width: 100%;
             border-bottom: 1px dashed #ccc;
             padding: 4px 0;
+            page-break-inside: avoid;
         }
 
         .item span {
@@ -127,12 +179,14 @@
             padding: 8px;
             min-height: 60px;
             margin-top: 5px;
+            page-break-inside: avoid;
         }
 
         .meta-box {
             margin: 15px 0 18px 0;
             border: 1px solid #000;
             font-size: 11px;
+            page-break-inside: avoid;
         }
 
         .meta-row {
@@ -165,11 +219,6 @@
         .meta-row .meta-value:last-child {
             border-right: none;
         }
-
-        .page-break {
-            page-break-after: always;
-        }
-        
     </style>
 </head>
 <body>
@@ -257,7 +306,7 @@
     @if ($ocorrencia->type === 'passagem-de-turno')     
         <h2>Checklist — 3º Andar</h2>
 
-        <table width="100%" cellspacing="0" cellpadding="6" border="1">
+        <table class="checklist-table keep-together">
             @foreach($data['checklist_3_andar'] as $label => $value)
                 <tr>
                     <td width="60%"><strong>{{ $label }}</strong></td>
@@ -270,7 +319,7 @@
 
         <h2>Checklist — Área Externa, Estacionamento e Lixeiras</h2>
 
-        <table width="100%" cellspacing="0" cellpadding="6" border="1">
+        <table class="checklist-table keep-together">
             @foreach($data['checklist_estacionamento_lixeiras'] as $label => $value)
                 <tr>
                     <td><strong>{{ $label }}</strong></td>
@@ -281,7 +330,7 @@
 
         <h2>Checklist — Recepção (Celulares e Máquinas de Cartão)</h2>
 
-        <table width="100%" cellspacing="0" cellpadding="6" border="1">
+        <table class="checklist-table keep-together">
             @foreach($data['checklist_recepcao'] as $label => $value)
                 <tr>
                     <td><strong>{{ $label }}</strong></td>
@@ -289,9 +338,6 @@
                 </tr>
             @endforeach
         </table>
-
-        {{-- QUEBRA DE PÁGINA MANUAL --}}
-        <div class="page-break"></div>
 
         <h2>Checklist — Chaves de Serviço Diário — Estoque Fixo (14 unidades)</h2>
 
@@ -315,7 +361,7 @@
             ];
         @endphp
 
-        <table width="100%" cellspacing="0" cellpadding="6" border="1">
+        <table class="checklist-table">
             <thead>
                 <tr>
                     <th>Item / Descrição</th> {{-- Alterado de ID para Descrição --}}
@@ -340,7 +386,7 @@
         {{--  
         <h2>Checklist — Controles de TV Box (Estoque fixo: 7 unidades)</h2>
 
-        <table width="100%" cellspacing="0" cellpadding="6" border="1">            
+        <table class="checklist-table">            
             <tr>
                 <td><strong>Apto 103</strong></td>
                 <td>{{ $data['tvbox_103'] ?? '-' }}</td>
@@ -362,7 +408,7 @@
 
         <h2>Checklist — Secador de Cabelo (Estoque Fixo: 5 unidades)</h2>
 
-        <table width="100%" cellspacing="0" cellpadding="6" border="1">
+        <table class="checklist-table">
             <thead>
                 <tr style="background-color: #f2f2f2;">
                     <th align="left">Equipamento</th>
@@ -388,12 +434,9 @@
             </tbody>
         </table>
 
-        {{-- QUEBRA DE PÁGINA MANUAL --}}
-        <div class="page-break"></div>
-
         <h2>Checklist — Rádios Comunicadores de Serviços (7 unidades)</h2>
 
-        <table width="100%" cellspacing="0" cellpadding="6" border="1">
+        <table class="checklist-table">
             <thead>
                 <tr style="background-color: #f2f2f2;">
                     <th align="left">Rádio</th>
@@ -436,7 +479,7 @@
             ];
         @endphp
 
-        <table width="100%" cellspacing="0" cellpadding="6" border="1">
+        <table class="checklist-table">
             <thead>
                 <tr style="background-color: #f2f2f2;">
                     <th align="left">Celular</th>
@@ -461,12 +504,9 @@
             </tbody>
         </table>
 
-        {{-- QUEBRA DE PÁGINA MANUAL --}}
-        <div class="page-break"></div>
-
         <h2>Checklist — Gavetas de Jogos e Controles do 3° e Ar Cond.</h2>        
 
-        <table width="100%" cellspacing="0" cellpadding="6" border="1">
+        <table class="checklist-table">
             <thead>
                 <tr style="background-color: #f2f2f2;">
                     <th align="left">Gaveta</th>
@@ -494,7 +534,7 @@
         
         <h2>Checklist — Dados do Turno</h2>
 
-        <table width="100%" cellspacing="0" cellpadding="6" border="1">
+        <table class="checklist-table keep-together">
             @foreach($data['turno'] as $label => $value)
                 <tr>
                     <td><strong>{{ $label }}</strong></td>
@@ -520,7 +560,7 @@
             ];
         @endphp 
 
-        <table width="100%" cellspacing="0" cellpadding="6" border="1">
+        <table class="checklist-table">
             <thead>
                 <tr style="background-color: #f2f2f2;">
                     <th align="left">Chave Mecânica</th>
@@ -551,7 +591,7 @@
     @if ($ocorrencia->type === 'passagem-de-turno-cavalo')
         <h2>Checklist — Dados do Turno</h2>
 
-        <table width="100%" cellspacing="0" cellpadding="6" border="1">
+        <table class="checklist-table keep-together">
             @foreach($data['turno'] as $label => $value)
                 <tr>
                     <td><strong>{{ $label }}</strong></td>
@@ -572,7 +612,7 @@
 
         <h2>Checklist — Secador de Cabelo (Estoque Fixo: 2 unidades)</h2>
 
-        <table width="100%" cellspacing="0" cellpadding="6" border="1">
+        <table class="checklist-table">
             <thead>
                 <tr style="background-color: #f2f2f2;">
                     <th align="left">Equipamento</th>
@@ -600,12 +640,9 @@
             </tbody>
         </table>
 
-        {{-- QUEBRA DE PÁGINA MANUAL --}}
-        <div class="page-break"></div>
-
         <h2>Checklist — Chaves Extras (Estoque Fixo: 36 unidades)</h2>
 
-        <table width="100%" cellspacing="0" cellpadding="6" border="1">
+        <table class="checklist-table">
             <thead>
                 <tr style="background-color: #f2f2f2;">
                     <th align="left">Disponível</th>
@@ -630,12 +667,9 @@
             </tbody>
         </table>
 
-        {{-- QUEBRA DE PÁGINA MANUAL --}}
-        <div class="page-break"></div>
-
         <h2>Checklist — Aquecedores / Gás / Lixeira</h2>
 
-        <table width="100%" cellspacing="0" cellpadding="6" border="1">
+        <table class="checklist-table keep-together">
             @foreach($data['checklist_aquecedores_gas_lixeira'] as $label => $value)
                 <tr>
                     <td><strong>{{ $label }}</strong></td>
@@ -646,7 +680,7 @@
 
         <h2>Checklist — Piscina / Ofurô</h2>
 
-        <table width="100%" cellspacing="0" cellpadding="6" border="1">
+        <table class="checklist-table keep-together">
             @foreach($data['checklist_piscina_ofuro'] as $label => $value)
                 <tr>
                     <td width="60%"><strong>{{ $label }}</strong></td>
@@ -677,7 +711,7 @@
             ];
         @endphp
 
-        <table width="100%" cellspacing="0" cellpadding="6" border="1">
+        <table class="checklist-table">
             <thead>
                 <tr>
                     <th>Item / Descrição</th> {{-- Alterado de ID para Descrição --}}
@@ -701,7 +735,7 @@
 
         <h2>Checklist — Cartões</h2>
 
-        <table width="100%" cellspacing="0" cellpadding="6" border="1">
+        <table class="checklist-table keep-together">
             @foreach($data['checklist_cartoes'] as $label => $value)
                 <tr>
                     <td width="60%"><strong>{{ $label }}</strong></td>
@@ -712,7 +746,7 @@
 
         <h2>Checklist — Cartões Camareiras (5 unidades)</h2>
 
-        <table width="100%" cellspacing="0" cellpadding="6" border="1">
+        <table class="checklist-table">
             <thead>
                 <tr style="background-color: #f2f2f2;">
                     <th align="left">Cartão</th>
@@ -743,7 +777,7 @@
 
         <h2>Checklist — Aberto - Fechado</h2>
 
-        <table width="100%" cellspacing="0" cellpadding="6" border="1">
+        <table class="checklist-table keep-together">
             @foreach($data['checklist_aberto_fechado'] as $label => $value)
                 <tr>
                     <td width="60%"><strong>{{ $label }}</strong></td>
@@ -762,7 +796,7 @@
 
         <h2>Checklist — Celulares de Serviço (2 unidades)</h2>
 
-        <table width="100%" cellspacing="0" cellpadding="6" border="1">
+        <table class="checklist-table">
             <thead>
                 <tr style="background-color: #f2f2f2;">
                     <th align="left">Celular</th>
@@ -796,12 +830,9 @@
             </tbody>
         </table>
 
-        {{-- QUEBRA DE PÁGINA MANUAL --}}
-        <div class="page-break"></div>
-
         <h2>Checklist — Recepção (Máquinas de Cartão)</h2>
 
-        <table width="100%" cellspacing="0" cellpadding="6" border="1">
+        <table class="checklist-table keep-together">
             @foreach($data['checklist_recepcao'] as $label => $value)
                 <tr>
                     <td><strong>{{ $label }}</strong></td>
@@ -812,7 +843,7 @@
 
         <h2>Checklist — Rádios Comunicadores de Serviços (7 unidades)</h2>
 
-        <table width="100%" cellspacing="0" cellpadding="6" border="1">
+        <table class="checklist-table">
             <thead>
                 <tr style="background-color: #f2f2f2;">
                     <th align="left">Rádio</th>
